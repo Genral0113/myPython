@@ -235,16 +235,16 @@ if __name__ == '__main__':
     #     (np.dot(Y, LR_predictions) + np.dot(1 - Y, 1 - LR_predictions)) / float(Y.size) * 100) +
     #       '% ' + "(percentage of correctly labelled datapoints)")
 
-    print('-----------------------------------------------------------------------------------------------------------')
-    m = 400
-    X, Y = load_planar_dataset(m)
-    parameters = nn_model_2(X, Y, n_h=m, num_iteration=10000, print_cost=True)
-    # plot the decision boundary
-    plot_decision_boundary(lambda x: nn_predict(parameters, x.T), X, Y)
-    plt.title("Decision Boundary for hidden layer size " + str(4))
-    pylab.show()
-    predictions = nn_predict(parameters, X)
-    print('Accuracy: %d' % float((np.dot(Y, predictions.T) + np.dot(1 - Y, 1 - predictions.T))/float(Y.size) * 100) + '%')
+    # print('-----------------------------------------------------------------------------------------------------------')
+    # m = 400
+    # X, Y = load_planar_dataset(m)
+    # parameters = nn_model_2(X, Y, n_h=m, num_iteration=10000, print_cost=True)
+    # # plot the decision boundary
+    # plot_decision_boundary(lambda x: nn_predict(parameters, x.T), X, Y)
+    # plt.title("Decision Boundary for hidden layer size " + str(4))
+    # pylab.show()
+    # predictions = nn_predict(parameters, X)
+    # print('Accuracy: %d' % float((np.dot(Y, predictions.T) + np.dot(1 - Y, 1 - predictions.T))/float(Y.size) * 100) + '%')
 
     # print('-----------------------------------------------------------------------------------------------------------')
     # m = 400
@@ -324,3 +324,14 @@ if __name__ == '__main__':
     # print(a)
     # a = a.reshape(10, 1)
     # print(np.linalg.norm(a))
+
+    fname = ".\\rawdata\\ex1data1.txt"
+    raw_data = np.loadtxt(fname, delimiter=',')
+    m = raw_data.shape[0]
+    X = raw_data[:, 0].reshape((m, 1))
+    y = raw_data[:, 1].reshape((m, 1))
+
+    plt.plot(X, y, 'rx')
+    plt.xlabel('Population of City in 10,000s')
+    plt.ylabel('Profit in $10,000s')
+    plt.show()
