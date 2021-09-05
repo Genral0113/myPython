@@ -228,7 +228,7 @@ if __name__ == '__main__':
     initial_theta = np.zeros((X.shape[1], 1))
     lam = 1
 
-    cost, grad = cost_function_logistic_regularization(initial_theta, X, y, lam)
+    # cost, grad = cost_function_logistic_regularization(initial_theta, X, y, lam)
 
     theta = [[1.273], [0.62488], [1.1774], [-2.0201],
              [-0.91262], [-1.4299], [0.12567], [-0.36855],
