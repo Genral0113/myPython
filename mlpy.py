@@ -1,13 +1,6 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-import h5py
-import scipy
-from PIL import Image
-from scipy import ndimage
-import sklearn
-import sklearn.datasets
-import sklearn.linear_model
 
 
 # from lr_utils import load_dataset

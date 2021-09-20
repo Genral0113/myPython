@@ -29,7 +29,7 @@ def reward_function(params):
     ## Define the default reward ##
     reward = 1
 
-    ## Reward if car goes close to optimal racing line ##
+    ## Reward if car goes close to optimal racing line - wayponts line ##
     DISTANCE_MULTIPLE = 1
     distance_reward = max(1e-3, 1 - (distance_from_center / (track_width * 0.5)))
     reward += distance_reward * DISTANCE_MULTIPLE
@@ -71,11 +71,15 @@ def reward_function(params):
     # Convert to degree
     track_direction = math.degrees(track_direction)
 
-    direction_diff = abs(track_direction - heading + steering_angle)
+    direction_diff = abs(track_direction - heading)
     if direction_diff > 180:
         direction_diff = 360 - direction_diff
     if direction_diff > 30:
         reward = 1e-3
+
+    ## keep small angel of the headng direction ##
+    if abs(steering_angle) > 15:
+        reward *= 0.8
 
     # Zero reward of obviously too slow
     speed_diff_zero = optimal_speed - speed

@@ -116,4 +116,4 @@ if __name__ == '__main__':
     log_file4_dir = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6'
     log_file5_dir = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model1'
 
-    plot_to_image(log_file5_dir, plt_show=True)
+    plot_to_image(log_file1_dir, plt_show=True)
