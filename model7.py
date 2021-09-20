@@ -1,15 +1,14 @@
+import math
+
+
 class Reward:
     def __init__(self, verbose=False):
-        self.first_racingpoint_index = None
+        self.first_racingpoint_index = 0
         self.verbose = verbose
         self.maximum_speed = 3  # m/s
-        self.waypoints_multiple = 2
         self.steps_per_second = 15
 
     def reward_function(self, params):
-
-        # Import package (needed for heading)
-        import math
 
         # useful functions
         def dist_2_points(x1, x2, y1, y2):
@@ -33,7 +32,7 @@ class Reward:
             second_closest_index = distances_no_closest.index(
                 min(distances_no_closest))
 
-            return [closest_index, second_closest_index]
+            return closest_index, second_closest_index
 
         def dist_to_racing_line(closest_coords, second_closest_coords, car_coords):
 
@@ -89,7 +88,7 @@ class Reward:
                 next_point_coords = second_closest_coords
                 prev_point_coords = closest_coords
 
-            return [next_point_coords, prev_point_coords]
+            return next_point_coords, prev_point_coords
 
         def racing_direction_diff(closest_coords, second_closest_coords, car_coords, heading):
 
@@ -213,7 +212,7 @@ class Reward:
         racing_track = []
         track_line = multiple_track_line(waypoints, multiply_factor=3)
         track_distance = calculate_distance_of_track_line(track_line)
-        for i in range(track_line):
+        for i in range(len(track_line)):
             optimal_speed = self.maximum_speed
             optimal_time = track_distance[i] / optimal_speed
             racing_track.append([track_line[i][0], track_line[i][1], optimal_speed, optimal_time])
