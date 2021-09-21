@@ -31,7 +31,8 @@ def reward_function(params):
 
     ## Reward if car goes close to optimal racing line - wayponts line ##
     DISTANCE_MULTIPLE = 1.5
-    distance_reward = max(1e-3, 1 - (distance_from_center / (track_width * 0.5)))
+    # distance_reward = max(1e-3, 1 - (distance_from_center / (track_width * 0.5)))
+    distance_reward = max(1e-3, math.cos(0.5 * math.pi * (distance_from_center / (track_width * 0.5))))
     reward += distance_reward * DISTANCE_MULTIPLE
 
     ## Reward if speed is close to optimal speed ##

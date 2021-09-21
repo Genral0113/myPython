@@ -2,7 +2,9 @@ import os
 import csv
 import math
 import matplotlib.pyplot as plt
-from model6 import reward_function
+# from model6 import reward_function
+from model8 import reward_function
+# from deep_racer import reward_function
 
 
 def read_csv_file(file_name, episode_num=-1):
@@ -28,7 +30,7 @@ def read_csv_file(file_name, episode_num=-1):
         csv_reader = csv.reader(input_file)
         header_row = next(csv_reader)  # skip header row
         for row_data in csv_reader:
-            if episode_num == -1 or int(row_data[0]) == episode_num:
+            if row_data[0] != 'episode' and (episode_num == -1 or int(row_data[0]) == episode_num):
                 episode.append(int(row_data[0]))
                 steps.append(float(row_data[1]))
                 x.append(float(row_data[2]))
@@ -367,8 +369,7 @@ def get_params(log_params, index):
     return params
 
 
-if __name__ == '__main__':
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6\all'
+def plot_reward(training_log):
     for file_name in os.listdir(training_log):
         if file_name.split('.')[1] == 'csv':
             file_name_full_path = os.path.join(training_log, file_name)
@@ -403,24 +404,15 @@ if __name__ == '__main__':
 
                 params = get_params(log_parmas, i)
 
-                # params['multiply_factor'] = 2
-                # params['maximum_speed'] = 2
-                # params['direction_diff_limit'] = 30
-                # params['DISTANCE_MULTIPLE'] = 1.5
-                # params['SPEED_DIFF_NO_REWARD'] = 1
-                # params['SPEED_DIFF_ZERO_LIMIT'] = 0.5
                 debug_reward += reward_function(params)
 
             legent = []
 
             plt.plot(x, y_training)
             legent.append('Training')
-            # legent.append('Training:s-3.0 m-3.0 direction_diff-30')
 
             plt.plot(x, y)
             legent.append('Debug')
-            # legent.append('Debug:s-{} m-{} direction_diff-{}'.format(params['maximum_speed'], params['multiply_factor'],
-            #                                                          params['direction_diff_limit']))
 
             plt.legend(legent)
             plt.xlabel('Episode')
@@ -429,3 +421,15 @@ if __name__ == '__main__':
             plt.title(file_name.split('.')[0])
             plt.savefig(image_file_name_full_path)
             plt.show()
+
+
+if __name__ == '__main__':
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone\all'
+    plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6\all'
+    plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model1\all'
+    plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model1\all'
+    plot_reward(training_log)
+
