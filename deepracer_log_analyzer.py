@@ -261,7 +261,7 @@ def plot_to_image(file_directory, plt_show=0):
 
             legent = []
             plt.figure()
-            for episode_num in range(max(episode)+1):
+            for episode_num in range(min(episode), max(episode) + 1):
                 pos = np.where(episode == episode_num)
                 track_line.append([x[pos[0][0]], y[pos[0][0]]])
                 if plt_show > 0:
