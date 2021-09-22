@@ -100,8 +100,7 @@ def get_params(log_params, index):
         # Get index of the second closest racing point
         distances_no_closest = distances.copy()
         distances_no_closest[closest_index] = 999
-        second_closest_index = distances_no_closest.index(
-            min(distances_no_closest))
+        second_closest_index = distances_no_closest.index(min(distances_no_closest))
 
         return closest_index, second_closest_index
 
@@ -341,10 +340,7 @@ def get_params(log_params, index):
         is_left_of_center = True
     else:
         is_left_of_center = False
-    params['is_left_of_center'] = is_left_of_center
     #
-    track_width = 0.762
-    params['track_width'] = track_width
 
     params = {
         'x': x,
@@ -381,26 +377,42 @@ def plot_reward(training_log_dir):
             reward = log_parmas['reward']
             episode = log_parmas['episode']
             steps = log_parmas['steps']
+            tstamp = log_parmas['tstamp']
 
             x = []
             y = []
             y_training = []
+            steps_per_second = []
 
             debug_reward = 0
             training_reward = 0
+            seconds_of_episode = 0
+            steps_of_episode = 0
 
             episode_num = episode[0]
+            start_time = tstamp[0]
             for i in range(len(track_len)):
-
                 if episode_num != episode[i]:
+                    # save the episode number
                     x.append(episode_num)
 
+                    # save the accumulated rewards from training
                     y_training.append(training_reward)
+
+                    # save the debug rewards
                     y.append(debug_reward)
 
+                    # save the steps per second
+                    steps_per_second.append(steps_of_episode / seconds_of_episode)
+
                     episode_num = episode[i]
+                    start_time = tstamp[i]
 
                 training_reward += reward[i]
+
+                # seconds of each episode
+                seconds_of_episode = tstamp[i] - start_time
+                steps_of_episode = steps[i]
 
                 params = get_params(log_parmas, i)
 
@@ -410,6 +422,10 @@ def plot_reward(training_log_dir):
 
             plt.plot(x, y_training)
             legent.append('Training')
+
+            # # plot steps per second
+            # plt.plot(x, steps_per_second)
+            # legent.append('steps/s')
 
             plt.plot(x, y)
             legent.append('Debug')
@@ -423,8 +439,99 @@ def plot_reward(training_log_dir):
             plt.show()
 
 
+def line_2p(p1, p2):
+    # return line: ax + by + c = 0
+    a = 0
+    b = 0
+    c = 0
+
+    if abs(p1[0] - p2[0]) < 1e-5:   # symmetrical to x ras
+        a = 1
+        b = 0
+        c = -1 * p1[0]
+    else:
+        a = (p1[1] - p2[1])/(p1[0] - p2[0])
+        b = -1
+        c = p1[1] - a * p1[0]
+
+    return a, b, c
+
+
+def distance_of_tw0_points(p1, p2):
+    return ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2) ** 0.5
+
+
+def vertical_point_of_point_to_line(p, a, b, c):
+    # return the vertical point of a line: ax + by + c = 0
+
+    vp_x = (b ** 2 * p[0] - a * b * p[1] - a * c)/(a ** 2 + b ** 2)
+    vp_y = (a ** 2 * p[1] - a * b * p[0] - b * c)/(a ** 2 + b ** 2)
+
+    return [vp_x, vp_y]
+
+
+def vertical_line_of_point_to_line(p, a, b, c):
+    # line: ax + by +c = 0
+    vertical_point = vertical_point_of_point_to_line(p, a, b, c)
+    va, vb, vc = line_2p(vertical_point, p)
+    return va, vb, vc
+
+
+def symmetrical_point_of_point_to_line(p, a, b, c):
+    # line: ax + by + c = 0
+
+    spx = 0
+    spy = 0
+
+    if a == 0 and b == 0:
+        spx = p[0]
+        spy = p[1]
+    else:
+        spx = p[0] - 2 * a * (a * p[0] + b * p[1] + c) / (a ** 2 + b ** 2)
+        spy = p[1] - 2 * b * (a * p[0] + b * p[1] + c) / (a ** 2 + b ** 2)
+
+    return [spx, spy]
+
+
+def direction_in_degrees_of_line(a, b, c=0):
+    # line: ax + by + c = 0
+    direction = 0
+    if b == 0:
+        direction = math.degrees(0.5 * math.pi)
+    else:
+        direction = math.degrees(math.atan2(-1 * a / b, 1))
+
+    return direction
+
+
+def test_2d_functions():
+
+    p1 = [1, 1]
+    p2 = [2, 2]
+
+    print('p1:[{}, {}], p2:[{}, {}]'.format(p1[0], p1[1], p2[0], p2[1]))
+
+    a, b, c = line_2p(p1, p2)
+    print('the line function is {}*x + {}*y + {} = 0'.format(a, b, c))
+
+    line_direction = direction_in_degrees_of_line(a, b, c)
+    print('the direction of line: {}*x + {}*y + {} is {} degrees'.format(a, b, c, line_direction))
+
+    test_point = [3, 9]
+
+    # line: ax + by +c = 0
+    vertical_point = vertical_point_of_point_to_line(test_point, a, b, c)
+    print('the vertical point of [{}, {}] in line: {}*x + {}*y + {} is [{}, {}]'.format(test_point[0], test_point[1], a, b, c, vertical_point[0], vertical_point[1]))
+
+    # line: ax + by +c = 0
+    symmetrical_point = symmetrical_point_of_point_to_line(test_point, a, b, c)
+    print('the symmetrical point of [{}, {}] to line: {}*x + {}*y + {} is [{}, {}]'.format(test_point[0], test_point[1], a, b, c, symmetrical_point[0], symmetrical_point[1]))
+
+
 if __name__ == '__main__':
     # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone\all'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone-clone-clone\all'
     # plot_reward(training_log)
     # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6\all'
     # plot_reward(training_log)
@@ -434,6 +541,9 @@ if __name__ == '__main__':
     # plot_reward(training_log)
     # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone\all'
     # plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone\all'
-    plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone\all'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone-clone\all'
+    # plot_reward(training_log)
 
+    test_2d_functions()

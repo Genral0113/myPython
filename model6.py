@@ -64,9 +64,9 @@ def reward_function(params):
 
     # Zero reward if obviously wrong direction (e.g. spin)
     steps_forward = 2
-    pp = len(waypoints) + closest_waypoints[0] - steps_forward
+    pp = len(waypoints) + closest_waypoints[0] - steps_forward + 1
     pp = divmod(pp, len(waypoints))[1]
-    np = closest_waypoints[0] + steps_forward
+    np = closest_waypoints[0] + steps_forward + 1
     np = divmod(np, len(waypoints))[1]
     prev_point = waypoints[pp]
     next_point = waypoints[np]
@@ -88,7 +88,7 @@ def reward_function(params):
     if abs(steering_angle) > 15:
         reward = 1e-3
     else:
-        reward += math.cos(math.radians(steering_angle))
+        reward += math.cos(math.radians(steering_angle)) * 2
 
     # Zero reward of obviously too slow
     speed_diff_zero = optimal_speed - speed
@@ -108,7 +108,7 @@ def reward_function(params):
     reward += finish_reward
 
     ## Zero reward if off track ##
-    if all_wheels_on_track == False:
+    if is_offtrack:
         reward = 1e-3
 
     # Always return a float value
