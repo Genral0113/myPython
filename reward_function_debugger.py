@@ -369,11 +369,11 @@ def get_params(log_params, index):
     return params
 
 
-def plot_reward(training_log):
-    for file_name in os.listdir(training_log):
+def plot_reward(training_log_dir):
+    for file_name in os.listdir(training_log_dir):
         if file_name.split('.')[1] == 'csv':
-            file_name_full_path = os.path.join(training_log, file_name)
-            image_file_name_full_path = os.path.join(training_log, file_name.split('.')[0] + '.jpg')
+            file_name_full_path = os.path.join(training_log_dir, file_name)
+            image_file_name_full_path = os.path.join(training_log_dir, file_name.split('.')[0] + '.jpg')
 
             log_parmas = read_csv_file(file_name_full_path)
 
@@ -424,12 +424,16 @@ def plot_reward(training_log):
 
 
 if __name__ == '__main__':
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone\all'
-    plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6\all'
-    plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model1\all'
-    plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model1\all'
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone\all'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6\all'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model1\all'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model1\all'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone\all'
+    # plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone\all'
     plot_reward(training_log)
 

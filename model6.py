@@ -63,8 +63,13 @@ def reward_function(params):
     reward += steps_reward
 
     # Zero reward if obviously wrong direction (e.g. spin)
-    next_point = waypoints[closest_waypoints[1]]
-    prev_point = waypoints[closest_waypoints[0]]
+    steps_forward = 2
+    pp = len(waypoints) + closest_waypoints[0] - steps_forward
+    pp = divmod(pp, len(waypoints))[1]
+    np = closest_waypoints[0] + steps_forward
+    np = divmod(np, len(waypoints))[1]
+    prev_point = waypoints[pp]
+    next_point = waypoints[np]
 
     # Calculate the direction in radius, arctan2(dy, dx), the result is (-pi, pi) in radians
     track_direction = math.atan2(next_point[1] - prev_point[1], next_point[0] - prev_point[0])
