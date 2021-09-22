@@ -2,6 +2,9 @@ import math
 
 
 def reward_function(params):
+
+    steps_for_track_direction = 1
+
     # Read all input parameters
     all_wheels_on_track = params['all_wheels_on_track']
     x = params['x']
@@ -28,15 +31,26 @@ def reward_function(params):
 
     # speed reward
     speed_reward = 1e-3
-    prev_point = waypoints[closest_waypoints[0]]
-    next_point = waypoints[closest_waypoints[1]]
+
+    pp = len(waypoints) + closest_waypoints[0] - steps_for_track_direction
+    pp = divmod(pp, len(waypoints))[1]
+    np = closest_waypoints[0] + steps_for_track_direction
+    np = divmod(np, len(waypoints))[1]
+    prev_point = waypoints[pp]
+    next_point = waypoints[np]
+
     track_direction = math.atan2(next_point[1] - prev_point[1], next_point[0] - prev_point[0])
     direction_diff = heading - track_direction
     if abs(direction_diff) <= 30:
-        speed_reward = speed * max(1e-3,math.cos(math.radians(direction_diff)) * math.cos(math.radians(steering_angle)))
+        speed_reward = speed * max(1e-3, math.cos(math.radians(direction_diff)) * math.cos(math.radians(steering_angle)))
     else:
         speed_reward = 1e-3
     reward += speed_reward
+
+    if abs(steering_angle) > 15:
+        reward = 1e-1
+    else:
+        reward += math.cos(math.radians(steering_angle))
 
     # off track check
     if not all_wheels_on_track:

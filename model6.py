@@ -4,8 +4,8 @@ import math
 def reward_function(params):
     # Define constants
     standard_speed = 1.5
-    optimal_speed = 1.8
-    fastest_speed = 2.2
+    optimal_speed = 2.0
+    fastest_speed = 2.5
     track_length = 17.71
     laps = 3
 
@@ -77,6 +77,13 @@ def reward_function(params):
         direction_diff = 360 - direction_diff
     if direction_diff > 30:
         reward = 1e-3
+    else:
+        reward += math.cos(math.radians(direction_diff))
+
+    if abs(steering_angle) > 15:
+        reward = 1e-3
+    else:
+        reward += math.cos(math.radians(steering_angle))
 
     # Zero reward of obviously too slow
     speed_diff_zero = optimal_speed - speed
