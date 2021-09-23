@@ -651,23 +651,23 @@ def generate_racing_track():
 if __name__ == '__main__':
     # generate_racing_track()
 
-    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone\all'
-    # plot_reward(training_log)
-    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone-clone-clone\all'
-    # plot_reward(training_log)
-    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6\all'
-    # plot_reward(training_log)
-    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model1\all'
-    # plot_reward(training_log)
-    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model1\all'
-    # plot_reward(training_log)
-    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone\all'
-    # plot_reward(training_log)
-    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone\all'
-    # plot_reward(training_log)
-    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone-clone\all'
-    # plot_reward(training_log)
-    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model9\all'
-    # plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone\all'
+    plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone-clone-clone\all'
+    plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6\all'
+    plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model1\all'
+    plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model1\all'
+    plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone\all'
+    plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone\all'
+    plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone-clone\all'
+    plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model9\all'
+    plot_reward(training_log)
     training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\ben-model3-clone\all'
     plot_reward(training_log)

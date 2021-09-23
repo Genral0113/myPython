@@ -47,6 +47,7 @@ def reward_function(params):
         direction_reward = speed_ratio * speed * max(1e-3, math.cos(math.radians(direction_diff)))
     else:
         direction_reward = 1e-3
+    reward += direction_reward
 
     if abs(steering_angle) > 15:
         direction_reward = 1e-3
@@ -71,7 +72,7 @@ def reward_function(params):
         steps_reward = speed_ratio * speed * math.cos((optimal_steps_lap - standard_steps_lap)/optimal_steps_lap)
     except:
         steps_reward = 1e-3
-    reward += steps_reward
+    # reward += steps_reward
 
     # off track check
     if not all_wheels_on_track:
