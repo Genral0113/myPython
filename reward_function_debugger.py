@@ -616,11 +616,30 @@ def generate_racing_track():
     racing_track = []
 
     track_distance = calculate_distance_of_track_line(track_line)
-
+    optimal_speed = 0
     for i in range(len(track_line)):
-        j = divmod(i + 1, len(track_line))[1]  # get mod of (i + i) mod len
-        track_direction = direction_2_points(track_line[i], track_line[j])
-        optimal_speed = maximum_speed * abs(math.cos(track_direction))
+        if i < 42:
+            optimal_speed = 2.5
+        elif 42 <= i < 88:
+            optimal_speed = 1.5
+        elif 88 <= i < 100:
+            optimal_speed = 2.0
+        elif 100 <= i < 112:
+            optimal_speed = 1.5
+        elif 112 <= i < 132:
+            optimal_speed = 2.0
+        elif 132 <= i < 142:
+            optimal_speed = 1.5
+        elif 142 <= i < 160:
+            optimal_speed = 2.5
+        elif 160 <= i < 174:
+            optimal_speed = 1.5
+        elif 174 <= i < 208:
+            optimal_speed = 2.5
+        elif 208 <= i < 224:
+            optimal_speed = 1.5
+        else:
+            optimal_speed = 2.5
         optimal_time = track_distance[i] / optimal_speed
         racing_track.append([track_line[i][0], track_line[i][1], optimal_speed, optimal_time])
 
@@ -632,19 +651,23 @@ def generate_racing_track():
 if __name__ == '__main__':
     # generate_racing_track()
 
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone\all'
-    plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone-clone-clone\all'
-    plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6\all'
-    plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model1\all'
-    plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model1\all'
-    plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone\all'
-    plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone\all'
-    plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone-clone\all'
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone\all'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone-clone-clone\all'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6\all'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model1\all'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model1\all'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone\all'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone\all'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone-clone\all'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model9\all'
+    # plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\ben-model3-clone\all'
     plot_reward(training_log)
