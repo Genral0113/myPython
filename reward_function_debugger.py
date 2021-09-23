@@ -2,6 +2,7 @@ import os
 import csv
 import math
 import matplotlib.pyplot as plt
+from functions_2d import *
 # from model6 import reward_function
 from model8 import reward_function
 # from deep_racer import reward_function
@@ -100,8 +101,7 @@ def get_params(log_params, index):
         # Get index of the second closest racing point
         distances_no_closest = distances.copy()
         distances_no_closest[closest_index] = 999
-        second_closest_index = distances_no_closest.index(
-            min(distances_no_closest))
+        second_closest_index = distances_no_closest.index(min(distances_no_closest))
 
         return closest_index, second_closest_index
 
@@ -341,10 +341,7 @@ def get_params(log_params, index):
         is_left_of_center = True
     else:
         is_left_of_center = False
-    params['is_left_of_center'] = is_left_of_center
     #
-    track_width = 0.762
-    params['track_width'] = track_width
 
     params = {
         'x': x,
@@ -369,11 +366,11 @@ def get_params(log_params, index):
     return params
 
 
-def plot_reward(training_log):
-    for file_name in os.listdir(training_log):
+def plot_reward(training_log_dir):
+    for file_name in os.listdir(training_log_dir):
         if file_name.split('.')[1] == 'csv':
-            file_name_full_path = os.path.join(training_log, file_name)
-            image_file_name_full_path = os.path.join(training_log, file_name.split('.')[0] + '.jpg')
+            file_name_full_path = os.path.join(training_log_dir, file_name)
+            image_file_name_full_path = os.path.join(training_log_dir, file_name.split('.')[0] + '.jpg')
 
             log_parmas = read_csv_file(file_name_full_path)
 
@@ -381,26 +378,42 @@ def plot_reward(training_log):
             reward = log_parmas['reward']
             episode = log_parmas['episode']
             steps = log_parmas['steps']
+            tstamp = log_parmas['tstamp']
 
             x = []
             y = []
             y_training = []
+            steps_per_second = []
 
             debug_reward = 0
             training_reward = 0
+            seconds_of_episode = 0
+            steps_of_episode = 0
 
             episode_num = episode[0]
+            start_time = tstamp[0]
             for i in range(len(track_len)):
-
                 if episode_num != episode[i]:
+                    # save the episode number
                     x.append(episode_num)
 
+                    # save the accumulated rewards from training
                     y_training.append(training_reward)
+
+                    # save the debug rewards
                     y.append(debug_reward)
 
+                    # save the steps per second
+                    steps_per_second.append(steps_of_episode / seconds_of_episode)
+
                     episode_num = episode[i]
+                    start_time = tstamp[i]
 
                 training_reward += reward[i]
+
+                # seconds of each episode
+                seconds_of_episode = tstamp[i] - start_time
+                steps_of_episode = steps[i]
 
                 params = get_params(log_parmas, i)
 
@@ -410,6 +423,10 @@ def plot_reward(training_log):
 
             plt.plot(x, y_training)
             legent.append('Training')
+
+            # # plot steps per second
+            # plt.plot(x, steps_per_second)
+            # legent.append('steps/s')
 
             plt.plot(x, y)
             legent.append('Debug')
@@ -424,12 +441,19 @@ def plot_reward(training_log):
 
 
 if __name__ == '__main__':
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone\all'
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone\all'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone-clone-clone\all'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6\all'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model1\all'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model1\all'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone\all'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone\all'
+    # plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone-clone\all'
     plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6\all'
-    plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model1\all'
-    plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model1\all'
-    plot_reward(training_log)
-

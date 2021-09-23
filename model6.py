@@ -4,8 +4,8 @@ import math
 def reward_function(params):
     # Define constants
     standard_speed = 1.5
-    optimal_speed = 1.8
-    fastest_speed = 2.2
+    optimal_speed = 2.0
+    fastest_speed = 2.5
     track_length = 17.71
     laps = 3
 
@@ -63,8 +63,13 @@ def reward_function(params):
     reward += steps_reward
 
     # Zero reward if obviously wrong direction (e.g. spin)
-    next_point = waypoints[closest_waypoints[1]]
-    prev_point = waypoints[closest_waypoints[0]]
+    steps_forward = 2
+    pp = len(waypoints) + closest_waypoints[0] - steps_forward + 1
+    pp = divmod(pp, len(waypoints))[1]
+    np = closest_waypoints[0] + steps_forward + 1
+    np = divmod(np, len(waypoints))[1]
+    prev_point = waypoints[pp]
+    next_point = waypoints[np]
 
     # Calculate the direction in radius, arctan2(dy, dx), the result is (-pi, pi) in radians
     track_direction = math.atan2(next_point[1] - prev_point[1], next_point[0] - prev_point[0])
@@ -77,6 +82,13 @@ def reward_function(params):
         direction_diff = 360 - direction_diff
     if direction_diff > 30:
         reward = 1e-3
+    else:
+        reward += math.cos(math.radians(direction_diff))
+
+    if abs(steering_angle) > 15:
+        reward = 1e-3
+    else:
+        reward += math.cos(math.radians(steering_angle)) * 2
 
     # Zero reward of obviously too slow
     speed_diff_zero = optimal_speed - speed
@@ -96,7 +108,7 @@ def reward_function(params):
     reward += finish_reward
 
     ## Zero reward if off track ##
-    if all_wheels_on_track == False:
+    if is_offtrack:
         reward = 1e-3
 
     # Always return a float value
