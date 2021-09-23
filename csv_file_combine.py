@@ -4,7 +4,7 @@ import csv
 
 if __name__ == '__main__':
 
-    input_file_dir = os.path.join(os.path.dirname(__file__),  r'aws\training-simtrace\dlcf-htc-2021-model6-clone')
+    input_file_dir = os.path.join(os.path.dirname(__file__),  r'aws\training-simtrace\model9')
     output_file_full_path = os.path.join(input_file_dir,  r'all\all-iterations.csv')
 
     for file_name in os.listdir(input_file_dir):

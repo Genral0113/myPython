@@ -246,8 +246,9 @@ def racing_direction_diff(closest_coords, second_closest_coords, car_coords, hea
 
 def plot_to_image(file_directory, plt_show=0):
     for file_name in os.listdir(file_directory):
-        if file_name.split('.')[1] == 'csv':
-            file_name_full_path = os.path.join(file_directory, file_name)
+        file_name_full_path = os.path.join(file_directory, file_name)
+
+        if os.path.isfile(file_name_full_path) and file_name.split('.')[1] == 'csv':
             image_file_name_full_path = os.path.join(file_directory, file_name.split('.')[0] + '.jpg')
 
             # load data from log file
@@ -301,6 +302,7 @@ def plot_to_image(file_directory, plt_show=0):
                 print(y1)
                 print(track_direction)
                 print(optimal_time)
+            plt.close()
 
 
 if __name__ == '__main__':
@@ -312,5 +314,11 @@ if __name__ == '__main__':
     log_file4 = os.path.dirname(__file__) + r'\aws\training-simtrace\ben-model4\0-iteration.csv'
     log_file4_dir = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6'
     log_file5_dir = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model1'
+    log_file6_dir = os.path.dirname(__file__) + r'\aws\training-simtrace\model9'
 
-    plot_to_image(log_file4_dir, plt_show=0)
+    # plt_show = 0 for calculation
+    # plt_show = 1 for show
+    # plt_show = 2 for save image
+    # plt_show = 3 for both show and save image
+
+    plot_to_image(log_file6_dir, plt_show=2)
