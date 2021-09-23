@@ -258,10 +258,18 @@ def plot_to_image(file_directory, plt_show=0):
             episode = np.array(log_parmas['episode'])
             x = np.array(log_parmas['x'])
             y = np.array(log_parmas['y'])
+            steps = np.array(log_parmas['steps'])
+            speed = np.array(log_parmas['throttle'])
+            heading = np.array(log_parmas['yam'])
+            steer_angel = np.array(log_parmas['steer'])
+            reward = np.array(log_parmas['reward'])
+
             track_line = []
 
             legent = []
+
             plt.figure()
+
             for episode_num in range(min(episode), max(episode) + 1):
                 pos = np.where(episode == episode_num)
                 track_line.append([x[pos[0][0]], y[pos[0][0]]])
@@ -276,6 +284,7 @@ def plot_to_image(file_directory, plt_show=0):
                 plt.savefig(image_file_name_full_path)
             if plt_show == 1 or plt_show == 3:
                 plt.show()
+            plt.close()
 
             if plt_show == 0:
                 x1 = []
@@ -302,7 +311,6 @@ def plot_to_image(file_directory, plt_show=0):
                 print(y1)
                 print(track_direction)
                 print(optimal_time)
-            plt.close()
 
 
 if __name__ == '__main__':

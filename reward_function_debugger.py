@@ -667,5 +667,7 @@ if __name__ == '__main__':
     # plot_reward(training_log)
     # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone-clone\all'
     # plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model9\all'
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model9\all'
+    # plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\ben-model3-clone\all'
     plot_reward(training_log)

@@ -12,6 +12,7 @@ class Reward:
         self.multiply_factor = 2
         self.steps_per_second = 15
         self.laps = 3
+        self.speed_ratio = 0.5
 
     def reward_function(self, params):
 
@@ -436,7 +437,7 @@ class Reward:
         reward += distance_reward * DISTANCE_MULTIPLE
 
         ## Reward if speed is close to optimal speed ##
-        SPEED_DIFF_NO_REWARD = 1
+        SPEED_DIFF_NO_REWARD = 1.5
         SPEED_MULTIPLE = 2
         speed_diff = abs(optimals[2] - speed)
         if speed_diff <= SPEED_DIFF_NO_REWARD:
@@ -470,9 +471,9 @@ class Reward:
             reward = 1e-3
 
         # Zero reward of obviously too slow
-        speed_diff_zero = optimals[2] - speed
-        if speed_diff_zero > 0.5:
-            reward = 1e-3
+        # speed_diff_zero = self.speed_ratio * optimals[2] - speed
+        # if speed_diff_zero > 0.5:
+        #     reward = 1e-3
 
         ## Incentive for finishing the lap in less steps ##
         REWARD_FOR_FASTEST_TIME = 1500  # should be adapted to track length and other rewards
