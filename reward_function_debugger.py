@@ -6,7 +6,8 @@ from functions_2d import *
 # from model6 import reward_function
 # from model8 import reward_function
 # from deep_racer import reward_function
-from model9 import reward_function
+# from model9 import reward_function
+from model10 import reward_function
 
 
 def read_csv_file(file_name, episode_num=-1):
