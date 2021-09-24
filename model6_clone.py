@@ -3,9 +3,9 @@ import math
 
 def reward_function(params):
     # Define constants
-    standard_speed = 1.5
-    optimal_speed = 2.0
-    fastest_speed = 2.5
+    standard_speed = 1.8
+    optimal_speed = 2.3
+    fastest_speed = 2.8
     track_length = 17.71
     laps = 3
 
@@ -24,6 +24,7 @@ def reward_function(params):
     waypoints = params['waypoints']
     closest_waypoints = params['closest_waypoints']
     is_offtrack = params['is_offtrack']
+    is_left_of_center = params['is_left_of_center']
 
     ## Define the default reward ##
     reward = 1
@@ -35,7 +36,7 @@ def reward_function(params):
     reward += distance_reward * DISTANCE_MULTIPLE
 
     ## Reward if speed is close to optimal speed ##
-    SPEED_DIFF_NO_REWARD = 1
+    SPEED_DIFF_NO_REWARD = 1.3
     SPEED_MULTIPLE = 2
     speed_diff = abs(optimal_speed - speed)
     if speed_diff <= SPEED_DIFF_NO_REWARD:
@@ -62,13 +63,8 @@ def reward_function(params):
     reward += steps_reward
 
     # Zero reward if obviously wrong direction (e.g. spin)
-    steps_forward = 2
-    pp = len(waypoints) + closest_waypoints[0] - steps_forward + 1
-    pp = divmod(pp, len(waypoints))[1]
-    np = closest_waypoints[0] + steps_forward + 1
-    np = divmod(np, len(waypoints))[1]
-    prev_point = waypoints[pp]
-    next_point = waypoints[np]
+    next_point = waypoints[closest_waypoints[1]]
+    prev_point = waypoints[closest_waypoints[0]]
 
     # Calculate the direction in radius, arctan2(dy, dx), the result is (-pi, pi) in radians
     track_direction = math.atan2(next_point[1] - prev_point[1], next_point[0] - prev_point[0])
@@ -87,11 +83,11 @@ def reward_function(params):
     if abs(steering_angle) > 15:
         reward = 1e-3
     else:
-        reward += math.cos(math.radians(steering_angle)) * 2
+        reward += math.cos(math.radians(steering_angle))
 
     # Zero reward of obviously too slow
     speed_diff_zero = optimal_speed - speed
-    if speed_diff_zero > 1:
+    if speed_diff_zero > 1.5:
         reward = 1e-3
 
     ## Incentive for finishing the lap in less steps ##
@@ -107,7 +103,7 @@ def reward_function(params):
     reward += finish_reward
 
     ## Zero reward if off track ##
-    if is_offtrack:
+    if all_wheels_on_track == False:
         reward = 1e-3
 
     # Always return a float value

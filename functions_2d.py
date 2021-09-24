@@ -142,6 +142,14 @@ def test_2d_functions():
     x_int, y_int = interaction_point_of_2lines(l1, l2)
     print('the interaction point of 2 lines is [{}, {}]'.format(x_int, y_int))
 
+    sp = symmetrical_point_of_point_to_line([2, 3], 1, 1, 1)
+    print('the symmetrical point of [{}, {}] to line: {}*x + {}*y + {} is [{}, {}]'.format(2, 3,
+                                                                                           1, 1, 1,
+                                                                                           sp[0],
+                                                                                           sp[1]))
+    a, b, c = line_2p(sp, [3, -2])
+    print('the line function is {}*x + {}*y + {} = 0'.format(a, b, c))
+
 
 def verify_track_line():
     waypoints = [[3.2095088958740234, 0.6831344813108444],
@@ -324,5 +332,5 @@ def verify_track_line():
 
 
 if __name__ == '__main__':
-    # test_2d_functions()
-    verify_track_line()
+    test_2d_functions()
+    # verify_track_line()
