@@ -359,10 +359,7 @@ def get_params(log_params, index):
         'track_width': 0.762,
         'progress': progress,
         'steps': steps,
-        'waypoints': waypoints,
-        'maximum_speed': 3,
-        'multiply_factor': 3,
-        'direction_diff_limit': 30
+        'waypoints': waypoints
     }
 
     return params
