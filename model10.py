@@ -23,27 +23,90 @@ def reward_function(params):
 
     #
     # distance reward
-    distance_reward = 1e-3
+    reward = distance_reward(reward, track_width, distance_from_center)
 
+    #
+    # direction reward
+    reward = direction_reward(reward, waypoints, closest_waypoints, heading, steering_angle)
+
+    #
+    # speed reward
+    reward = speed_reward(reward, speed, closest_waypoints)
+
+    #
+    # steps reward
+    reward = steps_reward(reward, steps, progress)
+
+    # on track checking
+    if not all_wheels_on_track:
+        reward = 1e-3
+
+    return float(reward)
+
+
+def maximum_reward(params):
+    reward = 1.0
+
+    #
+    # maximum distance reward
+    track_width = 0.76
+    distance_from_center = 0.0
+    reward = distance_reward(reward, track_width, distance_from_center)
+
+    #
+    # maximum direction reward
+    waypoints = params['waypoints']
+    closest_waypoints = params['closest_waypoints']
+
+    prev_point = waypoints[closest_waypoints[0]]
+    next_point = waypoints[closest_waypoints[1]]
+    i = divmod(closest_waypoints[1] + 1, len(waypoints))[1]
+    track_direction = math.atan2(next_point[1] - prev_point[1], next_point[0] - prev_point[0])
+    track_direction = math.degrees(track_direction)
+
+    heading = track_direction
+    steering_angle = 0.0
+    reward = direction_reward(reward, waypoints, closest_waypoints, heading, steering_angle)
+
+    # maximum speed reward
+    speed = 3.0
+    reward = speed_reward(reward, speed, closest_waypoints)
+
+    #
+    # steps reward
+    track_length = 17.71
+    standard_speed = 1.2
+    steps = 15 * track_length / standard_speed
+    progress = 1.0
+    reward = steps_reward(reward, steps, progress)
+
+    # return maximum reward
+    return reward
+
+
+def distance_reward(reward, track_width, distance_from_center):
+    #
     # Calculate 3 markers that are at varying distances away from the center line
     marker_1 = 0.1 * track_width
     marker_2 = 0.25 * track_width
     marker_3 = 0.5 * track_width
+    #
     # Give higher reward if the car is closer to center line and vice versa
     if distance_from_center <= marker_1:
-        distance_reward = 1.0
+        reward += 1.0
     elif distance_from_center <= marker_2:
-        distance_reward = 0.5
+        reward += 0.5
     elif distance_from_center <= marker_3:
-        distance_reward = 0.1
+        reward += 0.1
     else:
         reward = 1e-3  # likely crashed/ close to off track
 
-    reward += distance_reward
+    return reward
 
-    #
-    # direction reward
+
+def direction_reward(reward, waypoints, closest_waypoints, heading, steering_angle):
     direction_reward = 1e-3
+
     prev_point = waypoints[closest_waypoints[0]]
     next_point = waypoints[closest_waypoints[1]]
     i = divmod(closest_waypoints[1] + 1, len(waypoints))[1]
@@ -70,10 +133,13 @@ def reward_function(params):
             direction_reward = 1.5 * reward
         else:
             direction_reward = -0.5 * reward
+
     reward += direction_reward
 
-    #
-    # speed reward
+    return reward
+
+
+def speed_reward(reward, speed, closest_waypoints):
     speed_reward = 1e-3  # default against 2 m/s
     if closest_waypoints[0] < 21:
         speed_reward = divmod(speed, 3)[1]
@@ -102,9 +168,11 @@ def reward_function(params):
 
     reward += speed_reward
 
-    #
-    # steps reward
-    track_length = 17.6
+    return reward
+
+
+def steps_reward(reward, steps, progress):
+    track_length = 17.71
     standard_speed = 1.2
     step_reward = 1e-3
     s = divmod(standard_speed * steps / 15, track_length)[1]
@@ -117,9 +185,7 @@ def reward_function(params):
         step_reward = 1
     else:
         step_reward = 1e-1
+
     reward += step_reward
 
-    if not all_wheels_on_track:
-        reward = 1e-3
-
-    return float(reward)
+    return reward
