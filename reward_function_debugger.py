@@ -365,7 +365,7 @@ def get_params(log_params, index):
     return params
 
 
-def plot_reward(training_log_dir):
+def plot_reward(training_log_dir, factor=20):
     for file_name in os.listdir(training_log_dir):
         file_name_full_path = os.path.join(training_log_dir, file_name)
         if os.path.isfile(file_name_full_path) and file_name.split('.')[1] == 'csv':
@@ -409,7 +409,7 @@ def plot_reward(training_log_dir):
                     steps_per_second.append(steps_of_episode / seconds_of_episode)
 
                     # save the reward percentage
-                    reward_percentage.append(round(10000 * reward_p / steps_of_episode, 2))
+                    reward_percentage.append(round(100 * reward_p / steps_of_episode, 2))
 
                     episode_num = episode[i]
                     start_time = tstamp[i]
@@ -444,8 +444,13 @@ def plot_reward(training_log_dir):
             plt.plot(x, y)
             legent.append('Debug')
 
-            plt.plot(x, reward_percentage)
-            legent.append('Reward Percentage')
+            reward_percentage_pos = []
+            for i in range(len(reward_percentage)):
+                reward_percentage_pos.append(factor * reward_percentage[i])
+            plt.plot(x, reward_percentage_pos)
+            legent.append('Reward %')
+            for a, b, c in zip(x, reward_percentage_pos, reward_percentage):
+                plt.text(a, b, c, fontsize=6)
 
             plt.legend(legent)
             plt.xlabel('Episode')
@@ -453,7 +458,8 @@ def plot_reward(training_log_dir):
             plt.grid(True)
             plt.title(file_name.split('.')[0])
             plt.savefig(image_file_name_full_path)
-            plt.show()
+            # plt.show()
+            plt.close()
 
 
 def get_image_file_name(data_file, find_string='aws'):
@@ -467,25 +473,33 @@ def get_image_file_name(data_file, find_string='aws'):
 
 
 if __name__ == '__main__':
-    # generate_racing_track()
-
-    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone\all'
-    # plot_reward(training_log)
-    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone-clone-clone\all'
-    # plot_reward(training_log)
-    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6\all'
-    # plot_reward(training_log)
-    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model1\all'
-    # plot_reward(training_log)
-    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model1\all'
-    # plot_reward(training_log)
-    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone\all'
-    # plot_reward(training_log)
-    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone\all'
-    # plot_reward(training_log)
-    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone-clone\all'
-    # plot_reward(training_log)
-    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model9\all'
-    # plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\ben-model3-clone\all'
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\ben-model3-clone'
+    plot_reward(training_log, factor=100)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\ben-model4'
+    plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model1'
+    plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6'
+    plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone'
+    plot_reward(training_log, factor=30)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone-clone-clone'
+    plot_reward(training_log, factor=50)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model-x'
+    plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model-y'
+    plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model1'
+    plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone'
+    plot_reward(training_log, factor=40)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone'
+    plot_reward(training_log, factor=50)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone-clone'
+    plot_reward(training_log, factor=100)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model9'
+    plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\speed'
+    plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\track_width'
     plot_reward(training_log)
