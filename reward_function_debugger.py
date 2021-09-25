@@ -371,7 +371,8 @@ def get_params(log_params, index):
 
 def plot_reward(training_log_dir):
     for file_name in os.listdir(training_log_dir):
-        if file_name.split('.')[1] == 'csv':
+        file_name_full_path = os.path.join(training_log_dir, file_name)
+        if os.path.isfile(file_name_full_path) and file_name.split('.')[1] == 'csv':
             file_name_full_path = os.path.join(training_log_dir, file_name)
             image_file_name_full_path = os.path.join(training_log_dir, file_name.split('.')[0] + '.jpg')
 
@@ -687,7 +688,7 @@ if __name__ == '__main__':
     # plot_reward(training_log)
     # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone-clone\all'
     # plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model9\all'
-    plot_reward(training_log)
-    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\ben-model3-clone\all'
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model9\all'
     # plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\ben-model3-clone'
+    plot_reward(training_log)
