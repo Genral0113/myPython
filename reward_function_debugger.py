@@ -7,7 +7,8 @@ from functions_2d import *
 # from model8 import reward_function
 # from deep_racer import reward_function
 # from model9 import reward_function
-from model10 import reward_function
+# from model10 import reward_function
+from model11 import *
 
 
 def read_csv_file(file_name, episode_num=-1):
@@ -382,15 +383,19 @@ def plot_reward(training_log_dir):
             steps = log_parmas['steps']
             tstamp = log_parmas['tstamp']
 
+            max_reward = maximum_reward()
+
             x = []
             y = []
             y_training = []
             steps_per_second = []
+            reward_percentage = []
 
-            debug_reward = 0
-            training_reward = 0
-            seconds_of_episode = 0
-            steps_of_episode = 0
+            debug_reward = 0.0
+            training_reward = 0.0
+            seconds_of_episode = 0.0
+            steps_of_episode = 0.0
+            reward_p = 0.0
 
             episode_num = episode[0]
             start_time = tstamp[0]
@@ -408,8 +413,12 @@ def plot_reward(training_log_dir):
                     # save the steps per second
                     steps_per_second.append(steps_of_episode / seconds_of_episode)
 
+                    # save the reward percentage
+                    reward_percentage.append(round(reward_p * 100, 2))
+
                     episode_num = episode[i]
                     start_time = tstamp[i]
+                    reward_p = 0.0
 
                 training_reward += reward[i]
 
@@ -419,7 +428,12 @@ def plot_reward(training_log_dir):
 
                 params = get_params(log_parmas, i)
 
-                debug_reward += reward_function(params)
+                temp_reward = reward_function(params)
+
+                debug_reward += temp_reward
+
+                # calculate reward percentage
+                reward_p += temp_reward/max_reward
 
             legent = []
 
@@ -432,6 +446,9 @@ def plot_reward(training_log_dir):
 
             plt.plot(x, y)
             legent.append('Debug')
+
+            plt.plot(x, reward_percentage)
+            legent.append('Reward Percentage')
 
             plt.legend(legent)
             plt.xlabel('Episode')
