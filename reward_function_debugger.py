@@ -371,6 +371,7 @@ def plot_reward(training_log_dir, factor=20):
         if os.path.isfile(file_name_full_path) and file_name.split('.')[1] == 'csv':
             file_name_full_path = os.path.join(training_log_dir, file_name)
             image_file_name_full_path = get_image_file_name(file_name_full_path)
+            image_file_name_full_path = get_image_file_name(image_file_name_full_path, find_string='training-simtrace', insert_string=r'\reward')
 
             log_parmas = read_csv_file(file_name_full_path)
 
@@ -462,9 +463,9 @@ def plot_reward(training_log_dir, factor=20):
             plt.close()
 
 
-def get_image_file_name(data_file, find_string='aws'):
+def get_image_file_name(data_file, find_string='aws', insert_string=r'\image'):
     start_pos = data_file.find(find_string)
-    image_file = data_file[0:start_pos + len(find_string)] + r'\image' + data_file[start_pos + len(find_string):]
+    image_file = data_file[0:start_pos + len(find_string)] + insert_string + data_file[start_pos + len(find_string):]
     image_file = image_file[:-4] + '.jpg'
     dirs = os.path.dirname(image_file)
     if not os.path.exists(dirs):

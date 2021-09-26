@@ -19,7 +19,7 @@ def reward_function(params):
     closest_waypoints = params['closest_waypoints']
     is_offtrack = params['is_offtrack']
 
-    reward = 1
+    reward = 1.0
 
     #
     # distance reward
