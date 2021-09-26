@@ -84,6 +84,11 @@ def maximum_reward(params):
     return reward
 
 
+def minimum_reward():
+    min = 1e-3
+    return min
+
+
 def distance_reward(reward, track_width, distance_from_center):
     #
     # Calculate 3 markers that are at varying distances away from the center line
