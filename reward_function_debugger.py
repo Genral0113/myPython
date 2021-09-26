@@ -373,7 +373,7 @@ def plot_reward(training_log_dir, factor=20):
         if os.path.isfile(file_name_full_path) and file_name.split('.')[1] == 'csv':
             file_name_full_path = os.path.join(training_log_dir, file_name)
             reward_image = get_image_file_name(file_name_full_path)
-            reward_image = get_image_file_name(reward_image, find_string='training-simtrace', insert_string=r'\reward')
+            reward_image = get_image_file_name(reward_image, find_string='training-simtrace', insert_string=r'\reward', create_folder_unexist=True)
 
             log_parmas = read_csv_file(file_name_full_path)
 
@@ -465,7 +465,7 @@ def plot_reward(training_log_dir, factor=20):
             plt.close()
 
 
-def plot_track(training_log_dir):
+def plot_track(training_log_dir, plot_episode=-1):
     waypoints = np.array([[3.2095088958740234, 0.6831344813108444],
                           [3.359275460243225, 0.6833638250827789],
                           [3.5090349912643433, 0.6834017932415009],
@@ -590,7 +590,7 @@ def plot_track(training_log_dir):
         if os.path.isfile(file_name_full_path) and file_name.split('.')[1] == 'csv':
             file_name_full_path = os.path.join(training_log_dir, file_name)
             track_image = get_image_file_name(file_name_full_path)
-            track_image = get_image_file_name(track_image, find_string='training-simtrace', insert_string=r'\track')
+            track_image = get_image_file_name(track_image, find_string='training-simtrace', insert_string=r'\track', create_folder_unexist=True)
 
             log_parmas = read_csv_file(file_name_full_path)
 
@@ -601,41 +601,57 @@ def plot_track(training_log_dir):
             speed = np.array(log_parmas['throttle'])
             debug_reward = np.zeros((1, len(episode)))
 
-            factor = 1
+            legends = []
+            plot_show_save_figure = False
+
             fs = (40, 30)
             dpi = 240
-            episode_num = episode[0]
             plt.figure(figsize=fs, dpi=dpi)
-            legends = []
-            min_reward = minimum_reward()
-            plt.scatter(factor * waypoints[:, 0], factor * waypoints[:, 1], s=15, c='k')
+
+            plt.scatter(waypoints[:, 0], waypoints[:, 1], s=15, c='k')
             legends.append('waypoints')
+
+            min_reward = minimum_reward()
+
+            episode_num = episode[0]
             for i in range(len(episode)):
-                if episode_num != episode[i]:
+                if episode_num != episode[i] and (plot_episode == -1 or episode_num == plot_episode):
+                    plot_show_save_figure = True
                     pos = np.where(episode == episode_num)
-                    plt.scatter(factor * x[pos], factor * y[pos], s=2)
+                    plt.scatter( x[pos],  y[pos], s=2)
                 episode_num = episode[i]
                 params = get_params(log_parmas, i)
                 debug_reward[0][i] = reward_function(params)
-            for a, b, c in zip(x, y, debug_reward[0]):
-                if c > min_reward:
-                    plt.text(a, b, c, fontsize=4)
-            plt.xlim(factor * 0, factor * 8.5)
-            plt.ylim(factor * -0.5, factor * 5)
+
+            if plot_episode == -1:
+                for a, b, c in zip(x, y, debug_reward[0]):
+                    if c > min_reward:
+                        plt.text(a, b, c, fontsize=4)
+            elif plot_episode > 0:
+                pos = np.where(episode == plot_episode)
+                for a, b, c in zip(x[pos], y[pos], debug_reward[0][pos]):
+                    if c > min_reward:
+                        plt.text(a, b, c, fontsize=4)
+
+            plt.xlim(0, 8.5)
+            plt.ylim(-0.5, 5)
             plt.grid(True)
             plt.title(file_name.split('.')[0])
             plt.legend(legends)
-            plt.savefig(track_image)
-            plt.show()
+
+            if plot_show_save_figure:
+                plt.savefig(track_image)
+                plt.show()
+
             plt.close()
 
 
-def get_image_file_name(data_file, find_string='aws', insert_string=r'\image'):
+def get_image_file_name(data_file, find_string='aws', insert_string=r'\image', create_folder_unexist=False):
     start_pos = data_file.find(find_string)
     image_file = data_file[0:start_pos + len(find_string)] + insert_string + data_file[start_pos + len(find_string):]
     image_file = image_file[:-4] + '.jpg'
     dirs = os.path.dirname(image_file)
-    if not os.path.exists(dirs):
+    if not os.path.exists(dirs) and create_folder_unexist:
         os.makedirs(dirs)
     return image_file
 
@@ -671,6 +687,9 @@ if __name__ == '__main__':
     # plot_reward(training_log)
     # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\track_width'
     # plot_reward(training_log)
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model10'
+    # plot_reward(training_log)
+    plot_track(training_log, plot_episode=228)
 
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\track_width'
-    plot_track(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\track_width'
+    # plot_track(training_log)
