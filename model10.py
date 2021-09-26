@@ -19,7 +19,7 @@ def reward_function(params):
     closest_waypoints = params['closest_waypoints']
     is_offtrack = params['is_offtrack']
 
-    reward = 1
+    reward = 1.0
 
     #
     # distance reward
@@ -82,6 +82,11 @@ def maximum_reward(params):
 
     # return maximum reward
     return reward
+
+
+def minimum_reward():
+    min = 1e-3
+    return min
 
 
 def distance_reward(reward, track_width, distance_from_center):

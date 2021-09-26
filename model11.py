@@ -20,14 +20,9 @@ def reward_function(params):
         "closest_waypoints": [int, int]    # indices of the two nearest waypoints.
     }
     '''
-    ###############
-    ### Imports ###
-    ###############
-
     #################
     ### Constants ###
     #################
-
     MAX_REWARD = 1e2
     MIN_REWARD = 1e-3
     DIRECTION_THRESHOLD = 10.0
@@ -45,17 +40,9 @@ def reward_function(params):
     closest_waypoints = params['closest_waypoints']
     heading = params['heading']
 
-    # negative exponential penalty
-    reward = math.exp(-6 * distance_from_center)
-
     ########################
     ### Helper functions ###
     ########################
-
-    ########################
-    ### Reward functions ###
-    ########################
-
     def on_track_reward(current_reward, on_track):
         if not on_track:
             current_reward = MIN_REWARD
@@ -71,11 +58,11 @@ def reward_function(params):
 
         # Give higher reward if the car is closer to center line and vice versa
         if distance_from_center <= marker_1:
-            current_reward *= 1.2
+            current_reward += 1.0
         elif distance_from_center <= marker_2:
-            current_reward *= 0.8
-        elif distance_from_center <= marker_3:
             current_reward += 0.5
+        elif distance_from_center <= marker_3:
+            current_reward += 0.1
         else:
             current_reward = MIN_REWARD  # likely crashed/ close to off track
 
@@ -84,7 +71,7 @@ def reward_function(params):
     def straight_line_reward(current_reward, steering, speed):
         # Positive reward if the car is in a straight line going fast
         if abs(steering) < 0.1 and speed > 3:
-            current_reward *= 1.2
+            current_reward += 1.0
         return current_reward
 
     def direction_reward(current_reward, waypoints, closest_waypoints, heading):
@@ -125,6 +112,9 @@ def reward_function(params):
     ########################
     ### Execute Rewards  ###
     ########################
+
+    # negative exponential penalty
+    reward = math.exp(-6 * distance_from_center)
 
     reward = on_track_reward(reward, on_track)
     reward = distance_from_center_reward(reward, track_width, distance_from_center)
