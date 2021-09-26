@@ -2,6 +2,8 @@ import os
 import csv
 import math
 import matplotlib.pyplot as plt
+import numpy as np
+
 from functions_2d import *
 # from model6 import reward_function
 # from model8 import reward_function
@@ -370,8 +372,8 @@ def plot_reward(training_log_dir, factor=20):
         file_name_full_path = os.path.join(training_log_dir, file_name)
         if os.path.isfile(file_name_full_path) and file_name.split('.')[1] == 'csv':
             file_name_full_path = os.path.join(training_log_dir, file_name)
-            image_file_name_full_path = get_image_file_name(file_name_full_path)
-            image_file_name_full_path = get_image_file_name(image_file_name_full_path, find_string='training-simtrace', insert_string=r'\reward')
+            reward_image = get_image_file_name(file_name_full_path)
+            reward_image = get_image_file_name(reward_image, find_string='training-simtrace', insert_string=r'\reward')
 
             log_parmas = read_csv_file(file_name_full_path)
 
@@ -458,8 +460,163 @@ def plot_reward(training_log_dir, factor=20):
             plt.ylabel('Reward')
             plt.grid(True)
             plt.title(file_name.split('.')[0])
-            plt.savefig(image_file_name_full_path)
+            plt.savefig(reward_image)
             # plt.show()
+            plt.close()
+
+
+def plot_track(training_log_dir):
+
+    waypoints = np.array([[3.2095088958740234, 0.6831344813108444],
+                 [3.359275460243225, 0.6833638250827789],
+                 [3.5090349912643433, 0.6834017932415009],
+                 [3.6587949991226196, 0.6834610402584076],
+                 [3.808555006980896, 0.6835170090198517],
+                 [3.9583150148391724, 0.6835691034793854],
+                 [4.1080756187438965, 0.6836211383342743],
+                 [4.2578349113464355, 0.6836741119623184],
+                 [4.407594919204712, 0.683727964758873],
+                 [4.557354927062988, 0.6837812215089798],
+                 [4.7071144580841064, 0.6838362663984299],
+                 [4.856873989105225, 0.6838938742876053],
+                 [5.006633043289185, 0.6839521080255508],
+                 [5.156393527984619, 0.6840048730373383],
+                 [5.306154489517212, 0.6840500980615616],
+                 [5.455911874771118, 0.6841173022985458],
+                 [5.605645418167114, 0.6843366473913193],
+                 [5.75542140007019, 0.6842880994081497],
+                 [5.905304670333862, 0.6835954934358597],
+                 [6.055286169052124, 0.6823406517505646],
+                 [6.204955101013184, 0.6861690580844879],
+                 [6.354061603546143, 0.6985173225402832],
+                 [6.502514362335205, 0.7188082784414291],
+                 [6.643739938735962, 0.7683110386133194],
+                 [6.77488899230957, 0.8412670791149139],
+                 [6.89846134185791, 0.9262270629405975],
+                 [7.0100367069244385, 1.0257667303085327],
+                 [7.0997467041015625, 1.1460862159729004],
+                 [7.172473669052124, 1.2770325541496277],
+                 [7.230445146560669, 1.4172040224075317],
+                 [7.272417068481445, 1.565867006778717],
+                 [7.283682584762573, 1.7152734994888306],
+                 [7.265743970870972, 1.8636599779129024],
+                 [7.233960151672363, 2.010729968547821],
+                 [7.1842029094696045, 2.154710531234741],
+                 [7.114001989364624, 2.2871004343032837],
+                 [7.0233659744262695, 2.406221032142639],
+                 [6.917426347732544, 2.512663960456848],
+                 [6.79807996749878, 2.604923009872436],
+                 [6.6672019958496085, 2.6775895357131962],
+                 [6.526654481887817, 2.729645013809204],
+                 [6.380491495132446, 2.7596704959869385],
+                 [6.229795932769775, 2.7700384855270386],
+                 [6.079286813735961, 2.7733629941940308],
+                 [5.929529666900635, 2.7721140384674072],
+                 [5.7797839641571045, 2.7707979679107666],
+                 [5.630027532577515, 2.769605040550232],
+                 [5.48030161857605, 2.7690484523773193],
+                 [5.330573081970215, 2.768457531929016],
+                 [5.180745601654053, 2.765363574028015],
+                 [5.031071662902832, 2.766121029853821],
+                 [4.8823630809783936, 2.7846319675445557],
+                 [4.735179901123047, 2.821260929107666],
+                 [4.596354961395264, 2.878996968269348],
+                 [4.471064329147339, 2.959028959274292],
+                 [4.358901500701904, 3.0601580142974854],
+                 [4.255730390548706, 3.1701360940933228],
+                 [4.16035795211792, 3.2856805324554443],
+                 [4.066727519035339, 3.4024704694747925],
+                 [3.9719725847244263, 3.518454909324646],
+                 [3.8773505687713623, 3.6345274448394775],
+                 [3.7827706336975098, 3.7506459951400757],
+                 [3.6881529092788696, 3.86673903465271],
+                 [3.5935609340667725, 3.9826358556747437],
+                 [3.4988315105438232, 4.09949803352356],
+                 [3.4035515785217285, 4.217398405075073],
+                 [3.294981002807617, 4.319329500198364],
+                 [3.1679095029830933, 4.398614168167114],
+                 [3.0387414693832397, 4.461370468139648],
+                 [2.854969024658203, 4.497744560241699],
+                 [2.797850012779234, 4.495018482208252],
+                 [2.633301019668579, 4.497664451599121],
+                 [2.4294214248657227, 4.4980690479278564],
+                 [2.2890069484710693, 4.492910385131836],
+                 [2.1444239616394043, 4.488077163696289],
+                 [1.99241304397583, 4.483960390090942],
+                 [1.842801034450531, 4.479875564575195],
+                 [1.6925734877586365, 4.4749414920806885],
+                 [1.539882481098175, 4.468656063079834],
+                 [1.3862689733505262, 4.457833528518677],
+                 [1.2433670163154602, 4.418424367904663],
+                 [1.1135604083538055, 4.345951080322266],
+                 [0.9965091645717638, 4.250534892082216],
+                 [0.8920779228210449, 4.136229991912842],
+                 [0.8050850629806519, 4.006568551063538],
+                 [0.7456648498773575, 3.8689799308776855],
+                 [0.7141403257846834, 3.723703503608705],
+                 [0.7072480469942093, 3.572937488555908],
+                 [0.714956521987915, 3.4234429597854614],
+                 [0.7365620285272598, 3.275694489479065],
+                 [0.7720642238855366, 3.129692554473875],
+                 [0.8129126578569412, 2.9843615293502808],
+                 [0.8494300991296768, 2.838486909866333],
+                 [0.8816098272800446, 2.692067503929138],
+                 [0.9119606614112854, 2.5454180240631104],
+                 [0.942350447177887, 2.3987735509872437],
+                 [0.9727316200733185, 2.2521289587020874],
+                 [1.0031171143054962, 2.1054846048355103],
+                 [1.0335085093975067, 1.958836555480957],
+                 [1.063848465681076, 1.8122150301933289],
+                 [1.0942798256874084, 1.6655445098876953],
+                 [1.125132828950882, 1.518646478652954],
+                 [1.1569859981536865, 1.3717305064201355],
+                 [1.1986910104751587, 1.2280805110931396],
+                 [1.2531161606311798, 1.0885401666164398],
+                 [1.3394269943237305, 0.9674179255962372],
+                 [1.440102458000183, 0.8561052978038788],
+                 [1.5720524787902832, 0.7863914519548416],
+                 [1.7143170237541199, 0.7385813295841217],
+                 [1.862565040588379, 0.7073544710874557],
+                 [2.011545956134796, 0.6859170347452164],
+                 [2.1608630418777466, 0.6737564653158188],
+                 [2.3105164766311646, 0.6708721071481705],
+                 [2.4604655504226685, 0.6761422604322433],
+                 [2.610395073890686, 0.6808701455593109],
+                 [2.760238528251648, 0.6832202970981598],
+                 [2.909994959831238, 0.6831925511360168],
+                 [3.059733510017395, 0.6826554089784622]])
+
+    for file_name in os.listdir(training_log_dir):
+        file_name_full_path = os.path.join(training_log_dir, file_name)
+        if os.path.isfile(file_name_full_path) and file_name.split('.')[1] == 'csv':
+            file_name_full_path = os.path.join(training_log_dir, file_name)
+            track_image = get_image_file_name(file_name_full_path)
+            track_image = get_image_file_name(track_image, find_string='training-simtrace', insert_string=r'\track')
+
+            log_parmas = read_csv_file(file_name_full_path)
+
+            episode = np.array(log_parmas['episode'])
+            x = np.array(log_parmas['x'])
+            y = np.array(log_parmas['y'])
+            heading = np.array(log_parmas['yam'])
+            speed = np.array(log_parmas['throttle'])
+
+            episode_num = episode[0]
+            plt.figure()
+            legends = []
+            plt.scatter(waypoints[:, 0], waypoints[:, 1], s=15, c='k')
+            legends.append('waypoints')
+            for i in range(len(episode)):
+                if episode_num != episode[i]:
+                    pos = np.where(episode == episode_num)
+                    plt.scatter(x[pos], y[pos], s=2)
+                episode_num = episode[i]
+            plt.xlim(0, 8.5)
+            plt.ylim(-0.5, 5.5)
+            plt.grid(True)
+            plt.title(file_name.split('.')[0])
+            plt.legend(legends)
+            plt.show()
             plt.close()
 
 
@@ -474,33 +631,36 @@ def get_image_file_name(data_file, find_string='aws', insert_string=r'\image'):
 
 
 if __name__ == '__main__':
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\ben-model3-clone'
-    plot_reward(training_log, factor=100)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\ben-model4'
-    plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model1'
-    plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6'
-    plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone'
-    plot_reward(training_log, factor=30)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone-clone-clone'
-    plot_reward(training_log, factor=50)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model-x'
-    plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model-y'
-    plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model1'
-    plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone'
-    plot_reward(training_log, factor=40)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone'
-    plot_reward(training_log, factor=50)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone-clone'
-    plot_reward(training_log, factor=100)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model9'
-    plot_reward(training_log)
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\speed'
-    plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\ben-model3-clone'
+    # plot_reward(training_log, factor=100)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\ben-model4'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model1'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone'
+    # plot_reward(training_log, factor=30)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model6-clone-clone-clone'
+    # plot_reward(training_log, factor=50)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model-x'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model-y'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model1'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone'
+    # plot_reward(training_log, factor=40)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone'
+    # plot_reward(training_log, factor=50)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model8-clone-clone-clone-clone'
+    # plot_reward(training_log, factor=100)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\model9'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\speed'
+    # plot_reward(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\track_width'
+    # plot_reward(training_log)
+
     training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\track_width'
-    plot_reward(training_log)
+    plot_track(training_log)
