@@ -599,6 +599,8 @@ def plot_track(training_log_dir, plot_episode=-1):
             y = np.array(log_parmas['y'])
             heading = np.array(log_parmas['yam'])
             speed = np.array(log_parmas['throttle'])
+            steps = np.array(log_parmas['steps'])
+
             debug_reward = np.zeros((1, len(episode)))
 
             legends = []
@@ -609,6 +611,8 @@ def plot_track(training_log_dir, plot_episode=-1):
             plt.figure(figsize=fs, dpi=dpi)
 
             plt.scatter(waypoints[:, 0], waypoints[:, 1], s=15, c='k')
+            for a, b, c in zip(waypoints[:, 0], waypoints[:, 1], np.arange(1, len(waypoints)+1, 1)):
+                plt.text(a - 0.01, b - 0.02, c, fontsize=4)
             legends.append('waypoints')
 
             min_reward = minimum_reward()
@@ -618,20 +622,22 @@ def plot_track(training_log_dir, plot_episode=-1):
                 if episode_num != episode[i] and (plot_episode == -1 or episode_num == plot_episode):
                     plot_show_save_figure = True
                     pos = np.where(episode == episode_num)
-                    plt.scatter( x[pos],  y[pos], s=2)
+                    plt.scatter(x[pos],  y[pos], s=2)
                 episode_num = episode[i]
                 params = get_params(log_parmas, i)
                 debug_reward[0][i] = reward_function(params)
 
             if plot_episode == -1:
-                for a, b, c in zip(x, y, debug_reward[0]):
+                for a, b, c, d in zip(x, y, debug_reward[0], steps):
                     if c > min_reward:
                         plt.text(a, b, c, fontsize=4)
+                        plt.text(a - 0.01, b - 0.01, d, fontsize=4)
             elif plot_episode > 0:
                 pos = np.where(episode == plot_episode)
-                for a, b, c in zip(x[pos], y[pos], debug_reward[0][pos]):
+                for a, b, c, d in zip(x[pos], y[pos], debug_reward[0][pos], steps[pos]):
                     if c > min_reward:
                         plt.text(a, b, c, fontsize=4)
+                        plt.text(a - 0.01, b - 0.01, d, fontsize=4)
 
             plt.xlim(0, 8.5)
             plt.ylim(-0.5, 5)
