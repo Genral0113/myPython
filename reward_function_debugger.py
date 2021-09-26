@@ -647,7 +647,7 @@ def plot_track(training_log_dir, plot_episode=-1):
 
             if plot_show_save_figure:
                 plt.savefig(track_image)
-                plt.show()
+                # plt.show()
 
             plt.close()
 
@@ -695,7 +695,7 @@ if __name__ == '__main__':
     # plot_reward(training_log)
     training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model10'
     # plot_reward(training_log)
-    plot_track(training_log, plot_episode=228)
+    plot_track(training_log)
 
     # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\track_width'
     # plot_track(training_log)
