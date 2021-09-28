@@ -450,7 +450,7 @@ def plot_reward(training_log_dir, factor=20):
                     steps_per_second.append(steps_of_episode / seconds_of_episode)
 
                     # save the reward percentage
-                    reward_percentage.append(round(100 * reward_p / steps_of_episode, 2))
+                    reward_percentage.append(round(reward_p / steps_of_episode, 2))
 
                     episode_num = episode[i]
                     start_time = tstamp[i]
@@ -464,7 +464,7 @@ def plot_reward(training_log_dir, factor=20):
 
                 params = get_params(log_parmas, i)
 
-                max_reward = maximum_reward(params)
+                max_reward = reward_function_maximum(params)
 
                 temp_reward = reward_function(params)
 
@@ -773,7 +773,8 @@ if __name__ == '__main__':
     # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\track_width'
     # plot_reward(training_log)
     # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model10'
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\2019\dlcf-test'
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\2019\dlcf-test'
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\2019\dlcf-test-clone'
     # plot_reward(training_log)
     plot_track(training_log)
 
