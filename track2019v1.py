@@ -13,7 +13,8 @@ def reward_function(params):
         'standard_reward_l1': 1.5,
         'standard_reward_l2': 0.9,
         'minimum_reward_l1': 0.6,
-        'minimum_reward_l2': 0.3
+        'minimum_reward_l2': 0.3,
+        'steps_per_second': 15
     }
 
     x = params['x']
@@ -32,8 +33,8 @@ def reward_function(params):
 
     # get the next 3 points
     np = waypoints[closest_waypoints[1]]
-    np1 = waypoints[(closest_waypoints[1] + 1) // len(waypoints)]
-    np2 = waypoints[(closest_waypoints[1] + 2) // len(waypoints)]
+    np1 = waypoints[(closest_waypoints[1] + 1) % len(waypoints)]
+    np2 = waypoints[(closest_waypoints[1] + 2) % len(waypoints)]
 
     # distance checking to make sure the agent is heading to the right direction
     distance_p0 = distance_of_2points(waypoints[closest_waypoints[0]], [x, y])
@@ -42,8 +43,10 @@ def reward_function(params):
     distance_p2 = distance_of_2points(np2, [x, y])
 
     # projected position of the agent
-    new_x = x + speed / 15 * math.cos(math.radians(heading))
-    new_y = y + speed / 15 * math.sin(math.radians(heading))
+    new_x = x + speed / limit_params['steps_per_second'] * math.cos(
+        math.radians(heading + steering / limit_params['steps_per_second']))
+    new_y = y + speed / limit_params['steps_per_second'] * math.sin(
+        math.radians(heading + steering / limit_params['steps_per_second']))
 
     new_distance_p0 = distance_of_2points(waypoints[closest_waypoints[0]], [new_x, new_y])
     new_distance_p = distance_of_2points(np, [new_x, new_y])
@@ -51,7 +54,7 @@ def reward_function(params):
     new_distance_p2 = distance_of_2points(np2, [new_x, new_y])
 
     agent_going_to_right_direction = False
-    if distance_p0 >= new_distance_p0 and distance_p1 <= new_distance_p1 and distance_p2 <= new_distance_p2:
+    if distance_p0 <= new_distance_p0 and distance_p1 >= new_distance_p1 and distance_p2 >= new_distance_p2:
         agent_going_to_right_direction = True
 
     # the agent direction to next 3 points
@@ -59,15 +62,15 @@ def reward_function(params):
     direction_np1 = directions_of_2points([x, y], np1)
     direction_np2 = directions_of_2points([x, y], np2)
 
-    direction_np_diff = abs(direction_np - heading)
+    direction_np_diff = abs(direction_np - heading - steering / limit_params['steps_per_second'])
     if direction_np_diff > 180:
         direction_np = 360 - direction_np
 
-    direction_np1_diff = abs(direction_np1 - heading)
+    direction_np1_diff = abs(direction_np1 - heading - steering / limit_params['steps_per_second'])
     if direction_np1_diff > 180:
         direction_np1 = 360 - direction_np1
 
-    direction_np2_diff = abs(direction_np2 - heading)
+    direction_np2_diff = abs(direction_np2 - heading - steering / limit_params['steps_per_second'])
     if direction_np2_diff > 180:
         direction_np2 = 360 - direction_np2
 
@@ -77,8 +80,10 @@ def reward_function(params):
 
     if agent_going_to_right_direction and on_track:
         if speed >= limit_params['optimal_speed']:
-            if (is_left_of_center and 0 >= steering >= -1 * limit_params['steering_limit']) or \
-                    (not is_left_of_center and 0 <= steering <= limit_params['steering_limit']):
+            if (is_left_of_center and 0 >= steering / limit_params['steps_per_second'] >= -1 * limit_params[
+                'steering_limit']) or \
+                    (not is_left_of_center and 0 <= steering / limit_params['steps_per_second'] <= limit_params[
+                        'steering_limit']):
                 if direction_np1_diff <= limit_params['straight_line_direction_limit']:
                     reward = limit_params['optimal_reward_l1']
                 elif direction_np1_diff <= direction_np2_np_diff:
