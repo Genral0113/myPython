@@ -615,7 +615,7 @@ def plot_track(training_log_dir, plot_episode=-1):
                 plt.text(a - 0.01, b - 0.02, c, fontsize=4)
             legends.append('waypoints')
 
-            min_reward = minimum_reward()
+            min_reward = 1e-3
 
             episode_num = episode[0]
             for i in range(len(episode)):
@@ -626,6 +626,7 @@ def plot_track(training_log_dir, plot_episode=-1):
                 episode_num = episode[i]
                 params = get_params(log_parmas, i)
                 debug_reward[0][i] = reward_function(params)
+                min_reward = minimum_reward(params)
 
             if plot_episode == -1:
                 for a, b, c, d in zip(x, y, debug_reward[0], steps):
