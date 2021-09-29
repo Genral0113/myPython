@@ -24,7 +24,7 @@ def reward_function(params):
 
     # Parameters for Progress Incentive
     # TOTAL_NUM_STEPS = 675  # (15 steps per second, therefore < 45 secs)
-    TOTAL_NUM_STEPS = 150  # (15 steps per second, therefore < 45 secs)
+    TOTAL_NUM_STEPS = 450  # (15 steps per second, therefore < 45 secs)
 
     def identify_corner(waypoints, closest_waypoints, future_step):
 
@@ -123,4 +123,14 @@ def reward_function(params):
         reward -= 0.5
 
     reward = max(reward, 1e-3)
+    return float(reward)
+
+
+def reward_function_maximum(params):
+    reward = 5.0
+    return float(reward)
+
+
+def reward_function_minimum(params):
+    reward = 1e-3
     return float(reward)
