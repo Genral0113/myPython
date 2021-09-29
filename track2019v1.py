@@ -103,38 +103,39 @@ def reward_function(params):
 
 
 def reward_function_maximum(params):
-    track_width = params['track_width']
-    waypoints = params['waypoints']
-    closest_waypoints = params['closest_waypoints']
-    steps = params['steps']
-    progress = params['progress']
+    # track_width = params['track_width']
+    # waypoints = params['waypoints']
+    # closest_waypoints = params['closest_waypoints']
+    # steps = params['steps']
+    # progress = params['progress']
+    #
+    # x = waypoints[closest_waypoints[1]][0]
+    # y = waypoints[closest_waypoints[1]][1]
+    # distance_from_center = 0.0
+    # steering_angle = 0.0
+    # speed = 4.0
+    # heading = directions_of_2points(waypoints[closest_waypoints[0]], waypoints[closest_waypoints[1]])
+    # is_left_of_center = True
+    # on_track = True
+    #
+    # maximum_params = {
+    #     'track_width': track_width,
+    #     'waypoints': waypoints,
+    #     'closest_waypoints': closest_waypoints,
+    #     'steps': steps,
+    #     'progress': progress,
+    #     'x': x,
+    #     'y': y,
+    #     'distance_from_center': distance_from_center,
+    #     'steering_angle': steering_angle,
+    #     'speed': speed,
+    #     'heading': heading,
+    #     'is_left_of_center': is_left_of_center,
+    #     'all_wheels_on_track': on_track
+    # }
 
-    x = waypoints[closest_waypoints[1]][0]
-    y = waypoints[closest_waypoints[1]][1]
-    distance_from_center = 0.0
-    steering_angle = 0.0
-    speed = 4.0
-    heading = directions_of_2points(waypoints[closest_waypoints[0]], waypoints[closest_waypoints[1]])
-    is_left_of_center = True
-    on_track = True
-
-    maximum_params = {
-        'track_width': track_width,
-        'waypoints': waypoints,
-        'closest_waypoints': closest_waypoints,
-        'steps': steps,
-        'progress': progress,
-        'x': x,
-        'y': y,
-        'distance_from_center': distance_from_center,
-        'steering_angle': steering_angle,
-        'speed': speed,
-        'heading': heading,
-        'is_left_of_center': is_left_of_center,
-        'all_wheels_on_track': on_track
-    }
-
-    reward = reward_function(maximum_params)
+    # reward = reward_function(maximum_params)
+    reward = 2.5
 
     return float(reward)
 

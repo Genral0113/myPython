@@ -11,8 +11,8 @@ from functions_2d import *
 # from model9 import reward_function
 # from model10 import *
 # from model11 import *
-from track2019v1 import *
-
+# from track2019v1 import *
+from ref_rf import *
 
 def read_csv_file(file_name, episode_num=-1):
     episode = []
@@ -343,6 +343,8 @@ def get_params(log_params, index):
                  [0.30512550473213196, 3.1325994729995728],
                  [0.3009575456380844, 2.981549024581909],
                  [0.3078780025243759, 2.830607533454895]]
+
+    # waypoints = np.load('ChampionshipCup2019_track.npy')[:, 2:4]
     #
     speed = log_params['throttle'][index]
     #
@@ -471,7 +473,7 @@ def plot_reward(training_log_dir, factor=20):
                 debug_reward += temp_reward
 
                 # calculate reward percentage
-                reward_p += temp_reward / max_reward
+                reward_p += 100 * temp_reward / max_reward
 
             legent = []
 
@@ -499,7 +501,7 @@ def plot_reward(training_log_dir, factor=20):
             plt.grid(True)
             plt.title(file_name.split('.')[0])
             plt.savefig(reward_image)
-            plt.show()
+            # plt.show()
             plt.close()
 
 
@@ -774,9 +776,10 @@ if __name__ == '__main__':
     # plot_reward(training_log)
     # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\dlcf-htc-2021-model10'
     # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\2019\dlcf-test'
-    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\2019\dlcf-test-clone'
-    # plot_reward(training_log)
-    plot_track(training_log)
+    # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\2019\dlcf-test-clone'
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\2019\model-ref-v2'
+    plot_reward(training_log)
+    # plot_track(training_log)
 
     # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\track_width'
     # plot_track(training_log)
