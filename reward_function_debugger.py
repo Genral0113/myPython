@@ -12,7 +12,8 @@ from functions_2d import *
 # from model10 import *
 # from model11 import *
 # from track2019v1 import *
-from ref_rf import *
+# from ref_rf import *
+from reward_qualifier import *
 
 def read_csv_file(file_name, episode_num=-1):
     episode = []
