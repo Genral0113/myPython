@@ -15,7 +15,7 @@ def reward_function(params):
     # FUTURE_STEP = 6
     FUTURE_STEP = 6
     # TURN_THRESHOLD_SPEED = 6  # degrees
-    TURN_THRESHOLD_SPEED = 5  # degrees
+    TURN_THRESHOLD_SPEED = 8  # degrees
     # SPEED_THRESHOLD_SLOW = 1.8  # m/s
     SPEED_THRESHOLD_SLOW = 1.9  # m/s
     # SPEED_THRESHOLD_FAST = 2  # m/s

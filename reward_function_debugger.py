@@ -778,6 +778,7 @@ if __name__ == '__main__':
     # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\2019\dlcf-test'
     # training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\2019\dlcf-test-clone'
     training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\2019\model-ref-v2'
+    training_log = os.path.dirname(__file__) + r'\aws\training-simtrace\2019\model-ref'
     plot_reward(training_log)
     # plot_track(training_log)
 
