@@ -3,6 +3,7 @@ import csv
 import math
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 from functions_2d import *
 # from model6 import reward_function
@@ -16,73 +17,32 @@ from functions_2d import *
 # from reward_qualifier import *
 from track2019 import *
 
-def read_csv_file(file_name, episode_num=-1):
-    episode = []
-    steps = []
-    x = []
-    y = []
-    yam = []
-    steer = []
-    throttle = []
-    action = []
-    reward = []
-    done = []
-    all_wheels_on_track = []
-    progress = []
-    closest_waypoint = []
-    track_len = []
-    tstamp = []
-    episode_status = []
-    pause_duration = []
 
-    with open(file_name) as input_file:
-        csv_reader = csv.reader(input_file)
-        for row_data in csv_reader:
-            if row_data[0] != 'episode' and (episode_num == -1 or int(row_data[0]) == episode_num):
-                episode.append(int(row_data[0]))
-                steps.append(float(row_data[1]))
-                x.append(float(row_data[2]))
-                y.append(float(row_data[3]))
-                yam.append(float(row_data[4]))
-                steer.append(float(row_data[5]))
-                throttle.append(float(row_data[6]))
-                action.append([steer, throttle])
-                reward.append(float(row_data[9]))
-                tmp = row_data[10]
-                if tmp == 'True':
-                    done.append(True)
-                else:
-                    done.append(False)
-                tmp = row_data[11]
-                if tmp == 'True':
-                    all_wheels_on_track.append(True)
-                else:
-                    all_wheels_on_track.append(False)
-                progress.append(float(row_data[12]))
-                closest_waypoint.append(int(row_data[13]))
-                track_len.append(float(row_data[14]))
-                tstamp.append(float(row_data[15]))
-                episode_status.append(row_data[16])
-                pause_duration.append(float(row_data[17]))
+def read_csv_file(file_name, episode_num=-1):
+
+    column_names = ['episode', 'steps', 'X', 'Y', 'yam', 'steer', 'throttle', 'action1', 'action12', 'reward', 'done',
+                    'all_wheels_on_track', 'progress', 'closest_waypoint', 'track_len', 'tstamp', 'episode_status',
+                    'pause_duration']
+
+    df = pd.read_csv(file_name, skiprows=1, names=column_names)
 
     log_parmas = {
-        'episode': episode,
-        'steps': steps,
-        'x': x,
-        'y': y,
-        'yam': yam,
-        'steer': steer,
-        'throttle': throttle,
-        'action': action,
-        'reward': reward,
-        'done': done,
-        'all_wheels_on_track': all_wheels_on_track,
-        'progress': progress,
-        'closest_waypoint': closest_waypoint,
-        'track_len': track_len,
-        'tstamp': tstamp,
-        'episode_status': episode_status,
-        'pause_duration': pause_duration
+        'episode': df['episode'],
+        'steps': df['steps'],
+        'x': df['X'],
+        'y': df['Y'],
+        'yam': df['yam'],
+        'steer': df['steer'],
+        'throttle': df['throttle'],
+        'reward': df['reward'],
+        'done': df['done'],
+        'all_wheels_on_track': df['all_wheels_on_track'],
+        'progress': df['progress'],
+        'closest_waypoint': df['closest_waypoint'],
+        'track_len': df['track_len'],
+        'tstamp': df['tstamp'],
+        'episode_status': df['episode_status'],
+        'pause_duration': df['pause_duration']
     }
 
     return log_parmas
@@ -503,7 +463,7 @@ def plot_reward(training_log_dir, factor=20):
             plt.grid(True)
             plt.title(file_name.split('.')[0])
             plt.savefig(reward_image)
-            # plt.show()
+            plt.show()
             plt.close()
 
 
