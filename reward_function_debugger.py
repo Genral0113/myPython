@@ -20,11 +20,16 @@ from track2019 import *
 
 def read_csv_file(file_name, episode_num=-1):
 
-    column_names = ['episode', 'steps', 'X', 'Y', 'yam', 'steer', 'throttle', 'action1', 'action12', 'reward', 'done',
+    column_names = ['episode', 'steps', 'X', 'Y', 'yam', 'steer', 'throttle', 'action1', 'action2', 'reward', 'done',
                     'all_wheels_on_track', 'progress', 'closest_waypoint', 'track_len', 'tstamp', 'episode_status',
                     'pause_duration']
 
-    df = pd.read_csv(file_name, skiprows=1, names=column_names)
+    column_dtype = {'episode': int, 'steps': int, 'X': float, 'Y': float, 'yaw': float, 'steer': float,
+                    'throttle': float, 'action1': str, 'action12': str, 'reward': float, 'done': bool,
+                    'all_wheels_on_track': bool, 'progress': float, 'closest_waypoint': int, 'track_len': float,
+                    'tstamp': float, 'episode_status': str, 'pause_duration': float}
+
+    df = pd.read_csv(file_name, skiprows=1, names=column_names, dtype=column_dtype)
 
     log_parmas = {
         'episode': df['episode'],
@@ -34,6 +39,7 @@ def read_csv_file(file_name, episode_num=-1):
         'yam': df['yam'],
         'steer': df['steer'],
         'throttle': df['throttle'],
+        'action': df['action1'] + ',' + df['action2'],
         'reward': df['reward'],
         'done': df['done'],
         'all_wheels_on_track': df['all_wheels_on_track'],
