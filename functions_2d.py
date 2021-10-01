@@ -1,4 +1,5 @@
 import math
+import numpy as np
 
 
 def line_2p(p1, p2):
@@ -107,6 +108,12 @@ def directions_of_2points(p1, p2):
     directions = math.degrees(directions)
     return directions
 
+
+def cycle(p1, r):
+    t = np.arange(0, 2 * math.pi, 0.001)
+    x = [p1[1] + r * math.cos(x) for x in t]
+    y = [p1[1] + r * math.sin(y) for y in t]
+    return x, y
 
 def test_2d_functions():
 

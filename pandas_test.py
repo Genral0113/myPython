@@ -1,20 +1,27 @@
+import math
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
+from training_log_viewer import read_log, get_waypoints, plot_waypoints, plot_dataframe, display_setup
 
-csv_file = r'aws\training-simtrace\2019\dlcf-test-clone\0-iteration.csv'
+waypoints_npy_file = r'npy\ChampionshipCup2019_track.npy'
+csv_file = r'aws\training-simtrace\2019\dlcf-test-clone\1-iteration.csv'
+waypoints_length = 154
 
-column_names = ['episode', 'steps', 'X', 'Y', 'yaw', 'steer', 'throttle', 'action1', 'action2', 'reward', 'done',
-                'all_wheels_on_track', 'progress', 'closest_waypoint', 'track_len', 'tstamp', 'episode_status',
-                'pause_duration']
+df = read_log(csv_file, episode_num=21)
 
-column_dtype = {'episode': int, 'steps': int, 'X': float, 'Y': float, 'yaw': float, 'steer': float,
-                'throttle': float, 'action1': str, 'action12': str, 'reward': float, 'done': bool,
-                'all_wheels_on_track': bool, 'progress': float, 'closest_waypoint': int, 'track_len': float,
-                'tstamp': float, 'episode_status': str, 'pause_duration': float}
+fig = plt.figure(figsize=display_setup['figure_size'], dpi=display_setup['dpi'])
+mng = plt.get_current_fig_manager()
 
-df = pd.read_csv(csv_file, engine='python', skiprows=1, names=column_names, dtype=column_dtype)
+ax = fig.add_subplot()
 
-df.plot(x='X', y='Y', kind='scatter', grid=True, color='cyan')
+waypoints_mid, waypoints_inn, waypoints_out = get_waypoints(waypoints_npy_file)
+if display_setup['display_waypoints']:
+    plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out)
 
+plot_dataframe(df, ax)
+
+mng.window.state("zoomed")
 plt.show()
+plt.close()
