@@ -9,7 +9,7 @@ waypoints_npy_file = r'npy\ChampionshipCup2019_track.npy'
 csv_file = r'aws\training-simtrace\2019\dlcf-test-clone\1-iteration.csv'
 waypoints_length = 154
 
-df = read_log(csv_file, episode_num=21)
+df = read_log(csv_file, episode_num=-1)
 
 fig = plt.figure(figsize=display_setup['figure_size'], dpi=display_setup['dpi'])
 mng = plt.get_current_fig_manager()

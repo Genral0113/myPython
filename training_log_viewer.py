@@ -7,14 +7,14 @@ import matplotlib.colors as colors
 
 
 display_setup = {
-    'dot_size': 1,
-    'fontsize': 3,
+    'dot_size': 2,
+    'fontsize': 4,
     'figure_size': (40, 30),
     'dpi': 240,
-    'display_waypoints': False,
+    'display_waypoints': True,
     'display_steps': True,
-    'display_heading_arrow': False,
-    'display_projected_track': True,
+    'display_heading_arrow': True,
+    'display_projected_track': False,
     'heading_arrow_width': 0.0005
 }
 
@@ -54,7 +54,7 @@ def read_log(log_file, episode_num=-1):
 def get_color_name(ind):
     i = 0
     for c in colors.cnames:
-        if i == ind:
+        if i == ind % len(colors.cnames):
             return c
         i += 1
 
@@ -107,7 +107,7 @@ def plot_dataframe(df, ax):
             else:
                 tstamp[i] = tstamp[i+1] - tstamp[i]
 
-        for episode, x, y, omega, steps, speed, t, episode_status in zip(df['episode'], df['X'], df['Y'], df['yaw'], df['steps'], df['throttle'], tstamp, df['episode_status']):
+        for episode, x, y, omega, steer, steps, speed, t, episode_status in zip(df['episode'], df['X'], df['Y'], df['yaw'], df['steer'], df['steps'], df['throttle'], tstamp, df['episode_status']):
             if steps > 1 and episode_status != 'off_track':
                 x1 = x + 0.5 * t ** 2 * speed * math.cos(math.radians(omega))
                 y1 = y + 0.5 * t ** 2 * speed * math.sin(math.radians(omega))
@@ -119,7 +119,7 @@ if __name__ == '__main__':
     waypoints_npy_file = r'npy\ChampionshipCup2019_track.npy'
     training_log_dir = r'aws\training-simtrace\2019\dlcf-test-clone'
 
-    fig = plt.figure()
+    fig = plt.figure(figsize=display_setup['figure_size'], dpi=display_setup['dpi'])
     mng = plt.get_current_fig_manager()
     ax = fig.add_subplot()
 
@@ -127,7 +127,7 @@ if __name__ == '__main__':
     if display_setup['display_waypoints']:
         plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out)
 
-    training_log = training_log_dir + r'\1-iteration.csv'
+    training_log = training_log_dir + r'\21-iteration.csv'
     df = read_log(training_log)
 
     plot_dataframe(df, ax)
