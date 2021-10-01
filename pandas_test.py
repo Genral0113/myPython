@@ -1,6 +1,6 @@
 import numpy as np
-
 import pandas as pd
+import matplotlib.pyplot as plt
 
 csv_file = r'aws\training-simtrace\2019\dlcf-test-clone\0-iteration.csv'
 
@@ -15,4 +15,6 @@ column_dtype = {'episode': int, 'steps': int, 'X': float, 'Y': float, 'yaw': flo
 
 df = pd.read_csv(csv_file, engine='python', skiprows=1, names=column_names, dtype=column_dtype)
 
-print()
+df.plot(x='X', y='Y', kind='scatter', grid=True, color='cyan')
+
+plt.show()
