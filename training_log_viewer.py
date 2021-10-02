@@ -14,6 +14,8 @@ display_setup = {
     'display_waypoints': True,
     'display_steps': True,
     'display_heading_arrow': True,
+    'display_action': True,
+    'display_training_reward': True,
     'display_projected_track': False,
     'heading_arrow_width': 0.0005
 }
@@ -91,7 +93,7 @@ def plot_dataframe(df, ax):
 
     if display_setup['display_steps']:
         for x, y, t in zip(df['X'], df['Y'], df['steps']):
-            ax.text(x, y, str(t), fontsize=display_setup['fontsize'])
+            ax.text(x, y - 0.005, str(t), fontsize=display_setup['fontsize'])
 
     if display_setup['display_heading_arrow']:
         for x, y, omega, episode in zip(df['X'], df['Y'], df['yaw'], df['episode']):
@@ -114,6 +116,14 @@ def plot_dataframe(df, ax):
                 ax.scatter(x1, y1, s=display_setup['dot_size'], c='r')
                 ax.text(x1, y1, str(steps + 1), fontsize=display_setup['fontsize'])
 
+    if display_setup['display_action']:
+        for episode, x, y, action1, action2 in zip(df['episode'], df['X'], df['Y'], df['action1'], df['action2']):
+            ax.text(x, y, action1 + ', ' + action2, fontsize=display_setup['fontsize'], color=get_color_name(episode))
+
+    if display_setup['display_training_reward']:
+        for episode, x, y, reward in zip(df['episode'], df['X'], df['Y'], df['reward']):
+            ax.text(x, y + 0.005, str(reward), fontsize=display_setup['fontsize'], color=get_color_name(episode))
+
 
 if __name__ == '__main__':
     waypoints_npy_file = r'npy\ChampionshipCup2019_track.npy'
@@ -127,12 +137,13 @@ if __name__ == '__main__':
     if display_setup['display_waypoints']:
         plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out)
 
-    training_log = training_log_dir + r'\21-iteration.csv'
+    training_log = training_log_dir + r'\20-iteration.csv'
     df = read_log(training_log)
+    print(df[df.steer == 0.0])
 
     plot_dataframe(df, ax)
 
     plt.grid(True)
     mng.window.state("zoomed")
-    plt.show()
+    # plt.show()
     plt.close()
