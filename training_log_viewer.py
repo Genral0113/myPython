@@ -61,7 +61,8 @@ def get_color_name(ind):
         i += 1
 
 
-def plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out, waypoints_length=154):
+def plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out):
+    waypoints_length = len(waypoints_mid) - 1
     # plot outer track
     i = 0
     for x, y in zip(waypoints_out[:, 0], waypoints_out[:, 1]):
