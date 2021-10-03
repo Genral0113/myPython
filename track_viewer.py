@@ -5,25 +5,30 @@ from functions_2d import *
 
 
 def plot_track(track_file):
-    waypoints1, waypoints2, waypoints3 = get_waypoints(track_file)
+    waypoints_mid, waypoints_inn, waypoints_out = get_waypoints(track_file)
 
     fig = plt.figure(figsize=display_setup['figure_size'], dpi=display_setup['dpi'])
     mng = plt.get_current_fig_manager()
 
     ax = fig.add_subplot()
+    legends = []
 
-    plot_waypoints(ax, waypoints1, waypoints2, waypoints3)
+    plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out)
 
-    waypoints_length = len(waypoints1) - 1
+    waypoints_length = len(waypoints_mid)
+    legends.append('waypoints : {}'.format(waypoints_length))
+
     track_length = 0
     for i in range(waypoints_length):
-        p1 = [waypoints1[i][0], waypoints1[i][1]]
-        p2 = [waypoints1[(i + 1) % waypoints_length][0], waypoints1[(i + 1) % waypoints_length][1]]
+        p1 = [waypoints_mid[i][0], waypoints_mid[i][1]]
+        p2 = [waypoints_mid[(i + 1) % waypoints_length][0], waypoints_mid[(i + 1) % waypoints_length][1]]
         track_length += distance_of_2points(p1, p2)
-    print('the track length is {}'.format(track_length))
+
+    legends.append('track length : {:.3f}'.format(track_length))
 
     mng.window.state("zoomed")
     plt.title(os.path.basename(track_file).split('.')[0])
+    plt.legend(legends)
     plt.show()
     plt.close()
 
@@ -31,6 +36,8 @@ def plot_track(track_file):
 if __name__ == '__main__':
     track_file_dir = os.path.join(os.path.dirname(__file__), r'npy')
     track_file = r'ChampionshipCup2019_track.npy'
+    # track_file = r'reinvent_base.npy'
+    # track_file = r'Albert.npy'
     # for track_file in os.listdir(track_file_dir):
     #     track_file_name = os.path.join(track_file_dir, track_file)
     #     if os.path.isfile(track_file_name) and track_file_name[-3:] == 'npy':
