@@ -4,6 +4,7 @@ import pandas
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
+from functions_2d import *
 
 display_setup = {
     'dot_size': 2,
@@ -19,7 +20,8 @@ display_setup = {
     'display_training_reward': True,
     'display_projected_track': False,
     'display_distance_to_closest_waypoint': True,
-    'heading_arrow_width': 0.0005
+    'heading_arrow_width': 0.0005,
+    'dist_line_width': 0.2
 }
 
 
@@ -32,7 +34,7 @@ def get_waypoints(npy_file):
     return waypoints_mid, waypoints_inn, waypoints_out
 
 
-def read_log(log_file, episode_num=-1):
+def read_log(log_file, episode_num=-1, steps=-1):
     '''
     :param log_file: the Deepracer training log file in csv
     :param episode_num: the specified episode number for processing; it will process all episodes in a iteration if not specified
@@ -52,6 +54,8 @@ def read_log(log_file, episode_num=-1):
 
     if episode_num >= 0:
         df = df[df.episode == episode_num]
+        if steps > 0:
+            df = df[df.steps == steps]
 
     return df
 
@@ -95,7 +99,7 @@ def plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out):
             i += 1
 
 
-def plot_dataframe(df, ax, waypoints_mid, waypoints_inn, waypoints_out):
+def plot_dataframe(df, ax):
     df.plot(x='X', y='Y', kind='scatter', ax=ax, grid=True, color=[get_color_name(x) for x in df['episode']],
             s=display_setup['dot_size'])
 
@@ -137,9 +141,6 @@ def plot_dataframe(df, ax, waypoints_mid, waypoints_inn, waypoints_out):
             ax.text(x, y + 0.005, '{:.3f}'.format(reward), fontsize=display_setup['fontsize'],
                     color=get_color_name(episode))
 
-    if display_setup['display_distance_to_closest_waypoint']:
-        pass
-
 
 def plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out):
     for episode, steps, x, y, yaw, steer, throttle, reward, progress, closest_waypoint, tstamp, episode_status \
@@ -155,6 +156,55 @@ def plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out):
             x1 = math.cos(math.radians(yaw))
             y1 = math.sin(math.radians(yaw))
             ax.quiver(x, y, x1, y1, color=get_color_name(episode), width=display_setup['heading_arrow_width'])
+
+        if display_setup['display_projected_track']:
+            if steps > 1 and episode_status != 'off_track':
+                x1 = x + 0.5 * 1/15 ** 2 * throttle * math.cos(math.radians(yaw))
+                y1 = y + 0.5 * 1/15 ** 2 * throttle * math.sin(math.radians(yaw))
+                ax.scatter(x1, y1, s=display_setup['dot_size'], c='r')
+                ax.text(x1, y1, str(steps + 1), fontsize=display_setup['fontsize'])
+
+        if display_setup['display_action']:
+            action = '[{:.1f},{:.2f}]'.format(steer, throttle)
+            ax.text(x, y, action, fontsize=display_setup['fontsize'], color=get_color_name(episode))
+
+        if display_setup['display_training_reward']:
+            ax.text(x, y + 0.005, '{:.3f}'.format(reward), fontsize=display_setup['fontsize'],
+                    color=get_color_name(episode))
+
+        if display_setup['display_distance_to_closest_waypoint']:
+            waypoints_length = len(waypoints_mid) - 1
+            x1 = waypoints_mid[closest_waypoint % waypoints_length][0]
+            y1 = waypoints_mid[closest_waypoint % waypoints_length][1]
+
+            # closest waypoint
+            dist = distance_of_2points([x, y], [x1, y1])
+            ax.plot([x, x1], [y, y1], color=get_color_name(episode), linewidth=display_setup['dist_line_width'], linestyle='-.')
+            a, b, c = line_2p([x, y], [x1, y1])
+            x_m = 0.5 * (x + x1)
+            y_m = -1 * (a * x_m + c)/b
+            ax.text(x_m, y_m, '{:.2f}'.format(dist), fontsize=display_setup['fontsize'], color=get_color_name(episode))
+
+            # 2nd closest waypoint
+            second_closest_waypoint = (waypoints_length + closest_waypoint - 1) % waypoints_length
+            x2 = waypoints_mid[second_closest_waypoint][0]
+            y2 = waypoints_mid[second_closest_waypoint][1]
+            dist2 = distance_of_2points([x, y], [x2, y2])
+
+            second_closest_waypoint = (closest_waypoint + 1) % waypoints_length
+            x3 = waypoints_mid[second_closest_waypoint][0]
+            y3 = waypoints_mid[second_closest_waypoint][1]
+            dist3 = distance_of_2points([x, y], [x2, y2])
+
+            if dist3 < dist2:
+                x2 = x3
+                y2 = y3
+                dist2 = dist3
+            ax.plot([x, x2], [y, y2], color=get_color_name(episode + 1), linewidth=display_setup['dist_line_width'], linestyle='-.')
+            a, b, c = line_2p([x, y], [x2, y2])
+            x_m = 0.5 * (x + x2)
+            y_m = -1 * (a * x_m + c)/b
+            ax.text(x_m, y_m, '{:.2f}'.format(dist2), fontsize=display_setup['fontsize'], color=get_color_name(episode))
 
 
 if __name__ == '__main__':
@@ -172,9 +222,9 @@ if __name__ == '__main__':
         plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out)
 
     training_log = training_log_dir + r'\44-iteration.csv'
-    df = read_log(training_log, episode_num=882)
+    df = read_log(training_log, episode_num=880, steps=4)
 
-    plot_dataframe(df, ax, waypoints_mid, waypoints_inn, waypoints_out)
+    plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out)
 
     plt.grid(True)
     mng.window.state("zoomed")
