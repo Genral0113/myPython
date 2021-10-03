@@ -148,6 +148,14 @@ def plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out):
 
         ax.scatter(x, y, c=get_color_name(episode), s=display_setup['dot_size'])
 
+        if display_setup['display_steps']:
+            ax.text(x, y - 0.005, str(steps), fontsize=display_setup['fontsize'])
+
+        if display_setup['display_heading_arrow']:
+            x1 = math.cos(math.radians(yaw))
+            y1 = math.sin(math.radians(yaw))
+            ax.quiver(x, y, x1, y1, color=get_color_name(episode), width=display_setup['heading_arrow_width'])
+
 
 if __name__ == '__main__':
     waypoints_npy_file = r'npy\ChampionshipCup2019_track.npy'
