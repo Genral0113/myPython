@@ -68,7 +68,7 @@ def plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out):
     for x, y in zip(waypoints_out[:, 0], waypoints_out[:, 1]):
         i = i % waypoints_length
         ax.scatter(x, y, c='r', s=display_setup['dot_size'])
-        ax.text(x, y, str(i + 1), fontsize=display_setup['fontsize'])
+        ax.text(x, y, str(i), fontsize=display_setup['fontsize'])
         i += 1
 
     # plot middle track
@@ -76,7 +76,7 @@ def plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out):
     for x, y in zip(waypoints_mid[:, 0], waypoints_mid[:, 1]):
         i = i % waypoints_length
         ax.scatter(x, y, c='b', s=display_setup['dot_size'])
-        ax.text(x, y, str(i + 1), fontsize=display_setup['fontsize'])
+        ax.text(x, y, str(i), fontsize=display_setup['fontsize'])
         i += 1
 
     # plot inner track
@@ -84,7 +84,7 @@ def plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out):
     for x, y in zip(waypoints_inn[:, 0], waypoints_inn[:, 1]):
         i = i % waypoints_length
         ax.scatter(x, y, c='r', s=display_setup['dot_size'])
-        ax.text(x, y, str(i + 1), fontsize=display_setup['fontsize'])
+        ax.text(x, y, str(i), fontsize=display_setup['fontsize'])
         i += 1
 
 
@@ -139,12 +139,11 @@ if __name__ == '__main__':
         plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out)
 
     training_log = training_log_dir + r'\20-iteration.csv'
-    df = read_log(training_log)
-    print(df[df.steer == 0.0])
+    df = read_log(training_log, episode_num=403)
 
     plot_dataframe(df, ax)
 
     plt.grid(True)
     mng.window.state("zoomed")
-    # plt.show()
+    plt.show()
     plt.close()

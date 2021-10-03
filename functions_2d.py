@@ -21,7 +21,9 @@ def line_2p(p1, p2):
 
 
 def distance_of_2points(p1, p2):
-    return ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2) ** 0.5
+    dist = np.linalg.norm([p1[0] - p2[0], p1[1] - p2[1]])
+    # return ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2) ** 0.5
+    return dist
 
 
 def vertical_point_of_point_to_line(p, a, b, c):
