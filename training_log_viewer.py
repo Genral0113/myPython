@@ -19,7 +19,9 @@ display_setup = {
     'display_action': True,
     'display_training_reward': True,
     'display_projected_track': False,
-    'display_distance_to_closest_waypoint': True,
+    'display_distance_to_next_waypoint': False,
+    'display_distance_to_prev_waypoint': False,
+    'display_distance_to_center_line': True,
     'heading_arrow_width': 0.0005,
     'dist_line_width': 0.2
 }
@@ -63,7 +65,8 @@ def read_log(log_file, episode_num=-1, steps=-1):
 def get_color_name(ind):
     i = 0
     for c in colors.cnames:
-        if i == ind % len(colors.cnames):
+        # if i == ind % len(colors.cnames):
+        if i == ind % 24:
             return c
         i += 1
 
@@ -155,7 +158,8 @@ def plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out):
         if display_setup['display_heading_arrow']:
             x1 = math.cos(math.radians(yaw))
             y1 = math.sin(math.radians(yaw))
-            ax.quiver(x, y, x1, y1, color=get_color_name(episode), width=display_setup['heading_arrow_width'])
+            ax.quiver(x, y, x1, y1, angles='xy', scale_units='xy', scale=10,
+                      color=get_color_name(episode), width=display_setup['heading_arrow_width'])
 
         if display_setup['display_projected_track']:
             if steps > 1 and episode_status != 'off_track':
@@ -172,10 +176,12 @@ def plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out):
             ax.text(x, y + 0.005, '{:.3f}'.format(reward), fontsize=display_setup['fontsize'],
                     color=get_color_name(episode))
 
-        if display_setup['display_distance_to_closest_waypoint']:
-            waypoints_length = len(waypoints_mid) - 1
-            x1 = waypoints_mid[closest_waypoint % waypoints_length][0]
-            y1 = waypoints_mid[closest_waypoint % waypoints_length][1]
+        if display_setup['display_distance_to_next_waypoint']:
+            closest_waypoints = closest_2_racing_points_index(waypoints_mid, [x, y])
+            closest_waypoints = next_prev_racing_point(waypoints_mid, closest_waypoints, [x, y], yaw)
+
+            x1 = waypoints_mid[closest_waypoints[1]][0]
+            y1 = waypoints_mid[closest_waypoints[1]][1]
 
             # closest waypoint
             dist = distance_of_2points([x, y], [x1, y1])
@@ -185,48 +191,98 @@ def plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out):
             y_m = -1 * (a * x_m + c)/b
             ax.text(x_m, y_m, '{:.2f}'.format(dist), fontsize=display_setup['fontsize'], color=get_color_name(episode))
 
-            # 2nd closest waypoint
-            second_closest_waypoint = (waypoints_length + closest_waypoint - 1) % waypoints_length
-            x2 = waypoints_mid[second_closest_waypoint][0]
-            y2 = waypoints_mid[second_closest_waypoint][1]
-            dist2 = distance_of_2points([x, y], [x2, y2])
+            if display_setup['display_distance_to_prev_waypoint']:
+                x1 = waypoints_mid[closest_waypoints[0]][0]
+                y1 = waypoints_mid[closest_waypoints[0]][1]
 
-            second_closest_waypoint = (closest_waypoint + 1) % waypoints_length
-            x3 = waypoints_mid[second_closest_waypoint][0]
-            y3 = waypoints_mid[second_closest_waypoint][1]
-            dist3 = distance_of_2points([x, y], [x2, y2])
+                # closest waypoint
+                dist = distance_of_2points([x, y], [x1, y1])
+                ax.plot([x, x1], [y, y1], color=get_color_name(episode + 1), linewidth=display_setup['dist_line_width'], linestyle='-.')
+                a, b, c = line_2p([x, y], [x1, y1])
+                x_m = 0.5 * (x + x1)
+                y_m = -1 * (a * x_m + c) / b
+                ax.text(x_m, y_m, '{:.2f}'.format(dist), fontsize=display_setup['fontsize'], color=get_color_name(episode + 1))
 
-            if dist3 < dist2:
-                x2 = x3
-                y2 = y3
-                dist2 = dist3
-            ax.plot([x, x2], [y, y2], color=get_color_name(episode + 1), linewidth=display_setup['dist_line_width'], linestyle='-.')
-            a, b, c = line_2p([x, y], [x2, y2])
-            x_m = 0.5 * (x + x2)
-            y_m = -1 * (a * x_m + c)/b
-            ax.text(x_m, y_m, '{:.2f}'.format(dist2), fontsize=display_setup['fontsize'], color=get_color_name(episode))
+        if display_setup['display_distance_to_center_line']:
+            closest_waypoints = closest_2_racing_points_index(waypoints_mid, [x, y])
+            closest_waypoints = next_prev_racing_point(waypoints_mid, closest_waypoints, [x, y], yaw)
+
+            ax.plot([waypoints_mid[closest_waypoints[0]][0], waypoints_mid[closest_waypoints[1]][0]],
+                    [waypoints_mid[closest_waypoints[0]][1], waypoints_mid[closest_waypoints[1]][1]],
+                    color=get_color_name(episode), linewidth=display_setup['dist_line_width'], linestyle='-.')
+
+            a, b, c = line_2p(waypoints_mid[closest_waypoints[0]], waypoints_mid[closest_waypoints[1]])
+            vertical_point = vertical_point_of_point_to_line([x, y], a, b, c)
+
+            ax.plot([x, vertical_point[0]], [y, vertical_point[1]], color=get_color_name(episode), linewidth=display_setup['dist_line_width'], linestyle='-.')
+
+            distance = distance_of_2points([x, y], vertical_point)
+
+            a, b, c = line_2p([x, y], vertical_point)
+            x_m = 0.5 * (x + vertical_point[0])
+            y_m = -1 * (a * x_m + c) / b
+
+            ax.text(x_m, y_m, '{:.2f}'.format(distance), fontsize=display_setup['fontsize'], color=get_color_name(episode))
+
+
+
+def closest_2_racing_points_index(racing_coords, car_coords):
+    distances = []
+    for i in range(len(racing_coords)):
+        distance = distance_of_2points(racing_coords[i], car_coords)
+        distances.append(distance)
+
+    closest_index = distances.index(min(distances))
+
+    distances_no_closest = distances.copy()
+    distances_no_closest[closest_index] = 999
+    second_closest_index = distances_no_closest.index(min(distances_no_closest))
+
+    return [closest_index, second_closest_index]
+
+
+def next_prev_racing_point(waypoints, closest_waypoints, car_coords, heading):
+    closest_coords = waypoints[closest_waypoints[0]]
+    second_closest_coords = waypoints[closest_waypoints[1]]
+
+    heading_vector = [math.cos(math.radians(heading)), math.sin(math.radians(heading))]
+
+    new_car_coords = [car_coords[0] + heading_vector[0], car_coords[1] + heading_vector[1]]
+
+    distance_closest_coords_new = distance_of_2points(closest_coords, new_car_coords)
+    distance_second_closest_coords_new = distance_of_2points(second_closest_coords, new_car_coords)
+
+    if distance_closest_coords_new <= distance_second_closest_coords_new:
+        next_point = closest_waypoints[0]
+        prev_point = closest_waypoints[1]
+    else:
+        next_point = closest_waypoints[1]
+        prev_point = closest_waypoints[0]
+
+    return [prev_point, next_point]
 
 
 if __name__ == '__main__':
     waypoints_npy_file = r'npy\ChampionshipCup2019_track.npy'
     training_log_dir = r'aws\training-simtrace\2019\track2019'
-
+    #
     fig = plt.figure(figsize=display_setup['figure_size'], dpi=display_setup['dpi'])
     mng = plt.get_current_fig_manager()
     ax = fig.add_subplot()
-
+    #
     waypoints_mid, waypoints_inn, waypoints_out = get_waypoints(waypoints_npy_file)
     if display_setup['display_waypoints_mid'] or \
             display_setup['display_waypoints_inn'] or \
             display_setup['display_waypoints_out']:
         plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out)
-
+    #
     training_log = training_log_dir + r'\44-iteration.csv'
-    df = read_log(training_log, episode_num=880, steps=4)
-
+    df = read_log(training_log, episode_num=885, steps=0)
+    #
     plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out)
-
+    #
     plt.grid(True)
     mng.window.state("zoomed")
     plt.show()
+    plt.clf()
     plt.close()
