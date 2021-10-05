@@ -16,12 +16,12 @@ display_setup = {
     'display_waypoints_out': True,
     'display_steps': True,
     'display_heading_arrow': True,
-    'display_action': True,
-    'display_training_reward': True,
-    'display_projected_track': False,
+    'display_action': False,
+    'display_training_reward': False,
+    'display_projected_track': True,
     'display_distance_to_next_waypoint': False,
     'display_distance_to_prev_waypoint': False,
-    'display_distance_to_center_line': True,
+    'display_distance_to_center_line': False,
     'heading_arrow_width': 0.0005,
     'dist_line_width': 0.2
 }
@@ -64,6 +64,7 @@ def read_log(log_file, episode_num=-1, steps=-1):
 
 def get_color_name(ind):
     i = 0
+    ind += 7
     for c in colors.cnames:
         # if i == ind % len(colors.cnames):
         if i == ind % 24:
@@ -146,6 +147,7 @@ def plot_dataframe(df, ax):
 
 
 def plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out):
+    i = 0
     for episode, steps, x, y, yaw, steer, throttle, reward, progress, closest_waypoint, tstamp, episode_status \
             in zip(df['episode'], df['steps'], df['X'], df['Y'], df['yaw'], df['steer'], df['throttle'], df['reward'],
                    df['progress'], df['closest_waypoint'], df['tstamp'], df['episode_status']):
@@ -162,9 +164,10 @@ def plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out):
                       color=get_color_name(episode), width=display_setup['heading_arrow_width'])
 
         if display_setup['display_projected_track']:
-            if steps > 1 and episode_status != 'off_track':
-                x1 = x + 0.5 * 1/15 ** 2 * throttle * math.cos(math.radians(yaw))
-                y1 = y + 0.5 * 1/15 ** 2 * throttle * math.sin(math.radians(yaw))
+            if steps > 1 and episode_status != 'off_track' and i + 1 < len(df):
+                t = df.iloc[i + 1]['tstamp'] - df.iloc[i]['tstamp']
+                x1 = x + t * throttle * math.cos(math.radians(yaw))
+                y1 = y + t * throttle * math.sin(math.radians(yaw))
                 ax.scatter(x1, y1, s=display_setup['dot_size'], c='r')
                 ax.text(x1, y1, str(steps + 1), fontsize=display_setup['fontsize'])
 
@@ -224,6 +227,7 @@ def plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out):
 
             ax.text(x_m, y_m, '{:.2f}'.format(distance), fontsize=display_setup['fontsize'], color=get_color_name(episode))
 
+        i += 1
 
 
 def closest_2_racing_points_index(racing_coords, car_coords):
@@ -277,7 +281,8 @@ if __name__ == '__main__':
         plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out)
     #
     training_log = training_log_dir + r'\44-iteration.csv'
-    df = read_log(training_log, episode_num=885, steps=0)
+    training_log = r'.\aws\evaluation-simtrace\track2019.csv'
+    df = read_log(training_log, episode_num=0, steps=0)
     #
     plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out)
     #
