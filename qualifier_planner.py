@@ -2,10 +2,11 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 
-TRACK_FILE = "ChampionshipCup2019_track.npy"
+TRACK_FILE = r'.\npy\ChampionshipCup2019_track.npy'
+TRACK_FILE = r'.\npy\reinvent_base.npy'
 
 # Parameters
-FUTURE_STEP = 6
+FUTURE_STEP = 5
 MID_STEP = 4
 TURN_THRESHOLD = 8  # degrees
 DIST_THRESHOLD = 0.8  # metres
@@ -72,6 +73,7 @@ waypoints = np.load(TRACK_FILE)
 
 # Extract the x and y columns from the waypoints
 waypoints = waypoints[:, 2:4]
+waypoints = waypoints[:, 0:2]
 
 print("----- Parameters -----")
 print("   FUTURE_STEP: %d" % (FUTURE_STEP))
@@ -112,11 +114,11 @@ for i in range(len(waypoints)):
     if temp_dist > DIST_THRESHOLD_MID_CALCULATED:
         DIST_THRESHOLD_MID_CALCULATED = temp_dist
 
-    temp_diff_8, temp_dist_8 = identify_corner(waypoints, closest_waypoints, 8)
-    if temp_diff_8 > TURN_THRESHOLD_8_CALCULATED:
-        TURN_THRESHOLD_8_CALCULATED = temp_diff_8
-    if temp_dist_8 > DIST_THRESHOLD_8_CALCULATED:
-        DIST_THRESHOLD_8_CALCULATED = temp_dist_8
+    temp_diff, temp_dist = identify_corner(waypoints, closest_waypoints, 8)
+    if temp_diff > TURN_THRESHOLD_8_CALCULATED:
+        TURN_THRESHOLD_8_CALCULATED = temp_diff
+    if temp_dist > DIST_THRESHOLD_8_CALCULATED:
+        DIST_THRESHOLD_8_CALCULATED = temp_dist
 
 print('The maximum direction difference of next {} points is {}'.format(FUTURE_STEP, TURN_THRESHOLD_FUTURE_CALCULATED))
 print('The maximum distance difference of next {} points is {}'.format(FUTURE_STEP, DIST_THRESHOLD_FUTURE_CALCULATED))

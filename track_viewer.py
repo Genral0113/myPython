@@ -35,8 +35,8 @@ def plot_track(track_file):
 
 if __name__ == '__main__':
     track_file_dir = os.path.join(os.path.dirname(__file__), r'npy')
-    track_file = r'ChampionshipCup2019_track.npy'
-    # track_file = r'reinvent_base.npy'
+    # track_file = r'ChampionshipCup2019_track.npy'
+    track_file = r'reinvent_base.npy'
     # track_file = r'Albert.npy'
     # for track_file in os.listdir(track_file_dir):
     #     track_file_name = os.path.join(track_file_dir, track_file)
