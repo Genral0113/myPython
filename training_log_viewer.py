@@ -29,8 +29,7 @@ display_setup = {
 
 def get_waypoints(npy_file):
     waypoints = np.load(npy_file)
-    # waypoints_len = len(waypoints) - 1
-    waypoints_len = len(waypoints)
+    waypoints_len = len(waypoints) - 1
     waypoints_mid = waypoints[0:waypoints_len][:, 0:2]
     waypoints_inn = waypoints[0:waypoints_len][:, 2:4]
     waypoints_out = waypoints[0:waypoints_len][:, 4:6]
