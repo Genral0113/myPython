@@ -1,10 +1,7 @@
-import math
-import numpy as np
-import pandas
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
-from functions_2d import *
+from aws_deepracer.functions_2d import *
 
 display_setup = {
     'dot_size': 2,
@@ -267,8 +264,8 @@ def next_prev_racing_point(waypoints, closest_waypoints, car_coords, heading):
 
 
 if __name__ == '__main__':
-    waypoints_npy_file = r'npy\ChampionshipCup2019_track.npy'
-    training_log_dir = r'aws\training-simtrace\2019\track2019'
+    waypoints_npy_file = r'../npy/ChampionshipCup2019_track.npy'
+    training_log_dir = r'../aws/training-simtrace/2019/track2019'
     #
     fig = plt.figure(figsize=display_setup['figure_size'], dpi=display_setup['dpi'])
     mng = plt.get_current_fig_manager()

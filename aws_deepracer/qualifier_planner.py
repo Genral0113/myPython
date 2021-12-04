@@ -2,8 +2,8 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 
-TRACK_FILE = r'.\npy\ChampionshipCup2019_track.npy'
-TRACK_FILE = r'.\npy\reinvent_base.npy'
+TRACK_FILE = r'../npy/ChampionshipCup2019_track.npy'
+TRACK_FILE = r'../npy/reinvent_base.npy'
 
 # Parameters
 FUTURE_STEP = 5

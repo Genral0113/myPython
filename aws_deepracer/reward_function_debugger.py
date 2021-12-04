@@ -1,11 +1,7 @@
 import os
-import csv
-import math
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 
-from functions_2d import *
 # from model6 import reward_function
 # from model8 import reward_function
 # from deep_racer import reward_function

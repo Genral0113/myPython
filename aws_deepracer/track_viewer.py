@@ -1,7 +1,7 @@
 import os
 import matplotlib.pyplot as plt
 from training_log_viewer import get_waypoints, plot_waypoints, display_setup
-from functions_2d import *
+from aws_deepracer.functions_2d import *
 
 
 def plot_track(track_file):
@@ -34,7 +34,7 @@ def plot_track(track_file):
 
 
 if __name__ == '__main__':
-    track_file_dir = os.path.join(os.path.dirname(__file__), r'npy')
+    track_file_dir = os.path.join(os.path.dirname(__file__), r'../npy')
     # track_file = r'ChampionshipCup2019_track.npy'
     track_file = r'reinvent_base.npy'
     # track_file = r'Albert.npy'
