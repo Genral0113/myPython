@@ -1,2 +1,7 @@
+import keyword
+import sys
 
-print(divmod(19, 19)[1])
+print(keyword.kwlist)
+
+for itm in sys.path:
+    print(itm)
