@@ -23,7 +23,7 @@ print(img.shape)
 gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 gray_img = cv2.imread(img_file, cv2.IMREAD_GRAYSCALE)
 # print(gray_img.shape)
-display_image_and_press_any_key_to_continue('gray', gray_img)
+# display_image_and_press_any_key_to_continue('gray', gray_img)
 
 #
 # top_size, bottom_size, left_size, right_size = (50, 50, 50, 50)
@@ -140,7 +140,7 @@ scharrx = cv2.convertScaleAbs(scharrx)
 scharry = cv2.Scharr(gray_img, cv2.CV_64F, 0, 1)
 scharry = cv2.convertScaleAbs(scharry)
 scharrxy = cv2.addWeighted(scharrx, 0.5, scharry, 0.5, 0)
-display_image_and_press_any_key_to_continue('scharrxy', scharrxy)
+# display_image_and_press_any_key_to_continue('scharrxy', scharrxy)
 
 laplacian = cv2.Laplacian(gray_img, cv2.CV_64F)
 laplacian = cv2.convertScaleAbs(laplacian)
@@ -151,3 +151,21 @@ res = np.hstack((sobelxy, scharrxy, laplacian))
 canny = cv2.Canny(gray_img, 50, 100)
 title = 'canny'
 # display_image_and_press_any_key_to_continue(title, canny)
+
+pyramid_up = cv2.pyrUp(gray_img)
+# display_image_and_press_any_key_to_continue('pyramid up', pyramid_up)
+
+pyramid_down = cv2.pyrDown(gray_img)
+# display_image_and_press_any_key_to_continue('pyramid down', pyramid_down)
+
+
+# draw contours
+img_file = r'D:\Workspace\pic\1.jpg'
+img = cv2.imread(img_file)
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+ret, thresh = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
+display_image_and_press_any_key_to_continue('binary', thresh)
+binary, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+dray_img = img.copy()
+res = cv2.drawContours(dray_img, contours, -1, (0, 0, 255), 1)
+display_image_and_press_any_key_to_continue('contour', res)
