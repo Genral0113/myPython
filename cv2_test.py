@@ -9,7 +9,7 @@ def display_image_and_press_any_key_to_continue(title, img):
     cv2.destroyAllWindows()
 
 
-img_file = r'D:\Workspace\pic\img1.jpg'
+img_file = r'./pic/cat1.jpg'
 img = cv2.imread(img_file)
 print(img.shape)
 
@@ -160,12 +160,27 @@ pyramid_down = cv2.pyrDown(gray_img)
 
 
 # draw contours
-img_file = r'D:\Workspace\pic\1.jpg'
-img = cv2.imread(img_file)
-gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-ret, thresh = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
-display_image_and_press_any_key_to_continue('binary', thresh)
-binary, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-dray_img = img.copy()
-res = cv2.drawContours(dray_img, contours, -1, (0, 0, 255), 1)
-display_image_and_press_any_key_to_continue('contour', res)
+# img_file = r'./pic/cat1.jpg'
+# img = cv2.imread(img_file)
+# gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+# ret, thresh = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
+# display_image_and_press_any_key_to_continue('binary', thresh)
+# binary, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+# dray_img = img.copy()
+# res = cv2.drawContours(dray_img, contours, -1, (0, 0, 255), 1)
+# display_image_and_press_any_key_to_continue('contour', res)
+
+img = cv2.imread(img_file, 0)
+img_float32 = np.float32(img)
+
+dft = cv2.dft(img_float32, flags=cv2.DFT_COMPLEX_OUTPUT)
+dft_shift = np.fft.fftshift(dft)
+
+rows, cols = img.shape
+crow, ccol = int(rows/2), int(cols/2)
+
+mask = np.zeros((rows, cols, 2), np.uint8)
+mask[crow - 30:crow + 30, ccol - 30:ccol + 30] = 1
+
+fsht = dft_shift * mask
+img_bck = cv2.idft(f_ishtf)
