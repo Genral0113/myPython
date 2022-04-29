@@ -18,7 +18,7 @@ ap.add_argument("-i", "--image", required=True, help="path to input image")
 ap.add_argument("-t", "--template", required=True, help="path to template OCR-A image")
 ap.add_argument("-min", "--min_value", required=True, help="input minimum value")
 args = vars(ap.parse_args())
-print(args['min_value'])
+print(args)
 
 #
 FIRST_NUMBER = {
