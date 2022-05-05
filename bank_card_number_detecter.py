@@ -22,6 +22,12 @@ if args['debug']:
 
 #
 FIRST_NUMBER = {
+    "0": "UNDEFINED",
+    "1": "UNDEFINED",
+    "2": "UNDEFINED",
+    "7": "UNDEFINED",
+    "8": "UNDEFINED",
+    "9": "UNDEFINED",
     "3": "American Express",
     "4": "Visa",
     "5": "MasterCard",
@@ -126,7 +132,7 @@ for (i, (gX, gY, gW, gH)) in enumerate(locs):
 
     output.extend(groupOutput)
 
-print('Credit Card Type: {}'.format(FIRST_NUMBER[output[0]]))
-print('Credit Card # {}'.format(''.join(output)))
+# print('Credit Card Type: {}'.format(FIRST_NUMBER[output[0]]))
+# print('Credit Card # {}'.format(''.join(output)))
 cv2.imshow('Image', image)
 cv2.waitKey(0)
