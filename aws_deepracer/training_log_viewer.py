@@ -278,7 +278,7 @@ if __name__ == '__main__':
         plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out)
     #
     training_log = training_log_dir + r'\44-iteration.csv'
-    training_log = r'.\aws\evaluation-simtrace\track2019.csv'
+    training_log = r'..\aws\evaluation-simtrace\track2019.csv'
     df = read_log(training_log, episode_num=0, steps=0)
     #
     plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out)
