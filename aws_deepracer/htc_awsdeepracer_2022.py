@@ -1,11 +1,9 @@
 import math
 
-_x = None
-_y = None
-_speed = None
-
 
 def reward_function(params):
+
+    direction_threshhold = 15
     '''
     In @params object:
     {
@@ -25,10 +23,6 @@ def reward_function(params):
     }
     '''
 
-    global _x
-    global _y
-    global _speed
-
     # 读取输入参数
     all_wheels_on_track = params['all_wheels_on_track']
     x = params['x']
@@ -44,26 +38,37 @@ def reward_function(params):
     waypoints = params['waypoints']
     closest_waypoints = params['closest_waypoints']
 
-    '''
-    小车1秒钟走15步， 初始速度为零
-    点(_x, _y)是小车经过的上一个点，点(x,y)是小车当前的位置
-    点(_x, _y)和(x,y)间的距离就是小车1步走的距离， 除以1/15秒就是小车当前的速度
-    '''
-    if _x is not None:
-        _speed = 15 * ((x - _x) ** 2 + (y - _y) ** 2) ** 0.5
-    else:
-        _speed = 0
+    # 计算小车是否沿跑道方向前进
+    direction_reward = 1e-3
+    track_direction = get_track_direction(waypoints, closest_waypoints)
+    direction_diff = abs(track_direction - heading - streering_angle)
+    if direction_diff < direction_threshhold:
+        direction_reward = 2.0
+    elif direction_threshhold <= direction_diff < direction_threshhold * 2.0:
+        direction_reward = 0.1
 
-    # 保存小车经过的坐标位置
-    _x = x
-    _y = y
+    speed_reward = 1e-3
+    if direction_reward > 1e-3:
+        speed_reward = speed ** direction_reward
 
     # 判断小车是否出界，出界则给最小的奖励值， 并且重置小车经过的上一点的坐标和速度
-    if not all_wheels_on_track:
-        reward = 1e-3
-        _x = None
-        _y = None
-        _speed = None
+    reward = 1e-3
+    if all_wheels_on_track or distance_from_center <= track_width * 0.5:
+        reward = speed_reward
 
     return reward
 
+
+def directions_of_2points(p1, p2):
+    directions = math.atan2(p2[1] - p1[1], p2[0] - p1[0])
+    directions = math.degrees(directions)
+    return directions
+
+
+def get_track_direction(waypoints, closet_waypoints):
+    min_waypoint = min(closet_waypoints)
+    max_waypoint = max(closet_waypoints)
+    if min_waypoint == 0 and max_waypoint == len(waypoints) - 1:
+        min_waypoint = max_waypoint
+        max_waypoint = 0
+    return directions_of_2points(waypoints[min_waypoint], waypoints[max_waypoint])
