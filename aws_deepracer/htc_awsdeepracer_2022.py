@@ -3,7 +3,9 @@ import math
 
 def reward_function(params):
 
-    direction_threshhold = 15
+    direction_threshold = 15
+    track_direction_with_next_waypoints = 1
+    min_speed = 0.5
     '''
     In @params object:
     {
@@ -40,15 +42,15 @@ def reward_function(params):
 
     # 计算小车是否沿跑道方向前进
     direction_reward = 1e-3
-    track_direction = get_track_direction(waypoints, closest_waypoints)
+    track_direction = get_track_direction(waypoints, closest_waypoints, track_direction_with_next_waypoints)
     direction_diff = abs(track_direction - heading - streering_angle)
-    if direction_diff < direction_threshhold:
+    if direction_diff < direction_threshold:
         direction_reward = 2.0
-    elif direction_threshhold <= direction_diff < direction_threshhold * 2.0:
+    elif direction_threshold <= direction_diff < direction_threshold * 2.0:
         direction_reward = 0.1
 
     speed_reward = 1e-3
-    if direction_reward > 1e-3:
+    if direction_reward > 1e-3 and speed > min_speed:
         speed_reward = speed ** direction_reward
 
     # 判断小车是否出界，出界则给最小的奖励值， 并且重置小车经过的上一点的坐标和速度
@@ -65,10 +67,12 @@ def directions_of_2points(p1, p2):
     return directions
 
 
-def get_track_direction(waypoints, closet_waypoints):
-    min_waypoint = min(closet_waypoints)
-    max_waypoint = max(closet_waypoints)
-    if min_waypoint == 0 and max_waypoint == len(waypoints) - 1:
-        min_waypoint = max_waypoint
-        max_waypoint = 0
-    return directions_of_2points(waypoints[min_waypoint], waypoints[max_waypoint])
+def get_track_direction(waypoints, closet_waypoints, next_waypoints):
+    prev_waypoint = min(closet_waypoints)
+    next_waypoint = max(closet_waypoints)
+    if prev_waypoint == 0 and next_waypoint == len(waypoints) - 1:
+        prev_waypoint = next_waypoint
+        next_waypoint = 0
+    if next_waypoints > 0:
+        next_waypoint = (next_waypoint + next_waypoints) % len(waypoints)
+    return directions_of_2points(waypoints[prev_waypoint], waypoints[next_waypoint])
