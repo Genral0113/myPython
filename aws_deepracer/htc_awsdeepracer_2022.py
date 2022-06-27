@@ -5,7 +5,7 @@ def reward_function(params):
 
     direction_threshold = 15
     track_direction_with_next_waypoints = 1
-    min_speed = 0.5
+    min_speed = 1.0
     '''
     In @params object:
     {
@@ -18,7 +18,7 @@ def reward_function(params):
         "progress": float,                 # percentage of track completed
         "steps": int,                      # number steps completed
         "speed": float,                    # vehicle's speed in meters per second (m/s)
-        "streering_angle": float,          # vehicle's steering angle in degrees
+        "steering_angle": float,           # vehicle's steering angle in degrees
         "track_width": float,              # width of the track
         "waypoints": [[float, float], … ], # list of [x,y] as milestones along the track center
         "closest_waypoints": [int, int]    # indices of the two nearest waypoints.
@@ -35,7 +35,7 @@ def reward_function(params):
     progress = params['progress']
     steps = params['progress']
     speed = params['speed']
-    streering_angle = params['streering_angle']
+    steering_angle = params['steering_angle']
     track_width = params['track_width']
     waypoints = params['waypoints']
     closest_waypoints = params['closest_waypoints']
@@ -43,9 +43,9 @@ def reward_function(params):
     # 计算小车是否沿跑道方向前进
     direction_reward = 1e-3
     track_direction = get_track_direction(waypoints, closest_waypoints, track_direction_with_next_waypoints)
-    direction_diff = abs(track_direction - heading - streering_angle)
+    direction_diff = abs(track_direction - heading - steering_angle)
     if direction_diff < direction_threshold:
-        direction_reward = 2.0
+        direction_reward = 3.0
     elif direction_threshold <= direction_diff < direction_threshold * 2.0:
         direction_reward = 0.1
 
