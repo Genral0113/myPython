@@ -44,7 +44,7 @@ def reward_function(params):
     # 计算小车是否沿跑道方向前进
     direction_reward = 1e-3
     track_direction = get_track_direction(waypoints, closest_waypoints, track_direction_with_next_waypoints)
-    direction_diff = abs(track_direction - heading - steering_angle)
+    direction_diff = abs(track_direction - heading)
     if direction_diff > 180:
         direction_diff = 360 - direction_diff
 
