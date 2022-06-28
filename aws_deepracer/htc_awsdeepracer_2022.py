@@ -41,6 +41,14 @@ def reward_function(params):
     waypoints = params['waypoints']
     closest_waypoints = params['closest_waypoints']
 
+    distance_reward = 1e-3
+    if distance_from_center < track_width * 0.2:
+        distance_reward = 1
+    elif track_width * 0.2 <= distance_from_center < track_width * 0.5:
+        distance_reward = 0.5
+    else:
+        distance_reward = 0.1
+
     # 计算小车是否沿跑道方向前进
     direction_reward = 1e-3
     track_direction = get_track_direction(waypoints, closest_waypoints, track_direction_with_next_waypoints)
@@ -49,11 +57,11 @@ def reward_function(params):
         direction_diff = 360 - direction_diff
 
     if direction_diff < direction_threshold:
-        direction_reward = 1.0
+        direction_reward = distance_reward * 1.0
     elif direction_threshold <= direction_diff < direction_threshold * 2.0:
-        direction_reward = 0.5
+        direction_reward = distance_reward * 0.5
     else:
-        direction_reward = 0.1
+        direction_reward = distance_reward * 0.1
 
     speed_reward = 1e-3
     if speed < min_speed:
@@ -63,8 +71,10 @@ def reward_function(params):
     else:
         speed_reward = speed * direction_reward * 2
 
-    # 判断小车是否出界，出界则给最小的奖励值， 并且重置小车经过的上一点的坐标和速度
     reward = 1e-3
+
+    if distance_reward > 1e-3:
+        reward += distance_reward
 
     if direction_reward > 1e-3:
         reward += direction_reward
