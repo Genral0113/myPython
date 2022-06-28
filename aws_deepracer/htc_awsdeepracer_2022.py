@@ -4,8 +4,9 @@ import math
 def reward_function(params):
 
     direction_threshold = 15
-    track_direction_with_next_waypoints = 1
-    min_speed = 1.0
+    track_direction_with_next_waypoints = 3
+    min_speed = 0.5
+    standard_speed = 1.2
     '''
     In @params object:
     {
@@ -44,19 +45,32 @@ def reward_function(params):
     direction_reward = 1e-3
     track_direction = get_track_direction(waypoints, closest_waypoints, track_direction_with_next_waypoints)
     direction_diff = abs(track_direction - heading - steering_angle)
+    if direction_diff > 180:
+        direction_diff = 360 - direction_diff
+
     if direction_diff < direction_threshold:
-        direction_reward = 3.0
+        direction_reward = 1.0
     elif direction_threshold <= direction_diff < direction_threshold * 2.0:
+        direction_reward = 0.5
+    else:
         direction_reward = 0.1
 
     speed_reward = 1e-3
-    if direction_reward > 1e-3 and speed > min_speed:
-        speed_reward = speed ** direction_reward
+    if speed < min_speed:
+        speed_reward = 0.1
+    elif min_speed <= speed < standard_speed:
+        speed_reward = speed * direction_reward
+    else:
+        speed_reward = speed * direction_reward * 2
 
     # 判断小车是否出界，出界则给最小的奖励值， 并且重置小车经过的上一点的坐标和速度
     reward = 1e-3
-    if all_wheels_on_track or distance_from_center <= track_width * 0.5:
-        reward = speed_reward
+
+    if direction_reward > 1e-3:
+        reward += direction_reward
+
+    if speed_reward > 1e-3:
+        reward += speed_reward
 
     return reward
 
