@@ -60,8 +60,7 @@ def get_params(log_params, index):
         # Calculate all distances to racing points
         distances = []
         for i in range(len(racing_coords)):
-            distance = dist_2_points(x1=racing_coords[i][0], x2=car_coords[0],
-                                     y1=racing_coords[i][1], y2=car_coords[1])
+            distance = dist_2_points(x1=racing_coords[i][0], x2=car_coords[0], y1=racing_coords[i][1], y2=car_coords[1])
             distances.append(distance)
 
         # Get index of the closest racing point

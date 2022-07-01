@@ -13,9 +13,10 @@ display_setup = {
     'display_waypoints_out': True,
     'display_steps': True,
     'display_heading_arrow': True,
+    'display_steering_arrow': True,
     'display_action': False,
-    'display_training_reward': False,
-    'display_projected_track': True,
+    'display_training_reward': True,
+    'display_projected_track': False,
     'display_distance_to_next_waypoint': False,
     'display_distance_to_prev_waypoint': False,
     'display_distance_to_center_line': False,
@@ -26,10 +27,9 @@ display_setup = {
 
 def get_waypoints(npy_file):
     waypoints = np.load(npy_file)
-    waypoints_len = len(waypoints) - 1
-    waypoints_mid = waypoints[0:waypoints_len][:, 0:2]
-    waypoints_inn = waypoints[0:waypoints_len][:, 2:4]
-    waypoints_out = waypoints[0:waypoints_len][:, 4:6]
+    waypoints_mid = waypoints[:, 0:2]
+    waypoints_inn = waypoints[:, 2:4]
+    waypoints_out = waypoints[:, 4:6]
     return waypoints_mid, waypoints_inn, waypoints_out
 
 
@@ -114,6 +114,12 @@ def plot_dataframe(df, ax):
             y1 = math.sin(math.radians(omega))
             ax.quiver(x, y, x1, y1, color=get_color_name(episode), width=display_setup['heading_arrow_width'])
 
+    if display_setup['display_steering_arrow']:
+        for x, y, omega, episode in zip(df['X'], df['Y'], df['steer'], df['episode']):
+            x1 = math.cos(math.radians(omega))
+            y1 = math.sin(math.radians(omega))
+            ax.quiver(x, y, x1, y1, color=get_color_name(episode), width=display_setup['heading_arrow_width'])
+
     if display_setup['display_projected_track']:
         tstamp = df['tstamp'].array
         for i in range(len(tstamp)):
@@ -159,6 +165,12 @@ def plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out):
             y1 = math.sin(math.radians(yaw))
             ax.quiver(x, y, x1, y1, angles='xy', scale_units='xy', scale=10,
                       color=get_color_name(episode), width=display_setup['heading_arrow_width'])
+
+        if display_setup['display_steering_arrow']:
+            x1 = math.cos(math.radians(yaw + steer)) * 0.5
+            y1 = math.sin(math.radians(yaw + steer)) * 0.5
+            ax.quiver(x, y, x1, y1, angles='xy', scale_units='xy', scale=10,
+                      color=get_color_name(episode + 1), width=display_setup['heading_arrow_width'])
 
         if display_setup['display_projected_track']:
             if steps > 1 and episode_status != 'off_track' and i + 1 < len(df):
@@ -265,7 +277,9 @@ def next_prev_racing_point(waypoints, closest_waypoints, car_coords, heading):
 
 if __name__ == '__main__':
     waypoints_npy_file = r'../npy/ChampionshipCup2019_track.npy'
+    waypoints_npy_file = r'../npy/reinvent_base.npy'
     training_log_dir = r'../aws/training-simtrace/2019/track2019'
+    training_log_dir = r'C:\Users\asus\Desktop\autobus-model-2018-v1\sim-trace\training\training-simtrace'
     #
     fig = plt.figure(figsize=display_setup['figure_size'], dpi=display_setup['dpi'])
     mng = plt.get_current_fig_manager()
@@ -277,12 +291,14 @@ if __name__ == '__main__':
             display_setup['display_waypoints_out']:
         plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out)
     #
-    training_log = training_log_dir + r'\44-iteration.csv'
-    training_log = r'..\aws\evaluation-simtrace\track2019.csv'
-    df = read_log(training_log, episode_num=0, steps=0)
+    training_log = training_log_dir + r'\log-v1.csv'
+    training_log = r'C:\Users\asus\Desktop\2022 aws\4b0ffbd9-9b3a-4941-a697-314f82831812\sim-trace\evaluation\20220701002122-O-aHYUMxQWCftUHHNMCq7Q\evaluation-simtrace\0-iteration.csv'
+    df = read_log(training_log, episode_num=0, steps=282)
     #
     plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out)
     #
+    plt.xlim(0, 8)
+    plt.ylim(0, 8)
     plt.grid(True)
     mng.window.state("zoomed")
     plt.show()

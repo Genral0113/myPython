@@ -16,6 +16,8 @@ def plot_track(track_file):
     plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out)
 
     waypoints_length = len(waypoints_mid)
+    if waypoints_mid[0][0] == waypoints_mid[-1][0] and waypoints_mid[0][1] == waypoints_mid[-1][1]:
+        waypoints_length -= 1
     legends.append('waypoints : {}'.format(waypoints_length))
 
     track_length = 0
