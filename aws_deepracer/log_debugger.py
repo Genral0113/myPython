@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from htc_awsdeepracer_2022_v2 import *
+from htc_awsdeepracer_2022_v3 import *
 
 
 def read_csv_file(file_name, episode_num=-1):
@@ -117,6 +117,9 @@ def get_closest_waypoints(waypoints, car_coords):
 
 if __name__ == '__main__':
     log_file = r'C:\Users\asus\Desktop\2022 aws\4b0ffbd9-9b3a-4941-a697-314f82831812\sim-trace\evaluation\20220701002122-O-aHYUMxQWCftUHHNMCq7Q\evaluation-simtrace\0-iteration.csv'
+    log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-v3-training_job_G3i0ZBFqRlOX86MhVbgxYA_logs\3dbebb02-802a-4273-909d-3014dd8f3855\sim-trace\training\training-simtrace\0-iteration.csv'
+    log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-v3-training_job_G3i0ZBFqRlOX86MhVbgxYA_logs\3dbebb02-802a-4273-909d-3014dd8f3855\sim-trace\training\training-simtrace\10-iteration.csv'
+    log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-v4-training_job_inn-9A0nR9uvRoVacnZb1A_logs\7a442136-7e8b-43bc-82a0-7209e443b3da\sim-trace\training\training-simtrace\0-iteration.csv'
     track_file = r'../npy/reinvent_base.npy'
 
     waypoints, waypoints_inn, waypoints_out = get_waypoints(track_file)
@@ -143,6 +146,7 @@ if __name__ == '__main__':
 
         params['distance_from_center'] = distance_to_racing_line(waypoints[closest_waypoints[0]], waypoints[closest_waypoints[1]], [log_parmas['x'][i], log_parmas['y'][i]])
         params['reward'] = log_parmas['reward'][i]
+        params['episode'] = log_parmas['episode'][i]
 
         params['is_offtrack'] = False
         if log_parmas['episode_status'] == 'off_track':
@@ -150,4 +154,5 @@ if __name__ == '__main__':
 
         if params['steps']:
             reward = reward_function(params)
-            print('{}th step -> new reward is {} and old reward is {}'.format(params['steps'], reward, params['reward']))
+            # if reward - params['reward'] > 0.1:
+            print('{}th episode {}th step -> new reward is {} and old reward is {}'.format(params['episode'], params['steps'], reward, params['reward']))

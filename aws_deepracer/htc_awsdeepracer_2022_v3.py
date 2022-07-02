@@ -15,7 +15,7 @@ def reward_function(params):
     STEERING_THRESHOLD = 11  # degrees
 
     # Parameters for Progress Incentive
-    TOTAL_NUM_STEPS = 135  # (15 steps per second, therefore < 10 secs)
+    TOTAL_NUM_STEPS = 200  # (15 steps per second, therefore < 10 secs)
 
     def identify_corner(waypoints, closest_waypoints, future_step):
 
@@ -85,7 +85,6 @@ def reward_function(params):
     is_offtrack = params['is_offtrack']
     progress = params['progress']
     speed = params['speed']
-    heading = params['heading']
     steering_angle = params['steering_angle']
     steps = params['steps']
     track_width = params['track_width']
@@ -108,13 +107,13 @@ def reward_function(params):
 
     # Implement straightness incentive
     stay_straight = select_straight(waypoints, closest_waypoints, FUTURE_STEP_STRAIGHT)
-    if stay_straight and abs(heading + steering_angle) < STEERING_THRESHOLD:
+    if stay_straight and abs(steering_angle) < STEERING_THRESHOLD:
         reward += 3.0
 
     # Implement speed incentive
     go_fast = select_speed(waypoints, closest_waypoints, FUTURE_STEP)
 
-    if go_fast and speed > SPEED_THRESHOLD_FAST and abs(heading + steering_angle) < STEERING_THRESHOLD:
+    if go_fast and speed > SPEED_THRESHOLD_FAST and abs(steering_angle) < STEERING_THRESHOLD:
         reward += 2.0
 
     elif not go_fast and speed < SPEED_THRESHOLD_SLOW:

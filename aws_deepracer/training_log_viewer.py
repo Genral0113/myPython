@@ -293,12 +293,14 @@ if __name__ == '__main__':
     #
     training_log = training_log_dir + r'\log-v1.csv'
     training_log = r'C:\Users\asus\Desktop\2022 aws\4b0ffbd9-9b3a-4941-a697-314f82831812\sim-trace\evaluation\20220701002122-O-aHYUMxQWCftUHHNMCq7Q\evaluation-simtrace\0-iteration.csv'
-    df = read_log(training_log, episode_num=0, steps=282)
+    training_log = r'C:\Users\asus\Desktop\2022 aws\3dbebb02-802a-4273-909d-3014dd8f3855\sim-trace\evaluation\20220701225704-CXcBOg4cRaStSdSxm2Tb8w\evaluation-simtrace\0-iteration.csv'
+    training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-v3-training_job_G3i0ZBFqRlOX86MhVbgxYA_logs\3dbebb02-802a-4273-909d-3014dd8f3855\sim-trace\training\training-simtrace\0-iteration.csv'
+    training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-v4-evaluation_job_rbI3kIkdR_C3b4nS-AWXbw_logs\7a442136-7e8b-43bc-82a0-7209e443b3da\sim-trace\evaluation\20220702041958-rbI3kIkdR_C3b4nS-AWXbw\evaluation-simtrace\0-iteration.csv'
+    training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-v4-training_job_inn-9A0nR9uvRoVacnZb1A_logs\7a442136-7e8b-43bc-82a0-7209e443b3da\sim-trace\training\training-simtrace\0-iteration.csv'
+    df = read_log(training_log, episode_num=0, steps=0)
     #
     plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out)
     #
-    plt.xlim(0, 8)
-    plt.ylim(0, 8)
     plt.grid(True)
     mng.window.state("zoomed")
     plt.show()
