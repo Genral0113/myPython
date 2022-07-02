@@ -7,7 +7,7 @@ def reward_function(params):
     FUTURE_STEP = 6
     TURN_THRESHOLD_SPEED = 6  # degrees
     SPEED_THRESHOLD_SLOW = 1.8  # m/s
-    SPEED_THRESHOLD_FAST = 2  # m/s
+    SPEED_THRESHOLD_FAST = 2.5  # m/s
 
     # Parameters for Straightness Incentive
     FUTURE_STEP_STRAIGHT = 8
@@ -15,7 +15,7 @@ def reward_function(params):
     STEERING_THRESHOLD = 11  # degrees
 
     # Parameters for Progress Incentive
-    TOTAL_NUM_STEPS = 200  # (15 steps per second, therefore < 10 secs)
+    TOTAL_NUM_STEPS = 220  # (15 steps per second, therefore < 10 secs)
 
     def identify_corner(waypoints, closest_waypoints, future_step):
 
@@ -121,7 +121,8 @@ def reward_function(params):
 
     # Implement stay on track incentive
     if not all_wheels_on_track:
-        reward -= 0.5
+        # reward -= 0.5
+        reward = 1e-3
 
     reward = max(reward, 1e-3)
     return float(reward)
