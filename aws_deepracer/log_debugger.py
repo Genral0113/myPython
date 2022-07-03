@@ -1,6 +1,5 @@
 import pandas as pd
-import numpy as np
-from htc_awsdeepracer_2022_v3 import *
+from htc_awsdeepracer_2022_v4 import *
 
 
 def read_csv_file(file_name, episode_num=-1):
@@ -119,13 +118,14 @@ if __name__ == '__main__':
     log_file = r'C:\Users\asus\Desktop\2022 aws\4b0ffbd9-9b3a-4941-a697-314f82831812\sim-trace\evaluation\20220701002122-O-aHYUMxQWCftUHHNMCq7Q\evaluation-simtrace\0-iteration.csv'
     log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-v3-training_job_G3i0ZBFqRlOX86MhVbgxYA_logs\3dbebb02-802a-4273-909d-3014dd8f3855\sim-trace\training\training-simtrace\0-iteration.csv'
     log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-v3-training_job_G3i0ZBFqRlOX86MhVbgxYA_logs\3dbebb02-802a-4273-909d-3014dd8f3855\sim-trace\training\training-simtrace\10-iteration.csv'
+    log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-v6-evaluation_job_J3aa6-cOR0KPAARSeR9Czg_logs\53fb60e8-1f8a-4ec7-b87d-76d5a6b35f60\sim-trace\evaluation\20220702234903-J3aa6-cOR0KPAARSeR9Czg\evaluation-simtrace\0-iteration.csv'
     log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-v4-training_job_inn-9A0nR9uvRoVacnZb1A_logs\7a442136-7e8b-43bc-82a0-7209e443b3da\sim-trace\training\training-simtrace\all-iterations.csv'
     track_file = r'../npy/reinvent_base.npy'
 
     waypoints, waypoints_inn, waypoints_out = get_waypoints(track_file)
     track_width = distance_of_2points(waypoints_inn[0], waypoints_out[0])
 
-    log_parmas = read_csv_file(log_file, episode_num=39)
+    log_parmas = read_csv_file(log_file, episode_num=-1)
 
     params = {}
     for i in range(len(log_parmas['episode'])):
@@ -152,7 +152,7 @@ if __name__ == '__main__':
         if log_parmas['episode_status'] == 'off_track':
             params['is_offtrack'] = True
 
-        if params['steps'] == 12:
+        if params['steps']:
             reward = reward_function(params)
             if abs(reward - params['reward']) > 0.5 and params['steps'] != 1:
                 print('{}th episode {}th step -> new reward is {} and old reward is {}'.format(params['episode'], params['steps'], reward, params['reward']))

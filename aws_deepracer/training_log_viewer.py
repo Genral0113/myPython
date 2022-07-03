@@ -276,10 +276,7 @@ def next_prev_racing_point(waypoints, closest_waypoints, car_coords, heading):
 
 
 if __name__ == '__main__':
-    waypoints_npy_file = r'../npy/ChampionshipCup2019_track.npy'
     waypoints_npy_file = r'../npy/reinvent_base.npy'
-    training_log_dir = r'../aws/training-simtrace/2019/track2019'
-    training_log_dir = r'C:\Users\asus\Desktop\autobus-model-2018-v1\sim-trace\training\training-simtrace'
     #
     fig = plt.figure(figsize=display_setup['figure_size'], dpi=display_setup['dpi'])
     mng = plt.get_current_fig_manager()
@@ -291,12 +288,8 @@ if __name__ == '__main__':
             display_setup['display_waypoints_out']:
         plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out)
     #
-    training_log = training_log_dir + r'\log-v1.csv'
-    training_log = r'C:\Users\asus\Desktop\2022 aws\4b0ffbd9-9b3a-4941-a697-314f82831812\sim-trace\evaluation\20220701002122-O-aHYUMxQWCftUHHNMCq7Q\evaluation-simtrace\0-iteration.csv'
-    training_log = r'C:\Users\asus\Desktop\2022 aws\3dbebb02-802a-4273-909d-3014dd8f3855\sim-trace\evaluation\20220701225704-CXcBOg4cRaStSdSxm2Tb8w\evaluation-simtrace\0-iteration.csv'
-    training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-v3-training_job_G3i0ZBFqRlOX86MhVbgxYA_logs\3dbebb02-802a-4273-909d-3014dd8f3855\sim-trace\training\training-simtrace\0-iteration.csv'
-    training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-v4-evaluation_job_rbI3kIkdR_C3b4nS-AWXbw_logs\7a442136-7e8b-43bc-82a0-7209e443b3da\sim-trace\evaluation\20220702041958-rbI3kIkdR_C3b4nS-AWXbw\evaluation-simtrace\0-iteration.csv'
-    training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-v4-training_job_inn-9A0nR9uvRoVacnZb1A_logs\7a442136-7e8b-43bc-82a0-7209e443b3da\sim-trace\training\training-simtrace\0-iteration.csv'
+    training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-v4-training_job_inn-9A0nR9uvRoVacnZb1A_logs\7a442136-7e8b-43bc-82a0-7209e443b3da\sim-trace\training\training-simtrace\all-iterations.csv'
+    training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-v6-evaluation_job_J3aa6-cOR0KPAARSeR9Czg_logs\53fb60e8-1f8a-4ec7-b87d-76d5a6b35f60\sim-trace\evaluation\20220702234903-J3aa6-cOR0KPAARSeR9Czg\evaluation-simtrace\0-iteration.csv'
     df = read_log(training_log, episode_num=0, steps=0)
     #
     plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out)

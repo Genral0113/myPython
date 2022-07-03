@@ -1,0 +1,165 @@
+import math
+import numpy as np
+
+
+def reward_function(params):
+    # Parameters for Speed Incentive
+    FUTURE_STEP = 6
+    TURN_THRESHOLD_SPEED = 6  # degrees
+    SPEED_THRESHOLD_SLOW = 1.8  # m/s
+    SPEED_THRESHOLD_FAST = 2.5  # m/s
+
+    # Parameters for Straightness Incentive
+    FUTURE_STEP_STRAIGHT = 8
+    TURN_THRESHOLD_STRAIGHT = 25  # degrees
+    STEERING_THRESHOLD = 11  # degrees
+
+    # Parameters for Progress Incentive
+    TOTAL_NUM_STEPS = 150  # (15 steps per second, therefore < 10 secs)
+
+    def get_car_heading_diff(waypoints, closest_waypoints, future_step, car_coords, heading, steering):
+
+        waypoints_length = len(waypoints)
+        if waypoints[0][0] == waypoints[-1][0] and waypoints[0][1] == waypoints[-1][1]:
+            waypoints_length -= 1
+
+        # Determine previous point and next point index
+        prev_index = min(closest_waypoints)
+        next_index = max(closest_waypoints)
+        if prev_index == 1 and next_index == waypoints_length:
+            prev_index = waypoints_length
+            next_index = 1
+        future_index = min(waypoints_length, next_index + future_step)
+
+        # Identify next waypoint and a further waypoint
+        point_prev = waypoints[prev_index]
+        point_next = waypoints[next_index]
+        point_future = waypoints[future_index]
+
+        # Calculate headings to waypoints
+        car_current = math.degrees(math.atan2(point_next[1] - car_coords[1], point_next[0] - car_coords[0]))
+        car_future = math.degrees(math.atan2(point_future[1] - car_coords[1], point_future[0] - car_coords[0]))
+
+        #
+        car_heading = heading + steering
+
+        diff_car = abs(car_future - car_heading)
+
+        if diff_car > 180:
+            diff_car = 360 - diff_car
+
+        return diff_car
+
+    def identify_corner(waypoints, closest_waypoints, future_step):
+
+        waypoints_length = len(waypoints)
+        if waypoints[0][0] == waypoints[-1][0] and waypoints[0][1] == waypoints[-1][1]:
+            waypoints_length -= 1
+        # Determine previous point and next point index
+        prev_index = min(closest_waypoints)
+        next_index = max(closest_waypoints)
+        if prev_index == 1 and next_index == waypoints_length:
+            prev_index = waypoints_length
+            next_index = 1
+        future_index = min(waypoints_length, next_index + future_step)
+
+        # Identify next waypoint and a further waypoint
+        point_prev = waypoints[prev_index]
+        point_next = waypoints[next_index]
+        point_future = waypoints[future_index]
+
+        # Calculate headings to waypoints
+        heading_current = math.degrees(math.atan2(point_next[1] - point_prev[1], point_next[0] - point_prev[0]))
+        heading_future = math.degrees(math.atan2(point_future[1] - point_prev[1], point_future[0] - point_prev[0]))
+
+        # Calculate the difference between the headings
+        diff_heading = abs(heading_current - heading_future)
+
+        # Check we didn't choose the reflex angle
+        if diff_heading > 180:
+            diff_heading = 360 - diff_heading
+
+        # Calculate distance to further waypoint
+        dist_future = np.linalg.norm([point_next[0] - point_future[0], point_next[1] - point_future[1]])
+
+        return diff_heading, dist_future
+
+    def select_speed(waypoints, closest_waypoints, future_step):
+
+        # Identify if a corner is in the future
+        diff_heading, dist_future = identify_corner(waypoints, closest_waypoints, future_step)
+
+        if diff_heading < TURN_THRESHOLD_SPEED:
+            # If there's no corner encourage going faster
+            go_fast = True
+        else:
+            # If there is a corner encourage slowing down
+            go_fast = False
+
+        return go_fast
+
+    def select_straight(waypoints, closest_waypoints, future_step):
+
+        # Identify if a corner is in the future
+        diff_heading, dist_future = identify_corner(waypoints, closest_waypoints, future_step)
+
+        if diff_heading < TURN_THRESHOLD_STRAIGHT:
+            # If there's no corner encourage going straighter
+            go_straight = True
+        else:
+            # If there is a corner don't encourage going straighter
+            go_straight = False
+
+        return go_straight
+
+    # Read input parameters
+    x = params['x']
+    y = params['y']
+    all_wheels_on_track = params['all_wheels_on_track']
+    closest_waypoints = params['closest_waypoints']
+    distance_from_center = params['distance_from_center']
+    is_offtrack = params['is_offtrack']
+    progress = params['progress']
+    speed = params['speed']
+    heading = params['heading']
+    steering_angle = params['steering_angle']
+    steps = params['steps']
+    track_width = params['track_width']
+    waypoints = params['waypoints']
+
+    # Strongly discourage going off track
+    if is_offtrack:
+        reward = 1e-3
+        return float(reward)
+
+    # Give higher reward if the car is closer to centre line and vice versa
+    # 0 if you're on edge of track, 1 if you're centre of track
+    reward = 1 - (distance_from_center / (track_width / 2)) ** (1 / 4)
+
+    # Every 50 steps, if it's ahead of expected position, give reward relative
+    # to how far ahead it is
+    if (steps % 50) == 0 and progress / 100 > (steps / TOTAL_NUM_STEPS):
+        # reward += 2.22 for each second faster than 45s projected
+        reward += progress - (steps / TOTAL_NUM_STEPS) * 100
+
+    # Implement straightness incentive
+    stay_straight = select_straight(waypoints, closest_waypoints, FUTURE_STEP_STRAIGHT)
+    diff_car_heading = get_car_heading_diff(waypoints, closest_waypoints, FUTURE_STEP_STRAIGHT, [x, y], heading, steering_angle)
+    if stay_straight and diff_car_heading < STEERING_THRESHOLD:
+        reward += 3.0
+
+    # Implement speed incentive
+    go_fast = select_speed(waypoints, closest_waypoints, FUTURE_STEP)
+    diff_car_heading = get_car_heading_diff(waypoints, closest_waypoints, FUTURE_STEP, [x, y], heading, steering_angle)
+    if go_fast and speed > SPEED_THRESHOLD_FAST and diff_car_heading < STEERING_THRESHOLD:
+        reward += 2.0
+    elif not go_fast and speed < SPEED_THRESHOLD_SLOW:
+        reward += 0.5
+
+    # Implement stay on track incentive
+    if not all_wheels_on_track:
+        # reward -= 0.5
+        reward = 1e-3
+
+    reward = max(reward, 1e-3)
+    return float(reward)
