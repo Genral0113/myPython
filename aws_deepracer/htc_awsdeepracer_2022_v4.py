@@ -116,6 +116,7 @@ def reward_function(params):
     # Read input parameters
     x = params['x']
     y = params['y']
+    is_left_of_center = params['is_left_of_center']
     all_wheels_on_track = params['all_wheels_on_track']
     closest_waypoints = params['closest_waypoints']
     distance_from_center = params['distance_from_center']
@@ -145,7 +146,7 @@ def reward_function(params):
 
     # Implement straightness incentive
     stay_straight = select_straight(waypoints, closest_waypoints, FUTURE_STEP_STRAIGHT)
-    if stay_straight and abs(steering_angle) < STEERING_THRESHOLD:
+    if stay_straight and ((is_left_of_center and (-1 * STEERING_THRESHOLD < steering_angle <= 0)) or (not is_left_of_center and (0 <= steering_angle < STEERING_THRESHOLD))):
         reward += 3.0
 
     diff_car_heading = get_car_heading_diff(waypoints, closest_waypoints, FUTURE_STEP_STRAIGHT, [x, y], heading, steering_angle)
@@ -154,7 +155,7 @@ def reward_function(params):
 
     # Implement speed incentive
     go_fast = select_speed(waypoints, closest_waypoints, FUTURE_STEP)
-    if go_fast and speed > SPEED_THRESHOLD_FAST and abs(steering_angle) < STEERING_THRESHOLD:
+    if go_fast and speed > SPEED_THRESHOLD_FAST and ((is_left_of_center and (-1 * STEERING_THRESHOLD < steering_angle <= 0)) or (not is_left_of_center and (0 <= steering_angle < STEERING_THRESHOLD))):
         reward += 2.0
     elif not go_fast and speed < SPEED_THRESHOLD_SLOW:
         reward += 0.5

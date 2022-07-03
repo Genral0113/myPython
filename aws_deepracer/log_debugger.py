@@ -122,6 +122,7 @@ if __name__ == '__main__':
     log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-v3-training_job_G3i0ZBFqRlOX86MhVbgxYA_logs\3dbebb02-802a-4273-909d-3014dd8f3855\sim-trace\training\training-simtrace\10-iteration.csv'
     log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-v6-evaluation_job_J3aa6-cOR0KPAARSeR9Czg_logs\53fb60e8-1f8a-4ec7-b87d-76d5a6b35f60\sim-trace\evaluation\20220702234903-J3aa6-cOR0KPAARSeR9Czg\evaluation-simtrace\0-iteration.csv'
     log_file = r'C:\Users\asus\Desktop\2022 aws\model-v7-training_job_qMARHs5_T0WxP8RmuQ837Q_logs\74dff1a2-b748-4975-aea9-3c9de4f79e35\sim-trace\training\training-simtrace\all-iterations.csv'
+    log_file = r'C:\Users\asus\Desktop\2022 aws\model-v7-training_job_ni5gD3LsRRaAUgDr7ZYmVg_logs\2e0f27ff-0f90-4ec1-91eb-ae764b38097f\sim-trace\training\training-simtrace\all-iterations.csv'
 
     waypoints, waypoints_inn, waypoints_out = get_waypoints(track_file)
     track_width = distance_of_2points(waypoints_inn[0], waypoints_out[0])
