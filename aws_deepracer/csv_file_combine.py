@@ -4,7 +4,7 @@ import csv
 
 if __name__ == '__main__':
 
-    input_file_dir = r'C:\Users\asus\Desktop\2022 aws\autobus-v4-training_job_inn-9A0nR9uvRoVacnZb1A_logs\7a442136-7e8b-43bc-82a0-7209e443b3da\sim-trace\training\training-simtrace'
+    input_file_dir = r'C:\Users\asus\Desktop\2022 aws\model-v7-training_job_qMARHs5_T0WxP8RmuQ837Q_logs\74dff1a2-b748-4975-aea9-3c9de4f79e35\sim-trace\training\training-simtrace'
     output_file_name = r'\all-iterations.csv'
 
     skip_header = False

@@ -290,6 +290,7 @@ if __name__ == '__main__':
     #
     training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-v4-training_job_inn-9A0nR9uvRoVacnZb1A_logs\7a442136-7e8b-43bc-82a0-7209e443b3da\sim-trace\training\training-simtrace\all-iterations.csv'
     training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-v6-evaluation_job_J3aa6-cOR0KPAARSeR9Czg_logs\53fb60e8-1f8a-4ec7-b87d-76d5a6b35f60\sim-trace\evaluation\20220702234903-J3aa6-cOR0KPAARSeR9Czg\evaluation-simtrace\0-iteration.csv'
+    training_log = r'C:\Users\asus\Desktop\2022 aws\model-v7-training_job_qMARHs5_T0WxP8RmuQ837Q_logs\74dff1a2-b748-4975-aea9-3c9de4f79e35\sim-trace\training\training-simtrace\all-iterations.csv'
     df = read_log(training_log, episode_num=0, steps=0)
     #
     plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out)

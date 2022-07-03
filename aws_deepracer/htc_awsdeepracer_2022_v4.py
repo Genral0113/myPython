@@ -7,12 +7,13 @@ def reward_function(params):
     FUTURE_STEP = 6
     TURN_THRESHOLD_SPEED = 6  # degrees
     SPEED_THRESHOLD_SLOW = 1.8  # m/s
-    SPEED_THRESHOLD_FAST = 2.5  # m/s
+    SPEED_THRESHOLD_FAST = 2.0  # m/s
 
     # Parameters for Straightness Incentive
     FUTURE_STEP_STRAIGHT = 8
     TURN_THRESHOLD_STRAIGHT = 25  # degrees
     STEERING_THRESHOLD = 11  # degrees
+    HEADING_THRESHOLD = 10 # degrees
 
     # Parameters for Progress Incentive
     TOTAL_NUM_STEPS = 150  # (15 steps per second, therefore < 10 secs)
@@ -144,17 +145,23 @@ def reward_function(params):
 
     # Implement straightness incentive
     stay_straight = select_straight(waypoints, closest_waypoints, FUTURE_STEP_STRAIGHT)
-    diff_car_heading = get_car_heading_diff(waypoints, closest_waypoints, FUTURE_STEP_STRAIGHT, [x, y], heading, steering_angle)
-    if stay_straight and diff_car_heading < STEERING_THRESHOLD:
+    if stay_straight and abs(steering_angle) < STEERING_THRESHOLD:
         reward += 3.0
+
+    diff_car_heading = get_car_heading_diff(waypoints, closest_waypoints, FUTURE_STEP_STRAIGHT, [x, y], heading, steering_angle)
+    if stay_straight and diff_car_heading < HEADING_THRESHOLD:
+        reward += 1.0
 
     # Implement speed incentive
     go_fast = select_speed(waypoints, closest_waypoints, FUTURE_STEP)
-    diff_car_heading = get_car_heading_diff(waypoints, closest_waypoints, FUTURE_STEP, [x, y], heading, steering_angle)
-    if go_fast and speed > SPEED_THRESHOLD_FAST and diff_car_heading < STEERING_THRESHOLD:
+    if go_fast and speed > SPEED_THRESHOLD_FAST and abs(steering_angle) < STEERING_THRESHOLD:
         reward += 2.0
     elif not go_fast and speed < SPEED_THRESHOLD_SLOW:
         reward += 0.5
+
+    diff_car_heading = get_car_heading_diff(waypoints, closest_waypoints, FUTURE_STEP, [x, y], heading, steering_angle)
+    if go_fast and diff_car_heading < HEADING_THRESHOLD:
+        reward += 1.0
 
     # Implement stay on track incentive
     if not all_wheels_on_track:
