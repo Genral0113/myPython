@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
-from johnny4001 import *
+# from johnny4001 import *
+from aws_deepracer_2022 import *
 
 
 def read_csv_file(file_name, episode_num=-1):
@@ -125,7 +126,6 @@ if __name__ == '__main__':
     log_file = r'C:\Users\asus\Desktop\2022 aws\model-v7-training_job_qMARHs5_T0WxP8RmuQ837Q_logs\74dff1a2-b748-4975-aea9-3c9de4f79e35\sim-trace\training\training-simtrace\all-iterations.csv'
     log_file = r'C:\Users\asus\Desktop\2022 aws\model-v7-training_job_ni5gD3LsRRaAUgDr7ZYmVg_logs\2e0f27ff-0f90-4ec1-91eb-ae764b38097f\sim-trace\training\training-simtrace\all-iterations.csv'
     log_file = r'C:\Users\asus\Desktop\2022 aws\Johnny4001-training_job_ZzKOgy1JROiqgYb9stilYQ_logs\811aa389-7e92-4ab7-99d7-cbdb51ee0a58\sim-trace\training\training-simtrace\all-iterations.csv'
-    log_file = r'C:\Users\asus\Desktop\2022 aws\johnny4001-v2-training_job_zRVGgu1XThOtvo0RwWQ5wg_logs\e044c950-29c1-42ea-aa7e-ca6244245b5c\sim-trace\training\training-simtrace\all-iterations.csv'
 
     waypoints, waypoints_inn, waypoints_out = get_waypoints(track_file)
     track_width = distance_of_2points(waypoints_inn[0], waypoints_out[0])
@@ -133,6 +133,8 @@ if __name__ == '__main__':
     log_parmas = read_csv_file(log_file, episode_num=-1)
 
     params = {}
+    car_width_total = 0
+    car_width_num = 0
     for i in range(len(log_parmas['episode'])):
         params['waypoints'] = waypoints
         params['all_wheels_on_track'] = log_parmas['all_wheels_on_track'][i]
@@ -154,10 +156,16 @@ if __name__ == '__main__':
         params['episode'] = log_parmas['episode'][i]
 
         params['is_offtrack'] = False
-        if log_parmas['episode_status'] == 'off_track':
+        if log_parmas['episode_status'][i] == 'off_track':
             params['is_offtrack'] = True
 
         if params['steps']:
             reward = reward_function(params)
-            # if abs(reward - params['reward']) > 0.5 and params['steps'] != 1:
-            print('{}th episode {}th step -> new reward is {} and old reward is {}'.format(params['episode'], params['steps'], reward, params['reward']))
+            if abs(reward - params['reward']) > 0.5 and params['steps'] != 1:
+                print('{}th episode {}th step -> new reward is {} and old reward is {}'.format(params['episode'], params['steps'], reward, params['reward']))
+
+        if params['is_offtrack']:
+            car_width = params['distance_from_center'] - params['track_width'] * 0.5
+            car_width_total += car_width
+            car_width_num += 1
+    print('the average car width is {}'.format(car_width_total / car_width_num))

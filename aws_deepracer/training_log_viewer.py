@@ -100,55 +100,6 @@ def plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out):
             i += 1
 
 
-def plot_dataframe(df, ax):
-    df.plot(x='X', y='Y', kind='scatter', ax=ax, grid=True, color=[get_color_name(x) for x in df['episode']],
-            s=display_setup['dot_size'])
-
-    if display_setup['display_steps']:
-        for x, y, steeps in zip(df['X'], df['Y'], df['steps']):
-            ax.text(x, y - 0.005, str(steeps), fontsize=display_setup['fontsize'])
-
-    if display_setup['display_heading_arrow']:
-        for x, y, omega, episode in zip(df['X'], df['Y'], df['yaw'], df['episode']):
-            x1 = math.cos(math.radians(omega))
-            y1 = math.sin(math.radians(omega))
-            ax.quiver(x, y, x1, y1, color=get_color_name(episode), width=display_setup['heading_arrow_width'])
-
-    if display_setup['display_steering_arrow']:
-        for x, y, omega, episode in zip(df['X'], df['Y'], df['steer'], df['episode']):
-            x1 = math.cos(math.radians(omega))
-            y1 = math.sin(math.radians(omega))
-            ax.quiver(x, y, x1, y1, color=get_color_name(episode), width=display_setup['heading_arrow_width'])
-
-    if display_setup['display_projected_track']:
-        tstamp = df['tstamp'].array
-        for i in range(len(tstamp)):
-            if i == 0 or i == len(tstamp) - 1:
-                tstamp[i] = 0
-            else:
-                tstamp[i] = tstamp[i + 1] - tstamp[i]
-
-        for episode, x, y, omega, steer, steps, speed, t, episode_status in zip(df['episode'], df['X'], df['Y'],
-                                                                                df['yaw'], df['steer'], df['steps'],
-                                                                                df['throttle'], tstamp,
-                                                                                df['episode_status']):
-            if steps > 1 and episode_status != 'off_track':
-                x1 = x + 0.5 * t ** 2 * speed * math.cos(math.radians(omega))
-                y1 = y + 0.5 * t ** 2 * speed * math.sin(math.radians(omega))
-                ax.scatter(x1, y1, s=display_setup['dot_size'], c='r')
-                ax.text(x1, y1, str(steps + 1), fontsize=display_setup['fontsize'])
-
-    if display_setup['display_action']:
-        for episode, x, y, steer, throttle in zip(df['episode'], df['X'], df['Y'], df['steer'], df['throttle']):
-            action = '[{:.1f},{:.2f}]'.format(steer, throttle)
-            ax.text(x, y, action, fontsize=display_setup['fontsize'], color=get_color_name(episode))
-
-    if display_setup['display_training_reward']:
-        for episode, x, y, reward in zip(df['episode'], df['X'], df['Y'], df['reward']):
-            ax.text(x, y + 0.005, '{:.3f}'.format(reward), fontsize=display_setup['fontsize'],
-                    color=get_color_name(episode))
-
-
 def plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out):
     i = 0
     for episode, steps, x, y, yaw, steer, throttle, reward, progress, closest_waypoint, tstamp, episode_status \
@@ -292,9 +243,13 @@ if __name__ == '__main__':
     training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-v6-evaluation_job_J3aa6-cOR0KPAARSeR9Czg_logs\53fb60e8-1f8a-4ec7-b87d-76d5a6b35f60\sim-trace\evaluation\20220702234903-J3aa6-cOR0KPAARSeR9Czg\evaluation-simtrace\0-iteration.csv'
     training_log = r'C:\Users\asus\Desktop\2022 aws\model-v7-training_job_qMARHs5_T0WxP8RmuQ837Q_logs\74dff1a2-b748-4975-aea9-3c9de4f79e35\sim-trace\training\training-simtrace\all-iterations.csv'
     training_log = r'C:\Users\asus\Desktop\2022 aws\model-v7-training_job_ni5gD3LsRRaAUgDr7ZYmVg_logs\2e0f27ff-0f90-4ec1-91eb-ae764b38097f\sim-trace\training\training-simtrace\all-iterations.csv'
-    df = read_log(training_log, episode_num=2, steps=0)
+    training_log = r'C:\Users\asus\Desktop\2022 aws\johnny4001-v2-training_job_zRVGgu1XThOtvo0RwWQ5wg_logs\e044c950-29c1-42ea-aa7e-ca6244245b5c\sim-trace\training\training-simtrace\all-iterations.csv'
+    df = read_log(training_log, episode_num=-1, steps=0)
+
+    #增加选择条件参看特定的点
     # df = df[df.throttle >= 1.5]
-    df = df[df.reward > 1e-3]
+    # df = df[df.reward > 1e-3]
+    df = df[df.episode_status == 'off_track']
     #
     plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out)
     #
