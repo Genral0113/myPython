@@ -14,7 +14,7 @@ display_setup = {
     'display_steps': True,
     'display_heading_arrow': True,
     'display_steering_arrow': True,
-    'display_action': False,
+    'display_action': True,
     'display_training_reward': True,
     'display_projected_track': False,
     'display_distance_to_next_waypoint': False,
@@ -292,7 +292,9 @@ if __name__ == '__main__':
     training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-v6-evaluation_job_J3aa6-cOR0KPAARSeR9Czg_logs\53fb60e8-1f8a-4ec7-b87d-76d5a6b35f60\sim-trace\evaluation\20220702234903-J3aa6-cOR0KPAARSeR9Czg\evaluation-simtrace\0-iteration.csv'
     training_log = r'C:\Users\asus\Desktop\2022 aws\model-v7-training_job_qMARHs5_T0WxP8RmuQ837Q_logs\74dff1a2-b748-4975-aea9-3c9de4f79e35\sim-trace\training\training-simtrace\all-iterations.csv'
     training_log = r'C:\Users\asus\Desktop\2022 aws\model-v7-training_job_ni5gD3LsRRaAUgDr7ZYmVg_logs\2e0f27ff-0f90-4ec1-91eb-ae764b38097f\sim-trace\training\training-simtrace\all-iterations.csv'
-    df = read_log(training_log, episode_num=-1, steps=0)
+    df = read_log(training_log, episode_num=2, steps=0)
+    # df = df[df.throttle >= 1.5]
+    df = df[df.reward > 1e-3]
     #
     plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out)
     #
