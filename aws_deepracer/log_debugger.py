@@ -126,11 +126,12 @@ if __name__ == '__main__':
     log_file = r'C:\Users\asus\Desktop\2022 aws\model-v7-training_job_qMARHs5_T0WxP8RmuQ837Q_logs\74dff1a2-b748-4975-aea9-3c9de4f79e35\sim-trace\training\training-simtrace\all-iterations.csv'
     log_file = r'C:\Users\asus\Desktop\2022 aws\model-v7-training_job_ni5gD3LsRRaAUgDr7ZYmVg_logs\2e0f27ff-0f90-4ec1-91eb-ae764b38097f\sim-trace\training\training-simtrace\all-iterations.csv'
     log_file = r'C:\Users\asus\Desktop\2022 aws\Johnny4001-training_job_ZzKOgy1JROiqgYb9stilYQ_logs\811aa389-7e92-4ab7-99d7-cbdb51ee0a58\sim-trace\training\training-simtrace\all-iterations.csv'
+    log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-v8-training_job_8G2s1EelS9y6x_XxWolXYQ_logs\351e115e-1166-48b6-afdb-d5ce480d0756\sim-trace\training\training-simtrace\all-iterations.csv'
 
     waypoints, waypoints_inn, waypoints_out = get_waypoints(track_file)
     track_width = distance_of_2points(waypoints_inn[0], waypoints_out[0])
 
-    log_parmas = read_csv_file(log_file, episode_num=799)
+    log_parmas = read_csv_file(log_file, episode_num=6)
 
     params = {}
     car_width_total = 0

@@ -245,7 +245,8 @@ if __name__ == '__main__':
     training_log = r'C:\Users\asus\Desktop\2022 aws\model-v7-training_job_ni5gD3LsRRaAUgDr7ZYmVg_logs\2e0f27ff-0f90-4ec1-91eb-ae764b38097f\sim-trace\training\training-simtrace\all-iterations.csv'
     training_log = r'C:\Users\asus\Desktop\2022 aws\johnny4001-v2-training_job_zRVGgu1XThOtvo0RwWQ5wg_logs\e044c950-29c1-42ea-aa7e-ca6244245b5c\sim-trace\training\training-simtrace\all-iterations.csv'
     training_log = r'C:\Users\asus\Desktop\2022 aws\Johnny4001-training_job_ZzKOgy1JROiqgYb9stilYQ_logs\811aa389-7e92-4ab7-99d7-cbdb51ee0a58\sim-trace\training\training-simtrace\all-iterations.csv'
-    df = read_log(training_log, episode_num=799, steps=0)
+    training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-v8-training_job_8G2s1EelS9y6x_XxWolXYQ_logs\351e115e-1166-48b6-afdb-d5ce480d0756\sim-trace\training\training-simtrace\all-iterations.csv'
+    df = read_log(training_log, episode_num=6, steps=0)
 
     #增加选择条件参看特定的点
     # df = df[df.throttle >= 1.5]
