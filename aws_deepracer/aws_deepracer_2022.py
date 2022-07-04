@@ -151,7 +151,7 @@ def reward_function(params):
     speed_ratio = speed / speed_max
     steering_ratio = steering_angle / steering_angle_max
 
-    reward = 1e-1
+    reward = 1e-3
     if is_offtrack:
         return reward
 
@@ -334,7 +334,7 @@ def speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, targe
     else:
         reward = 1e-3
 
-    return  reward
+    return reward
 
 
 def speed_up_out(waypoints_all, car_coords, moving_direction, speed_ratio, target_point):
