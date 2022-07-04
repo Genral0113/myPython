@@ -161,8 +161,8 @@ if __name__ == '__main__':
 
         if params['steps']:
             reward = reward_function(params)
-            if abs(reward - params['reward']) > 0.5 and params['steps'] != 1:
-                print('{}th episode {}th step -> new reward is {} and old reward is {}'.format(params['episode'], params['steps'], reward, params['reward']))
+            # if abs(reward - params['reward']) > 0.5 and params['steps'] != 1:
+            print('{}th episode {}th step -> new reward is {} and old reward is {}'.format(params['episode'], params['steps'], reward, params['reward']))
 
         if params['is_offtrack']:
             car_width = params['distance_from_center'] - params['track_width'] * 0.5
