@@ -33,7 +33,7 @@ def get_average_changed_directions(waypoints, start_waypoint, end_waypoint):
         last_waypoint_directions = directions_of_2points(waypoints[start_waypoint], waypoints[end_waypoint])
         directions_diff = last_waypoint_directions - first_waypoint_directions
 
-        average_changed_directions = directions_diff / waypoints
+        average_changed_directions = directions_diff / waypoints_count
 
     return average_changed_directions
 
@@ -190,24 +190,29 @@ if __name__ == '__main__':
     waypoints_inn = waypoints_all[:, 2:4]
     waypoints_out = waypoints_all[:, 4:6]
 
+    closest_waypoints = [53, 0]
+
     track_length = 0
     for i in range(1, len(waypoints) - 1):
         track_length += distance_of_2points(waypoints[i], waypoints[i + 1])
     print(track_length)
 
-    start_waypoints = [1, 23, 34, 42, 51, 68, 81, 90, 105, 112, 119]
+    start_waypoints = [1, 23, 34, 42, 51, 69, 81, 90, 105, 112, 119]
 
+    start_waypoint = 1
+    end_waypoint = 1
     for i in range(len(start_waypoints) - 1):
-        start_waypoint = start_waypoints[i]
-        end_waypoint = start_waypoints[i + 1] - 1
+        if start_waypoints[i] <= closest_waypoints[0] < start_waypoints[i + 1]:
+            start_waypoint = start_waypoints[i]
+            end_waypoint = start_waypoints[i + 1] - 1
 
-        track_directions = directions_of_2points(waypoints[start_waypoint], waypoints[end_waypoint])
-        if track_directions < 0:
-            track_directions += 360
+    track_directions = directions_of_2points(waypoints[start_waypoint], waypoints[end_waypoint])
+    if track_directions < 0:
+        track_directions += 360
 
-        average_changed_directions = get_average_changed_directions(waypoints, start_waypoint, end_waypoint)
+    average_changed_directions = get_average_changed_directions(waypoints, start_waypoint, end_waypoint)
 
-        direction_region = math.floor(track_directions/45)
+    direction_region = math.floor(track_directions/45)
 
-        print('the start and end waypoint is ({}, {}), track directions are {} degrees, and in {}th region, average_changed_directions are {}'.format(start_waypoint, end_waypoint, track_directions, direction_region, average_changed_directions))
+    print('the start and end waypoint is ({}, {}), track directions are {} degrees, and in {}th region, average_changed_directions are {}'.format(start_waypoint, end_waypoint, track_directions, direction_region, average_changed_directions))
 

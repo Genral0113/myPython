@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 # from johnny4001 import *
-from aws_deepracer_2022 import *
+from simple_reward import *
 
 
 def read_csv_file(file_name, episode_num=-1):

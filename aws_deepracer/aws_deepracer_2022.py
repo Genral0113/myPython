@@ -185,7 +185,7 @@ def reward_function(params):
             reward = slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
     #
     start_waypoint = 34
-    end_waypoint = 42
+    end_waypoint = 41
     if start_waypoint <= closest_waypoint <= end_waypoint:
         car_coords = [x, y]
         moving_direction = heading
@@ -197,7 +197,7 @@ def reward_function(params):
             reward = speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
 
     #
-    start_waypoint = 43
+    start_waypoint = 42
     end_waypoint = 50
     if start_waypoint <= closest_waypoint <= end_waypoint:
         car_coords = [x, y]
@@ -211,7 +211,7 @@ def reward_function(params):
 
     #
     start_waypoint = 51
-    end_waypoint = 55
+    end_waypoint = 68
     if start_waypoint <= closest_waypoint <= end_waypoint:
         car_coords = [x, y]
         moving_direction = heading
@@ -223,33 +223,7 @@ def reward_function(params):
             reward = slow_down_out(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
 
     #
-    start_waypoint = 56
-    end_waypoint = 66
-    if start_waypoint <= closest_waypoint <= end_waypoint:
-        car_coords = [x, y]
-        moving_direction = heading
-        target_point = end_waypoint
-
-        if is_left_of_center:
-            reward = speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
-        else:
-            reward = speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
-
-    #
-    start_waypoint = 67
-    end_waypoint = 70
-    if start_waypoint <= closest_waypoint <= end_waypoint:
-        car_coords = [x, y]
-        moving_direction = heading
-        target_point = end_waypoint
-
-        if is_left_of_center:
-            reward = slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
-        else:
-            reward = slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
-
-    #
-    start_waypoint = 71
+    start_waypoint = 69
     end_waypoint = 80
     if start_waypoint <= closest_waypoint <= end_waypoint:
         car_coords = [x, y]
@@ -429,6 +403,12 @@ def slow_down_out(waypoints_all, car_coords, moving_direction, speed_ratio, dist
 
 
 def car_action(waypoints_all, params, target_point, considering_steering_angel, car_actions):
+
+    speed_fast = 2.5
+    speed_slow = 1.5
+
+    reward = 1e-3
+
     # get waypoints
     waypoints_mid = waypoints_all[:, 0:2]
     waypoints_inn = waypoints_all[:, 2:4]
@@ -438,80 +418,46 @@ def car_action(waypoints_all, params, target_point, considering_steering_angel, 
 
     is_left_of_center = params['is_left_of_center']
 
-    speed_ratio = params['speed'] / 4
+    speed = params['speed']
 
     moving_direction = params['heading']
     if considering_steering_angel:
         moving_direction += params['steering_angle']
 
-    distance_ratio = params['distance_from_center'] / (params['track_width'] * 0.5)
+    distance_from_center = params['distance_from_center']
+    track_width = params['track_width']
 
     track_directions = directions_of_2points(waypoints_mid[params['closest_waypoints'][0]], waypoints_mid[target_point])
+
     directions_mid = directions_of_2points(car_coords, waypoints_mid[target_point])
     directions_inn = directions_of_2points(car_coords, waypoints_inn[target_point])
     directions_out = directions_of_2points(car_coords, waypoints_out[target_point])
 
-    if abs(track_directions) > 90:                                          # from right to left
-        if moving_direction < 0:
-            moving_direction += 360
-        if directions_mid < 0:
-            directions_mid += 360
-        if directions_inn < 0:
-            directions_inn += 360
-        if directions_out < 0:
-            directions_out += 360
+    distance_to_target_point = distance_of_2points(car_coords, waypoints_mid[target_point])
 
-    if car_actions == 'speed_up_inn':
-        if speed_ratio > 0.5:                                               # car speed > 2 m/s
-
-            if directions_mid < moving_direction < directions_inn:          # moving to the target conner
-                reward = 1.0
-            else:
-                if distance_ratio < 0.7:                                    # close to the track center line
-                    reward = 1.0
-                else:
-                    reward = 0.5                                            # away from the center line
-
-        if 0.25 < speed_ratio <= 0.5:
-
-            if directions_mid < moving_direction < directions_inn:          # moving to the target conner
-                reward = 0.5
-            else:
-                if distance_ratio < 0.7:                                    # close to the track center line
-                    reward = 0.5
-                else:
-                    reward = 0.2                                            # away from the center line
-
-        if speed_ratio <= 0.25:
+    if car_actions == 'speed_up':
+        if speed > speed_fast:
+            reward = speed
+        elif speed_slow < speed <= speed_fast:
+            reward = 0.5
+        elif speed <= speed_slow:
             reward = 0.2
 
-    if car_actions == 'speed_up_out':
-        if speed_ratio > 0.5:
-            pass
-        if 0.25 < speed_ratio <= 0.5:
-            pass
-        if speed_ratio <= 0.25:
-            pass
-
-    if car_actions == 'slow_down_inn':
-        if 0.25 < speed_ratio <= 0.5:
-            pass
-        if speed_ratio > 0.5:
-            pass
-        if speed_ratio <= 0.25:
-            pass
-
-    if car_actions == 'slow_down_out':
-        if 0.25 < speed_ratio <= 0.5:
-            pass
-        if speed_ratio > 0.5:
-            pass
-        if speed_ratio <= 0.25:
-            pass
-
+    if car_actions == 'slow_down':
+        if speed > speed_fast:
+            reward = 0.5
+        elif speed_slow < speed <= speed_fast:
+            reward = 1.0
+        elif speed <= speed_slow:
+            reward = 0.2
 
 
 def directions_of_2points(p1, p2):
     directions = math.atan2(p2[1] - p1[1], p2[0] - p1[0])
     directions = math.degrees(directions)
     return directions
+
+
+def distance_of_2points(p1, p2):
+    dist = np.linalg.norm([p1[0] - p2[0], p1[1] - p2[1]])
+    return dist
