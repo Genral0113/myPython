@@ -130,11 +130,12 @@ if __name__ == '__main__':
     log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-final-training\b35a7d47-5f47-4fef-a4f9-c1be7e40f556\sim-trace\training\training-simtrace\all-iterations.csv'
     log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-final-clone-training_job_6aekpJ1gTMO2SLjDsHvSgA_logs\0075f857-2f73-456c-8ba3-3c4bc5730e7c\sim-trace\training\training-simtrace\all-iterations.csv'
     log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-final-v3-training_job_YHuE0dYIT1qQfkW35rMQEg_logs\c2bac156-961f-4c2d-bcd4-507e675c007e\sim-trace\training\training-simtrace\all-iterations.csv'
+    log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-final-v3-clone-training_job_EEgwPwzWTM-YyXYDegM5Hw_logs\51abc572-30e7-40e0-85db-d15ad31ccef6\sim-trace\training\training-simtrace\all-iterations.csv'
 
     waypoints, waypoints_inn, waypoints_out = get_waypoints(track_file)
     track_width = distance_of_2points(waypoints_inn[0], waypoints_out[0])
 
-    log_parmas = read_csv_file(log_file, episode_num=429)
+    log_parmas = read_csv_file(log_file, episode_num=150)
 
     params = {}
     car_width_total = 0
@@ -163,7 +164,7 @@ if __name__ == '__main__':
         if log_parmas['episode_status'][i] == 'off_track':
             params['is_offtrack'] = True
 
-        if params['steps'] >= 22:
+        if params['steps'] == 50:
             reward = reward_function(params)
             if abs(reward - params['reward']) > 0.5 and params['steps'] != 1:
                 print('{}th episode {}th step -> new reward is {} and old reward is {}'.format(params['episode'], params['steps'], reward, params['reward']))

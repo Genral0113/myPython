@@ -249,12 +249,13 @@ if __name__ == '__main__':
     training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-final-training\b35a7d47-5f47-4fef-a4f9-c1be7e40f556\sim-trace\training\training-simtrace\all-iterations.csv'
     training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-final-clone-training_job_6aekpJ1gTMO2SLjDsHvSgA_logs\0075f857-2f73-456c-8ba3-3c4bc5730e7c\sim-trace\training\training-simtrace\all-iterations.csv'
     training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-final-v3-training_job_YHuE0dYIT1qQfkW35rMQEg_logs\c2bac156-961f-4c2d-bcd4-507e675c007e\sim-trace\training\training-simtrace\all-iterations.csv'
+    training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-final-v3-clone-training_job_EEgwPwzWTM-YyXYDegM5Hw_logs\51abc572-30e7-40e0-85db-d15ad31ccef6\sim-trace\training\training-simtrace\all-iterations.csv'
     df = read_log(training_log, episode_num=-1, steps=0)
 
     #增加选择条件参看特定的点
     # df = df[df.throttle >= 1.5]
-    df = df[df.episode == 429]
-    # df = df[df.reward >= 1.0]
+    # df = df[df.episode == 150]
+    df = df[df.reward < 0.5]
     # df = df[df.episode_status == 'off_track']
     #
     plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out)
