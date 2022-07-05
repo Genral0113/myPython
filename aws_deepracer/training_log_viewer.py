@@ -14,7 +14,7 @@ display_setup = {
     'display_steps': True,
     'display_heading_arrow': True,
     'display_steering_arrow': True,
-    'display_action': True,
+    'display_action': False,
     'display_training_reward': True,
     'display_projected_track': False,
     'display_distance_to_next_waypoint': False,
@@ -246,11 +246,15 @@ if __name__ == '__main__':
     training_log = r'C:\Users\asus\Desktop\2022 aws\johnny4001-v2-training_job_zRVGgu1XThOtvo0RwWQ5wg_logs\e044c950-29c1-42ea-aa7e-ca6244245b5c\sim-trace\training\training-simtrace\all-iterations.csv'
     training_log = r'C:\Users\asus\Desktop\2022 aws\Johnny4001-training_job_ZzKOgy1JROiqgYb9stilYQ_logs\811aa389-7e92-4ab7-99d7-cbdb51ee0a58\sim-trace\training\training-simtrace\all-iterations.csv'
     training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-v8-training_job_8G2s1EelS9y6x_XxWolXYQ_logs\351e115e-1166-48b6-afdb-d5ce480d0756\sim-trace\training\training-simtrace\all-iterations.csv'
-    df = read_log(training_log, episode_num=7, steps=0)
+    training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-final-training\b35a7d47-5f47-4fef-a4f9-c1be7e40f556\sim-trace\training\training-simtrace\all-iterations.csv'
+    training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-final-clone-training_job_6aekpJ1gTMO2SLjDsHvSgA_logs\0075f857-2f73-456c-8ba3-3c4bc5730e7c\sim-trace\training\training-simtrace\all-iterations.csv'
+    training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-final-v3-training_job_YHuE0dYIT1qQfkW35rMQEg_logs\c2bac156-961f-4c2d-bcd4-507e675c007e\sim-trace\training\training-simtrace\all-iterations.csv'
+    df = read_log(training_log, episode_num=-1, steps=0)
 
     #增加选择条件参看特定的点
     # df = df[df.throttle >= 1.5]
-    # df = df[df.reward > 1e-3]
+    df = df[df.episode == 429]
+    # df = df[df.reward >= 1.0]
     # df = df[df.episode_status == 'off_track']
     #
     plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out)

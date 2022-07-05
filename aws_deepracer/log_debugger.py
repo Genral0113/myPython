@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 # from johnny4001 import *
-from simple_reward import *
+from simple_reward_v3 import *
 
 
 def read_csv_file(file_name, episode_num=-1):
@@ -127,11 +127,14 @@ if __name__ == '__main__':
     log_file = r'C:\Users\asus\Desktop\2022 aws\model-v7-training_job_ni5gD3LsRRaAUgDr7ZYmVg_logs\2e0f27ff-0f90-4ec1-91eb-ae764b38097f\sim-trace\training\training-simtrace\all-iterations.csv'
     log_file = r'C:\Users\asus\Desktop\2022 aws\Johnny4001-training_job_ZzKOgy1JROiqgYb9stilYQ_logs\811aa389-7e92-4ab7-99d7-cbdb51ee0a58\sim-trace\training\training-simtrace\all-iterations.csv'
     log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-v8-training_job_8G2s1EelS9y6x_XxWolXYQ_logs\351e115e-1166-48b6-afdb-d5ce480d0756\sim-trace\training\training-simtrace\all-iterations.csv'
+    log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-final-training\b35a7d47-5f47-4fef-a4f9-c1be7e40f556\sim-trace\training\training-simtrace\all-iterations.csv'
+    log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-final-clone-training_job_6aekpJ1gTMO2SLjDsHvSgA_logs\0075f857-2f73-456c-8ba3-3c4bc5730e7c\sim-trace\training\training-simtrace\all-iterations.csv'
+    log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-final-v3-training_job_YHuE0dYIT1qQfkW35rMQEg_logs\c2bac156-961f-4c2d-bcd4-507e675c007e\sim-trace\training\training-simtrace\all-iterations.csv'
 
     waypoints, waypoints_inn, waypoints_out = get_waypoints(track_file)
     track_width = distance_of_2points(waypoints_inn[0], waypoints_out[0])
 
-    log_parmas = read_csv_file(log_file, episode_num=7)
+    log_parmas = read_csv_file(log_file, episode_num=429)
 
     params = {}
     car_width_total = 0
@@ -160,10 +163,10 @@ if __name__ == '__main__':
         if log_parmas['episode_status'][i] == 'off_track':
             params['is_offtrack'] = True
 
-        if params['steps']:
+        if params['steps'] >= 22:
             reward = reward_function(params)
-            # if abs(reward - params['reward']) > 0.5 and params['steps'] != 1:
-            print('{}th episode {}th step -> new reward is {} and old reward is {}'.format(params['episode'], params['steps'], reward, params['reward']))
+            if abs(reward - params['reward']) > 0.5 and params['steps'] != 1:
+                print('{}th episode {}th step -> new reward is {} and old reward is {}'.format(params['episode'], params['steps'], reward, params['reward']))
 
         if params['is_offtrack']:
             car_width = params['distance_from_center'] - params['track_width'] * 0.5
