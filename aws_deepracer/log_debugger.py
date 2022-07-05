@@ -131,7 +131,7 @@ if __name__ == '__main__':
     waypoints, waypoints_inn, waypoints_out = get_waypoints(track_file)
     track_width = distance_of_2points(waypoints_inn[0], waypoints_out[0])
 
-    log_parmas = read_csv_file(log_file, episode_num=6)
+    log_parmas = read_csv_file(log_file, episode_num=7)
 
     params = {}
     car_width_total = 0

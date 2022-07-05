@@ -150,6 +150,7 @@ def reward_function(params):
 
     speed_ratio = speed / speed_max
     steering_ratio = steering_angle / steering_angle_max
+    distance_ratio = distance_from_center / (track_width * 0.5)
 
     reward = 1e-3
     if is_offtrack:
@@ -159,16 +160,16 @@ def reward_function(params):
 
     #
     start_waypoint = 1
-    end_waypoint = 21
+    end_waypoint = 22
     if start_waypoint <= closest_waypoint <= end_waypoint:
         car_coords = [x, y]
         moving_direction = heading
         target_point = end_waypoint
 
         if is_left_of_center:
-            reward = speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
         else:
-            reward = speed_up_out(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = speed_up_out(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
 
     #
     start_waypoint = 23
@@ -179,9 +180,9 @@ def reward_function(params):
         target_point = end_waypoint
 
         if is_left_of_center:
-            reward = slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
         else:
-            reward = slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
     #
     start_waypoint = 34
     end_waypoint = 42
@@ -191,9 +192,9 @@ def reward_function(params):
         target_point = end_waypoint
 
         if is_left_of_center:
-            reward = speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
         else:
-            reward = speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
 
     #
     start_waypoint = 43
@@ -204,9 +205,9 @@ def reward_function(params):
         target_point = end_waypoint
 
         if is_left_of_center:
-            reward = speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
         else:
-            reward = speed_up_out(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = speed_up_out(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
 
     #
     start_waypoint = 51
@@ -217,9 +218,9 @@ def reward_function(params):
         target_point = end_waypoint
 
         if is_left_of_center:
-            reward = slow_down_out(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = slow_down_out(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
         else:
-            reward = slow_down_out(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = slow_down_out(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
 
     #
     start_waypoint = 56
@@ -230,9 +231,9 @@ def reward_function(params):
         target_point = end_waypoint
 
         if is_left_of_center:
-            reward = speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
         else:
-            reward = speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
 
     #
     start_waypoint = 67
@@ -243,9 +244,9 @@ def reward_function(params):
         target_point = end_waypoint
 
         if is_left_of_center:
-            reward = slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
         else:
-            reward = slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
 
     #
     start_waypoint = 71
@@ -256,9 +257,9 @@ def reward_function(params):
         target_point = end_waypoint
 
         if is_left_of_center:
-            reward = speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
         else:
-            reward = speed_up_out(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = speed_up_out(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
 
     #
     start_waypoint = 81
@@ -269,9 +270,9 @@ def reward_function(params):
         target_point = end_waypoint
 
         if is_left_of_center:
-            reward = slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
         else:
-            reward = slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
 
     #
     start_waypoint = 90
@@ -282,9 +283,9 @@ def reward_function(params):
         target_point = end_waypoint
 
         if is_left_of_center:
-            reward = speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
         else:
-            reward = speed_up_out(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = speed_up_out(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
 
     #
     start_waypoint = 105
@@ -295,9 +296,9 @@ def reward_function(params):
         target_point = end_waypoint
 
         if is_left_of_center:
-            reward = slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
         else:
-            reward = slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
 
     #
     start_waypoint = 112
@@ -308,14 +309,14 @@ def reward_function(params):
         target_point = end_waypoint
 
         if is_left_of_center:
-            reward = speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
         else:
-            reward = speed_up_out(waypoints_all, car_coords, moving_direction, speed_ratio, target_point)
+            reward = speed_up_out(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point)
 
     return reward
 
 
-def speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, target_point):
+def speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point):
     # get waypoints
     waypoints_mid = waypoints_all[:, 0:2]
     waypoints_inn = waypoints_all[:, 2:4]
@@ -328,6 +329,10 @@ def speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, targe
     if speed_ratio > 0.5 and directions_mid < moving_direction < directions_inn:
         reward = 1.0
     # elif 0.25 < speed_ratio <= 0.5 and directions_mid < moving_direction < directions_inn:
+    elif speed_ratio > 0.5 and distance_ratio < 0.6:
+        reward = 1.0
+    elif speed_ratio > 0.5 and distance_ratio >= 0.6:
+        reward = 0.5
     elif 0.25 < speed_ratio <= 0.5:
         reward = 0.5
     # elif speed_ratio <= 0.25 and directions_mid < moving_direction < directions_inn:
@@ -339,7 +344,7 @@ def speed_up_inn(waypoints_all, car_coords, moving_direction, speed_ratio, targe
     return reward
 
 
-def speed_up_out(waypoints_all, car_coords, moving_direction, speed_ratio, target_point):
+def speed_up_out(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point):
     # get waypoints
     waypoints_mid = waypoints_all[:, 0:2]
     waypoints_inn = waypoints_all[:, 2:4]
@@ -352,6 +357,10 @@ def speed_up_out(waypoints_all, car_coords, moving_direction, speed_ratio, targe
     if speed_ratio > 0.5 and directions_mid < moving_direction < directions_out:
         reward = 1.0
     # elif 0.25 < speed_ratio <= 0.5 and directions_mid < moving_direction < directions_out:
+    elif speed_ratio > 0.5 and distance_ratio < 0.6:
+        reward = 1.0
+    elif speed_ratio > 0.5 and distance_ratio >= 0.6:
+        reward = 0.5
     elif 0.25 < speed_ratio <= 0.5:
         reward = 0.5
     # elif speed_ratio <= 0.25 and directions_mid < moving_direction < directions_out:
@@ -363,7 +372,7 @@ def speed_up_out(waypoints_all, car_coords, moving_direction, speed_ratio, targe
     return reward
 
 
-def slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, target_point):
+def slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point):
     # get waypoints
     waypoints_mid = waypoints_all[:, 0:2]
     waypoints_inn = waypoints_all[:, 2:4]
@@ -376,6 +385,10 @@ def slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, targ
     if 0.25 < speed_ratio <= 0.5 and directions_mid < moving_direction < directions_inn:
         reward = 1.0
     # elif speed_ratio > 0.5 and directions_mid < moving_direction < directions_inn:
+    elif 0.25 < speed_ratio <= 0.5 and distance_ratio < 0.6:
+        reward = 1.0
+    elif 0.25 < speed_ratio <= 0.5 and distance_ratio >= 0.6:
+        reward = 0.5
     elif speed_ratio > 0.5:
         reward = 0.5
     # elif speed_ratio <= 0.25 and directions_mid < moving_direction < directions_inn:
@@ -387,7 +400,7 @@ def slow_down_inn(waypoints_all, car_coords, moving_direction, speed_ratio, targ
     return reward
 
 
-def slow_down_out(waypoints_all, car_coords, moving_direction, speed_ratio, target_point):
+def slow_down_out(waypoints_all, car_coords, moving_direction, speed_ratio, distance_ratio, target_point):
     # get waypoints
     waypoints_mid = waypoints_all[:, 0:2]
     waypoints_inn = waypoints_all[:, 2:4]
@@ -400,6 +413,10 @@ def slow_down_out(waypoints_all, car_coords, moving_direction, speed_ratio, targ
     if 0.25 < speed_ratio <= 0.5 and directions_out < moving_direction < directions_mid:
         reward = 1.0
     # elif speed_ratio > 0.5 and directions_out < moving_direction < directions_mid:
+    elif 0.25 < speed_ratio <= 0.5 and distance_ratio < 0.6:
+        reward = 1.0
+    elif 0.25 < speed_ratio <= 0.5 and distance_ratio >= 0.6:
+        reward = 0.5
     elif speed_ratio > 0.5:
         reward = 0.5
     # elif speed_ratio <= 0.25 and directions_out < moving_direction < directions_mid:
@@ -409,6 +426,89 @@ def slow_down_out(waypoints_all, car_coords, moving_direction, speed_ratio, targ
         reward = 1e-3
 
     return reward
+
+
+def car_action(waypoints_all, params, target_point, considering_steering_angel, car_actions):
+    # get waypoints
+    waypoints_mid = waypoints_all[:, 0:2]
+    waypoints_inn = waypoints_all[:, 2:4]
+    waypoints_out = waypoints_all[:, 4:6]
+
+    car_coords = [params['x'], params['y']]
+
+    is_left_of_center = params['is_left_of_center']
+
+    speed_ratio = params['speed'] / 4
+
+    moving_direction = params['heading']
+    if considering_steering_angel:
+        moving_direction += params['steering_angle']
+
+    distance_ratio = params['distance_from_center'] / (params['track_width'] * 0.5)
+
+    track_directions = directions_of_2points(waypoints_mid[params['closest_waypoints'][0]], waypoints_mid[target_point])
+    directions_mid = directions_of_2points(car_coords, waypoints_mid[target_point])
+    directions_inn = directions_of_2points(car_coords, waypoints_inn[target_point])
+    directions_out = directions_of_2points(car_coords, waypoints_out[target_point])
+
+    if abs(track_directions) > 90:                                          # from right to left
+        if moving_direction < 0:
+            moving_direction += 360
+        if directions_mid < 0:
+            directions_mid += 360
+        if directions_inn < 0:
+            directions_inn += 360
+        if directions_out < 0:
+            directions_out += 360
+
+    if car_actions == 'speed_up_inn':
+        if speed_ratio > 0.5:                                               # car speed > 2 m/s
+
+            if directions_mid < moving_direction < directions_inn:          # moving to the target conner
+                reward = 1.0
+            else:
+                if distance_ratio < 0.7:                                    # close to the track center line
+                    reward = 1.0
+                else:
+                    reward = 0.5                                            # away from the center line
+
+        if 0.25 < speed_ratio <= 0.5:
+
+            if directions_mid < moving_direction < directions_inn:          # moving to the target conner
+                reward = 0.5
+            else:
+                if distance_ratio < 0.7:                                    # close to the track center line
+                    reward = 0.5
+                else:
+                    reward = 0.2                                            # away from the center line
+
+        if speed_ratio <= 0.25:
+            reward = 0.2
+
+    if car_actions == 'speed_up_out':
+        if speed_ratio > 0.5:
+            pass
+        if 0.25 < speed_ratio <= 0.5:
+            pass
+        if speed_ratio <= 0.25:
+            pass
+
+    if car_actions == 'slow_down_inn':
+        if 0.25 < speed_ratio <= 0.5:
+            pass
+        if speed_ratio > 0.5:
+            pass
+        if speed_ratio <= 0.25:
+            pass
+
+    if car_actions == 'slow_down_out':
+        if 0.25 < speed_ratio <= 0.5:
+            pass
+        if speed_ratio > 0.5:
+            pass
+        if speed_ratio <= 0.25:
+            pass
+
 
 
 def directions_of_2points(p1, p2):
