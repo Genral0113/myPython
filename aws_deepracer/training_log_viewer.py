@@ -254,8 +254,8 @@ if __name__ == '__main__':
 
     #增加选择条件参看特定的点
     # df = df[df.throttle >= 1.5]
-    # df = df[df.episode == 150]
-    df = df[df.reward < 0.5]
+    df = df[df.episode == 173]
+    # df = df[df.reward < 0.5]
     # df = df[df.episode_status == 'off_track']
     #
     plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out)
