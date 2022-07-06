@@ -149,13 +149,6 @@ def reward_function(params):
     throttle_ratio = throttle / 0.5         # 4 / 0.5 = 8
     steering_ratio = abs(steering) / 10     # 30 / 10 = 3
 
-    max_throttle_allowed = (24 - steering_ratio * 8) / 3
-    if throttle_ratio > max_throttle_allowed:
-        return 0.001
-
-    if not all_wheels_on_track:
-        return 0.002
-
     car_action = ''
     start_waypoint = 0
     end_waypoint = 0
@@ -181,6 +174,13 @@ def reward_function(params):
                 heading_diff = 360 - heading_diff
 
             break
+
+    max_throttle_allowed = (24 - steering_ratio * 8) / 3
+    if throttle_ratio > max_throttle_allowed:
+        return 0.001
+
+    if not all_wheels_on_track:
+        return 0.002
 
     reward = 0.003
 
