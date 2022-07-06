@@ -4,8 +4,11 @@ from training_log_viewer import get_waypoints, plot_waypoints, display_setup
 from aws_deepracer.functions_2d import *
 
 
+start_waypoints = [1, 23, 29, 34, 38, 42, 51, 69, 81, 85, 90, 108, 119]
+start_waypoints = [1, 23, 29, 34, 38, 42, 73, 81, 85, 90, 108, 119]
+
 start_waypoints = [1, 24, 33, 41, 71, 81, 90, 106, 111, 119]
-start_waypoints = [1, 23, 34, 42, 51, 69, 81, 90, 105, 112, 119]
+car_actions = ['speed_up', 'slow_down', 'speed_up', 'speed_up', 'speed_up', 'slow_down', 'speed_up', 'slow_down', 'speed_up']
 
 
 def plot_track(track_file):
@@ -29,6 +32,10 @@ def plot_track(track_file):
     racing_points_y.append(racing_points_y[0])
     ax.plot(racing_points_x, racing_points_y, c='r', linestyle='-.', linewidth=1)
 
+    racing_line_length = 0
+    for i in range(len(racing_points_x) - 1):
+        racing_line_length += distance_of_2points([racing_points_x[i], racing_points_y[i]], [racing_points_x[i + 1], racing_points_y[i + 1]])
+
     waypoints_length = len(waypoints_mid)
     if waypoints_mid[0][0] == waypoints_mid[-1][0] and waypoints_mid[0][1] == waypoints_mid[-1][1]:
         waypoints_length -= 1
@@ -41,6 +48,8 @@ def plot_track(track_file):
         track_length += distance_of_2points(p1, p2)
 
     legends.append('track length : {:.3f}'.format(track_length))
+
+    legends.append('racing line length : {:.3f}'.format(racing_line_length))
 
     mng.window.state("zoomed")
     plt.title(os.path.basename(track_file).split('.')[0])

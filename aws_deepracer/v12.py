@@ -1,83 +1,25 @@
 import math
-from training_log_viewer import get_waypoints
 import numpy as np
-from functions_2d import *
 
 
-def get_track_direction(waypoints, closet_waypoints, next_waypoints):
-    prev_waypoint = min(closet_waypoints)
-    next_waypoint = max(closet_waypoints)
-    if prev_waypoint == 0 and next_waypoint == len(waypoints) - 1:
-        prev_waypoint = next_waypoint
-        next_waypoint = 0
-    if next_waypoints > 0:
-        next_waypoint = (next_waypoint + next_waypoints) % len(waypoints)
-    return directions_of_2points(waypoints[prev_waypoint], waypoints[next_waypoint])
-
-
-def read_waypoints(track_file):
-    waypoints = np.load(track_file)
-    waypoints_mid = waypoints[:, 0:2]
-    waypoints_inn = waypoints[:, 2:4]
-    waypoints_out = waypoints[:, 4:6]
-    return waypoints_mid, waypoints_inn, waypoints_out
-
-
-def get_average_changed_directions(waypoints, start_waypoint, end_waypoint):
-    average_changed_directions = 0
-
-    waypoints_count = end_waypoint - start_waypoint
-
-    if waypoints_count > 1:
-        first_waypoint_directions = directions_of_2points(waypoints[start_waypoint], waypoints[start_waypoint + 1])
-        last_waypoint_directions = directions_of_2points(waypoints[start_waypoint], waypoints[end_waypoint])
-        directions_diff = last_waypoint_directions - first_waypoint_directions
-
-        average_changed_directions = directions_diff / waypoints_count
-
-    return average_changed_directions
-
-
-def get_waypoint_action(closest_waypoint):
+def reward_function(params):
     start_waypoints = [1, 24, 33, 41, 71, 81, 90, 106, 111, 119]
-    car_actions = ['speed_up', 'slow_down', 'speed_up', 'speed_up', 'speed_up', 'slow_down', 'speed_up', 'slow_down', 'speed_up']
+    car_actions = ['speed_up', 'slow_down', 'speed_up', 'speed_up', 'speed_up', 'slow_down', 'speed_up', 'slow_down',
+                   'speed_up']
+    right_of_center_waypoints = [45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63]
+    corner_waypoints =[24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 81, 82, 83, 84, 85, 86, 87, 88, 89, 106, 107, 108, 109, 110]
 
-    car_action = ''
-    for i in range(len(start_waypoints) - 1):
-        if start_waypoints[i] <= closest_waypoint < start_waypoints[i + 1]:
-            car_action = car_actions[i]
-            break
-    return car_action
+    # speed limits
+    speed_up_incentive_limit_l1 = 2.5
+    speed_up_incentive_limit_l2 = 1.5
+    slow_down_incentive_limit = 1
+    heading_diff_l1 = 5
+    heading_diff_l2 = 15
 
+    directions_diff_of_waypoints = 6
 
-if __name__ == '__main__':
-    track_file = r'../npy/reinvent_base.npy'
-    waypoints_mid, waypoints_inn, waypoints_out = get_waypoints(track_file)
-
-    next_points = 5
-
-    # closet_waypoints = [113, 112]
-    # print('the track direction is {}'.format(get_track_direction(waypoints_mid, closet_waypoints, 1)))
-
-    # for i in range(len(waypoints_mid)):
-    # track_direction = directions_of_2points(waypoints_mid[i], waypoints_mid[(i + 1) % len(waypoints_mid)])
-    # distance = distance_of_2points(waypoints_mid[i], waypoints_mid[(i + 1) % len(waypoints_mid)])
-    # print('waypoints({}, {}), distance {}, direction {}'.format(i, (i + 1) % len(waypoints_mid), distance, track_direction))
-    # track_width = distance_of_2points(waypoints_inn[i], waypoints_out[i])
-    # print('the width of {}th waypoint is {}'.format(i + 1, track_width))
-
-    # if waypoints_mid[0][1] == waypoints_mid[118][1]:
-    #     print('the {}th and {}th are the same'.format(0, 118))
-
-    # car_coords = [1.2469693601667955,3.789366612217663]
-    # dist = distance_of_point_to_2points_line(car_coords, waypoints_mid[84], waypoints_mid[89])
-    # print(dist)
-
-    # for i in range(len(waypoints_mid)):
-    #     next_point = min(len(waypoints_mid) - 1, i + next_points)
-    #     directions = directions_of_2points(waypoints_mid[i], waypoints_mid[next_point])
-    #     print('{}th waypoint direction is {}'.format(i, directions))
-
+    #
+    # waypoints for re:Invent 2018
     waypoints_all = np.array([[3.05973351, 0.68265541, 3.05937004, 1.06365502, 3.06009698, 0.3016558],
                               [3.2095089, 0.68313448, 3.2084589, 1.06413305, 3.21055889, 0.30213591],
                               [3.35927546, 0.68336383, 3.35915899, 1.06436396, 3.35939193, 0.30236369],
@@ -198,38 +140,96 @@ if __name__ == '__main__':
                               [2.90999496, 0.68319255, 2.91309094, 1.06418002, 2.90689898, 0.30220509],
                               [3.05973351, 0.68265541, 3.05937004, 1.06365502, 3.06009698, 0.3016558]])
 
-    waypoints = waypoints_all[:, 0:2]
     waypoints_inn = waypoints_all[:, 2:4]
     waypoints_out = waypoints_all[:, 4:6]
 
-    closest_waypoints = [53, 0]
+    x = params['x']
+    y = params['y']
+    closest_waypoints = params['closest_waypoints']
+    distance_from_center = params['distance_from_center']
+    is_left_of_center = params['is_left_of_center']
+    throttle = params['speed']
+    track_width = params['track_width']
+    heading = params['heading']
+    steering = params['steering_angle']
+    all_wheels_on_track = params['all_wheels_on_track']
+    is_offtrack = params['is_offtrack']
+    progress = params['progress']
+    steps = params['steps']
+    waypoints = params['waypoints']
 
-    track_length = 0
-    for i in range(1, len(waypoints) - 1):
-        track_length += distance_of_2points(waypoints[i], waypoints[i + 1])
-    print(track_length)
+    car_action = ''
+    target_waypoint_directions_inn = 0
+    target_waypoint_directions_mid = 0
 
-    # start_waypoints = [1, 23, 34, 42, 51, 69, 81, 90, 105, 112, 119]
-    #
-    # start_waypoint = 1
-    # end_waypoint = 1
-    # for i in range(len(start_waypoints) - 1):
-    #     if start_waypoints[i] <= closest_waypoints[0] < start_waypoints[i + 1]:
-    #         start_waypoint = start_waypoints[i]
-    #         end_waypoint = start_waypoints[i + 1] - 1
-    #
-    # track_directions = directions_of_2points(waypoints[start_waypoint], waypoints[end_waypoint])
-    # if track_directions < 0:
-    #     track_directions += 360
-    #
-    # average_changed_directions = get_average_changed_directions(waypoints, start_waypoint, end_waypoint)
-    #
-    # direction_region = math.floor(track_directions/45)
-    #
-    # print('the start and end waypoint is ({}, {}), track directions are {} degrees, and in {}th region, average_changed_directions are {}'.format(start_waypoint, end_waypoint, track_directions, direction_region, average_changed_directions))
+    for i in range(len(start_waypoints) - 1):
 
-    for i in range(1, len(waypoints)):
-        car_action = get_waypoint_action(i)
-        print('the car action at {}th waypoint is {}'.format(i, car_action))
+        if start_waypoints[i] <= closest_waypoints[0] < start_waypoints[i + 1]:
+
+            car_action = car_actions[i]
+
+            end_point = start_waypoints[i + 1] - 1
+            tp = waypoints[end_point]
+
+            target_waypoint_directions_inn = directions_of_2points([x, y], waypoints_inn[
+                end_point - directions_diff_of_waypoints])
+            target_waypoint_directions_mid = directions_of_2points([x, y], tp)
+
+            break
+
+    #
+    # initialize reward with 0.001
+    #
+    reward = 1e-3
+
+    #
+    # check car location
+    #
+    if is_left_of_center and closest_waypoints[0] not in right_of_center_waypoints \
+            or not is_left_of_center and closest_waypoints[0] in right_of_center_waypoints:
+        reward += 1.0
+
+    #
+    # check heading
+    #
+    if heading < 0:
+        heading += 360
+    if target_waypoint_directions_inn < 0:
+        target_waypoint_directions_inn += 360
+    if target_waypoint_directions_mid < 0:
+        target_waypoint_directions_mid += 360
+    if target_waypoint_directions_mid <= heading <= target_waypoint_directions_inn:
+        reward += 3.0
+    elif heading < target_waypoint_directions_mid and steering > 0 \
+            or heading > target_waypoint_directions_inn and steering < 0:
+        reward += 2.0
+
+    #
+    # check speed up
+    #
+    if car_action == 'speed_up':
+        if closest_waypoints[0] not in corner_waypoints:
+            if throttle > speed_up_incentive_limit_l1:
+                reward += 5.0
+            elif speed_up_incentive_limit_l2 < throttle <= speed_up_incentive_limit_l1:
+                reward += 3.0
+        else:   # speed up at corner with 1 to 1.5 m/s
+            if slow_down_incentive_limit < throttle < speed_up_incentive_limit_l2:
+                reward += 3.0
+    else:       # car slow down
+        if slow_down_incentive_limit < throttle < speed_up_incentive_limit_l2:
+            reward += 3.0
+
+    #
+    # check progress
+    #
+    if progress > 25:
+        reward += 1.0
+
+    return max(reward, 1e-3)
 
 
+def directions_of_2points(p1, p2):
+    directions = math.atan2(p2[1] - p1[1], p2[0] - p1[0])
+    directions = math.degrees(directions)
+    return directions

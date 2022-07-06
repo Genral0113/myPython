@@ -50,6 +50,7 @@ if __name__ == '__main__':
     episodes_distance = []
     episodes_time = []
     episodes_speed_avg = []
+    episodes_throttle = []
 
     i = 0
     prev_episode = -1
@@ -57,8 +58,10 @@ if __name__ == '__main__':
     last_step_timestaap = 0
     distance = 0
     total_rewards = 0
+    total_throttle = 0
     last_x = -99
     last_y = -99
+    episode_steps = 0
 
     for episode, steps, x, y, yaw, steer, throttle, reward, progress, closest_waypoint, tstamp, episode_status \
             in zip(df['episode'], df['steps'], df['X'], df['Y'], df['yaw'], df['steer'], df['throttle'], df['reward'],
@@ -72,12 +75,14 @@ if __name__ == '__main__':
         if episode != prev_episode:
             episodes.append(prev_episode)
             rewards.append(total_rewards)
+            episodes_throttle.append(10 * total_throttle / episode_steps)
             episodes_distance.append(distance)
             episodes_time.append(last_step_timestaap - first_step_timestamp)
             episodes_speed_avg.append(10 * distance / (last_step_timestaap - first_step_timestamp))
 
             prev_episode = episode
             total_rewards = 0
+            total_throttle = 0
             distance = 0
             last_x = x
             last_y = y
@@ -88,7 +93,9 @@ if __name__ == '__main__':
         distance += distance_of_2points([x, y], [last_x, last_y])
         last_x = x
         last_y = y
+        episode_steps = steps
         total_rewards += reward
+        total_throttle += throttle
         last_step_timestaap = tstamp
 
         # next record
@@ -96,6 +103,7 @@ if __name__ == '__main__':
 
     episodes.append(prev_episode)
     rewards.append(total_rewards)
+    episodes_throttle.append(10 * total_throttle / episode_steps)
     episodes_distance.append(distance)
     episodes_time.append(last_step_timestaap - first_step_timestamp)
     episodes_speed_avg.append(10 * distance / (last_step_timestaap - first_step_timestamp))
@@ -119,6 +127,9 @@ if __name__ == '__main__':
 
     ax.plot(episodes, episodes_speed_avg, c='r', linestyle='-.', linewidth=1)
     legends.append('average speed(x10)')
+
+    ax.plot(episodes, episodes_throttle, c='darkred', linestyle='-.', linewidth=1)
+    legends.append('average throttle(x10)')
 
     ax.plot(episodes, episodes_time, c='g', linestyle='-.', linewidth=1)
     legends.append('episode timestamp')
