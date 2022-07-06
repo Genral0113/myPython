@@ -114,6 +114,9 @@ if __name__ == '__main__':
     ax.plot(episodes, episodes_speed_avg, c='r', linestyle='-.', linewidth=1)
     legends.append('average speed(x10)')
 
+    ax.plot(episodes, episodes_time, c='g', linestyle='-.', linewidth=1)
+    legends.append('episode timestamp')
+
     ax.plot(episodes, episodes_distance, c='y', linestyle='-.', linewidth=1)
     legends.append('distance')
 
