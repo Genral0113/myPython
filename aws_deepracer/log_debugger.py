@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 # from johnny4001 import *
 from csv_file_combine import input_file_dir, output_file_name
-from v7 import *
+from v8 import *
 
 
 def read_csv_file(file_name, episode_num=-1):

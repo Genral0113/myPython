@@ -100,6 +100,10 @@ if __name__ == '__main__':
     episodes_time.append(last_step_timestaap - first_step_timestamp)
     episodes_speed_avg.append(10 * distance / (last_step_timestaap - first_step_timestamp))
 
+    max_reward = max(rewards)
+    for i in range(len(rewards)):
+        rewards[i] = (rewards[i] / max_reward) * 30.0
+
     # for i in range(len(episodes)):
     #     if episodes_distance[i] > 16:
     #     print('{}the episode: Total rewards={}, distance={}, time={} and average speed={}'.format(episodes[i], rewards[i], episodes_distance[i], episodes_time[i], episodes_speed_avg[i]))
@@ -111,7 +115,7 @@ if __name__ == '__main__':
     legends = []
 
     ax.plot(episodes, rewards, c='b', linestyle='-.', linewidth=1)
-    legends.append('training rewards')
+    legends.append('training rewards(30%)')
 
     ax.plot(episodes, episodes_speed_avg, c='r', linestyle='-.', linewidth=1)
     legends.append('average speed(x10)')
