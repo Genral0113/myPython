@@ -1,7 +1,7 @@
 import os
 import csv
 
-input_file_dir = r'C:\Users\asus\Desktop\2022 aws\autobus-v6-t1-training_job_NVD3WkyuTmCB0tFv-qlMfw_logs\3c788b68-5caf-4b5b-a759-c3fe26aa36ab\sim-trace\training\training-simtrace'
+input_file_dir = r'C:\Users\asus\Desktop\2022 aws\v12-t1-training_job_c3U05UU1SSO91L_s97caOA_logs\0b6e1df8-e4d9-4d0a-8dfa-b0f90242e4ac\sim-trace\training\training-simtrace'
 output_file_name = r'\all-iterations.csv'
 
 if __name__ == '__main__':

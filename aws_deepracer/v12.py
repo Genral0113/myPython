@@ -7,7 +7,8 @@ def reward_function(params):
     car_actions = ['speed_up', 'slow_down', 'speed_up', 'speed_up', 'speed_up', 'slow_down', 'speed_up', 'slow_down',
                    'speed_up']
     right_of_center_waypoints = [45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63]
-    corner_waypoints =[24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 81, 82, 83, 84, 85, 86, 87, 88, 89, 106, 107, 108, 109, 110]
+    corner_waypoints =[24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 81, 82, 83, 84, 85, 86, 87, 88, 106, 107, 108, 109, 110]
+    cut_waypoints_out = [50, 51, 52, 53, 54, 55, 56, 57, 58]
 
     # speed limits
     speed_up_incentive_limit_l1 = 2.5
@@ -140,6 +141,7 @@ def reward_function(params):
                               [2.90999496, 0.68319255, 2.91309094, 1.06418002, 2.90689898, 0.30220509],
                               [3.05973351, 0.68265541, 3.05937004, 1.06365502, 3.06009698, 0.3016558]])
 
+    waypoints_mid = waypoints_all[:, 0:2]
     waypoints_inn = waypoints_all[:, 2:4]
     waypoints_out = waypoints_all[:, 4:6]
 
@@ -169,10 +171,9 @@ def reward_function(params):
             car_action = car_actions[i]
 
             end_point = start_waypoints[i + 1] - 1
-            tp = waypoints[end_point]
+            tp = waypoints_mid[end_point]
 
-            target_waypoint_directions_inn = directions_of_2points([x, y], waypoints_inn[
-                end_point - directions_diff_of_waypoints])
+            target_waypoint_directions_inn = directions_of_2points([x, y], waypoints_inn[end_point - directions_diff_of_waypoints])
             target_waypoint_directions_mid = directions_of_2points([x, y], tp)
 
             break
@@ -181,6 +182,18 @@ def reward_function(params):
     # initialize reward with 0.001
     #
     reward = 1e-3
+
+    if closest_waypoints[0] in cut_waypoints_out:
+        if is_left_of_center:
+            return reward
+        if distance_from_center < track_width * 0.5:
+            return reward
+
+    if closest_waypoints[0] in corner_waypoints and distance_from_center < track_width * 0.25:
+        return reward
+
+    if distance_from_center > track_width * 0.5:
+        return reward
 
     #
     # check car location
