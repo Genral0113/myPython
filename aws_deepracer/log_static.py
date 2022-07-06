@@ -1,6 +1,9 @@
 import pandas as pd
 import math
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.colors as colors
+from training_log_viewer import display_setup
 
 
 def read_log(log_file, episode_num=-1, steps=-1):
@@ -69,7 +72,7 @@ if __name__ == '__main__':
             rewards.append(total_rewards)
             episodes_distance.append(distance)
             episodes_time.append(last_step_timestaap - first_step_timestamp)
-            episodes_speed_avg.append(distance / (last_step_timestaap - first_step_timestamp))
+            episodes_speed_avg.append(10 * distance / (last_step_timestaap - first_step_timestamp))
 
             prev_episode = episode
             total_rewards = 0
@@ -93,8 +96,30 @@ if __name__ == '__main__':
     rewards.append(total_rewards)
     episodes_distance.append(distance)
     episodes_time.append(last_step_timestaap - first_step_timestamp)
-    episodes_speed_avg.append(distance / (last_step_timestaap - first_step_timestamp))
+    episodes_speed_avg.append(10 * distance / (last_step_timestaap - first_step_timestamp))
 
     for i in range(len(episodes)):
         # if episodes_distance[i] > 16:
         print('{}the episode: Total rewards={}, distance={}, time={} and average speed={}'.format(episodes[i], rewards[i], episodes_distance[i], episodes_time[i], episodes_speed_avg[i]))
+
+    fig = plt.figure(figsize=display_setup['figure_size'], dpi=display_setup['dpi'])
+    mng = plt.get_current_fig_manager()
+    ax = fig.add_subplot()
+
+    legends = []
+
+    ax.plot(episodes, rewards, c='b', linestyle='-.', linewidth=1)
+    legends.append('training rewards')
+
+    ax.plot(episodes, episodes_speed_avg, c='r', linestyle='-.', linewidth=1)
+    legends.append('average speed(x10)')
+
+    ax.plot(episodes, episodes_distance, c='y', linestyle='-.', linewidth=1)
+    legends.append('distance')
+
+    mng.window.state("zoomed")
+    plt.xlabel('episodes')
+    plt.grid()
+    plt.legend(legends)
+    plt.show()
+    plt.close()
