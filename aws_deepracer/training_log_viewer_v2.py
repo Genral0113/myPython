@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 from aws_deepracer.functions_2d import *
+from csv_file_combine import input_file_dir, output_file_name
 
 display_setup = {
     'dot_size': 2,
@@ -239,18 +240,7 @@ if __name__ == '__main__':
             display_setup['display_waypoints_out']:
         plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out)
     #
-    training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-v4-training_job_inn-9A0nR9uvRoVacnZb1A_logs\7a442136-7e8b-43bc-82a0-7209e443b3da\sim-trace\training\training-simtrace\all-iterations.csv'
-    training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-v6-evaluation_job_J3aa6-cOR0KPAARSeR9Czg_logs\53fb60e8-1f8a-4ec7-b87d-76d5a6b35f60\sim-trace\evaluation\20220702234903-J3aa6-cOR0KPAARSeR9Czg\evaluation-simtrace\0-iteration.csv'
-    training_log = r'C:\Users\asus\Desktop\2022 aws\model-v7-training_job_qMARHs5_T0WxP8RmuQ837Q_logs\74dff1a2-b748-4975-aea9-3c9de4f79e35\sim-trace\training\training-simtrace\all-iterations.csv'
-    training_log = r'C:\Users\asus\Desktop\2022 aws\model-v7-training_job_ni5gD3LsRRaAUgDr7ZYmVg_logs\2e0f27ff-0f90-4ec1-91eb-ae764b38097f\sim-trace\training\training-simtrace\all-iterations.csv'
-    training_log = r'C:\Users\asus\Desktop\2022 aws\johnny4001-v2-training_job_zRVGgu1XThOtvo0RwWQ5wg_logs\e044c950-29c1-42ea-aa7e-ca6244245b5c\sim-trace\training\training-simtrace\all-iterations.csv'
-    training_log = r'C:\Users\asus\Desktop\2022 aws\Johnny4001-training_job_ZzKOgy1JROiqgYb9stilYQ_logs\811aa389-7e92-4ab7-99d7-cbdb51ee0a58\sim-trace\training\training-simtrace\all-iterations.csv'
-    training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-v8-training_job_8G2s1EelS9y6x_XxWolXYQ_logs\351e115e-1166-48b6-afdb-d5ce480d0756\sim-trace\training\training-simtrace\all-iterations.csv'
-    training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-final-training\b35a7d47-5f47-4fef-a4f9-c1be7e40f556\sim-trace\training\training-simtrace\all-iterations.csv'
-    training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-final-clone-training_job_6aekpJ1gTMO2SLjDsHvSgA_logs\0075f857-2f73-456c-8ba3-3c4bc5730e7c\sim-trace\training\training-simtrace\all-iterations.csv'
-    training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-final-v3-training_job_YHuE0dYIT1qQfkW35rMQEg_logs\c2bac156-961f-4c2d-bcd4-507e675c007e\sim-trace\training\training-simtrace\all-iterations.csv'
-    training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-final-v3-clone-training_job_EEgwPwzWTM-YyXYDegM5Hw_logs\51abc572-30e7-40e0-85db-d15ad31ccef6\sim-trace\training\training-simtrace\all-iterations.csv'
-    training_log = r'C:\Users\asus\Desktop\2022 aws\autobus-v10-training_job_b3JGFL48Q-qUcDq3n1oXtA_logs\e48e476a-0ec0-44e5-894a-67c761dfd006\sim-trace\training\training-simtrace\all-iterations.csv'
+    training_log = input_file_dir + output_file_name
     df = read_log(training_log, episode_num=-1, steps=0)
 
     #增加选择条件参看特定的点

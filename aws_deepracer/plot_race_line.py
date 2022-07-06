@@ -5,6 +5,7 @@ from aws_deepracer.functions_2d import *
 
 
 start_waypoints = [1, 24, 33, 41, 71, 81, 90, 106, 111, 119]
+start_waypoints = [1, 23, 34, 42, 51, 69, 81, 90, 105, 112, 119]
 
 
 def plot_track(track_file):

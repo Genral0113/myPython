@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 # from johnny4001 import *
+from csv_file_combine import input_file_dir, output_file_name
 from v7 import *
 
 
@@ -119,20 +120,7 @@ def get_closest_waypoints(waypoints, car_coords):
 if __name__ == '__main__':
     track_file = r'../npy/reinvent_base.npy'
 
-    log_file = r'C:\Users\asus\Desktop\2022 aws\4b0ffbd9-9b3a-4941-a697-314f82831812\sim-trace\evaluation\20220701002122-O-aHYUMxQWCftUHHNMCq7Q\evaluation-simtrace\0-iteration.csv'
-    log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-v3-training_job_G3i0ZBFqRlOX86MhVbgxYA_logs\3dbebb02-802a-4273-909d-3014dd8f3855\sim-trace\training\training-simtrace\0-iteration.csv'
-    log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-v3-training_job_G3i0ZBFqRlOX86MhVbgxYA_logs\3dbebb02-802a-4273-909d-3014dd8f3855\sim-trace\training\training-simtrace\10-iteration.csv'
-    log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-v6-evaluation_job_J3aa6-cOR0KPAARSeR9Czg_logs\53fb60e8-1f8a-4ec7-b87d-76d5a6b35f60\sim-trace\evaluation\20220702234903-J3aa6-cOR0KPAARSeR9Czg\evaluation-simtrace\0-iteration.csv'
-    log_file = r'C:\Users\asus\Desktop\2022 aws\model-v7-training_job_qMARHs5_T0WxP8RmuQ837Q_logs\74dff1a2-b748-4975-aea9-3c9de4f79e35\sim-trace\training\training-simtrace\all-iterations.csv'
-    log_file = r'C:\Users\asus\Desktop\2022 aws\model-v7-training_job_ni5gD3LsRRaAUgDr7ZYmVg_logs\2e0f27ff-0f90-4ec1-91eb-ae764b38097f\sim-trace\training\training-simtrace\all-iterations.csv'
-    log_file = r'C:\Users\asus\Desktop\2022 aws\Johnny4001-training_job_ZzKOgy1JROiqgYb9stilYQ_logs\811aa389-7e92-4ab7-99d7-cbdb51ee0a58\sim-trace\training\training-simtrace\all-iterations.csv'
-    log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-v8-training_job_8G2s1EelS9y6x_XxWolXYQ_logs\351e115e-1166-48b6-afdb-d5ce480d0756\sim-trace\training\training-simtrace\all-iterations.csv'
-    log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-final-training\b35a7d47-5f47-4fef-a4f9-c1be7e40f556\sim-trace\training\training-simtrace\all-iterations.csv'
-    log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-final-clone-training_job_6aekpJ1gTMO2SLjDsHvSgA_logs\0075f857-2f73-456c-8ba3-3c4bc5730e7c\sim-trace\training\training-simtrace\all-iterations.csv'
-    log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-final-v3-training_job_YHuE0dYIT1qQfkW35rMQEg_logs\c2bac156-961f-4c2d-bcd4-507e675c007e\sim-trace\training\training-simtrace\all-iterations.csv'
-    log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-final-v3-clone-training_job_EEgwPwzWTM-YyXYDegM5Hw_logs\51abc572-30e7-40e0-85db-d15ad31ccef6\sim-trace\training\training-simtrace\all-iterations.csv'
-    log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-v10-training_job_b3JGFL48Q-qUcDq3n1oXtA_logs\e48e476a-0ec0-44e5-894a-67c761dfd006\sim-trace\training\training-simtrace\all-iterations.csv'
-    log_file = r'C:\Users\asus\Desktop\2022 aws\v12-training_job_moiGZao9TCeOeT1cArD0fw_logs\addab6f8-608d-472e-94e7-259aac85970c\sim-trace\training\training-simtrace\all-iterations.csv'
+    log_file = input_file_dir + output_file_name
 
     waypoints, waypoints_inn, waypoints_out = get_waypoints(track_file)
     track_width = distance_of_2points(waypoints_inn[0], waypoints_out[0])
@@ -168,7 +156,7 @@ if __name__ == '__main__':
 
         if params['steps']:
             reward = reward_function(params)
-            if abs(reward - params['reward']) <= 0.5 and params['steps'] != 1:
+            if abs(reward - params['reward']) > 0.5 and params['steps'] != 1:
                 print('{}th episode {}th step -> new reward is {} and old reward is {}'.format(params['episode'], params['steps'], reward, params['reward']))
 
         if params['is_offtrack']:
