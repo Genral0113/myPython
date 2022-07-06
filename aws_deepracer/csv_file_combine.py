@@ -12,6 +12,8 @@ if __name__ == '__main__':
     input_file_dir = r'C:\Users\asus\Desktop\2022 aws\autobus-final-clone-training_job_6aekpJ1gTMO2SLjDsHvSgA_logs\0075f857-2f73-456c-8ba3-3c4bc5730e7c\sim-trace\training\training-simtrace'
     input_file_dir = r'C:\Users\asus\Desktop\2022 aws\autobus-final-v3-training_job_YHuE0dYIT1qQfkW35rMQEg_logs\c2bac156-961f-4c2d-bcd4-507e675c007e\sim-trace\training\training-simtrace'
     input_file_dir = r'C:\Users\asus\Desktop\2022 aws\autobus-final-v3-clone-training_job_EEgwPwzWTM-YyXYDegM5Hw_logs\51abc572-30e7-40e0-85db-d15ad31ccef6\sim-trace\training\training-simtrace'
+    input_file_dir = r'C:\Users\asus\Desktop\2022 aws\autobus-v10-training_job_b3JGFL48Q-qUcDq3n1oXtA_logs\e48e476a-0ec0-44e5-894a-67c761dfd006\sim-trace\training\training-simtrace'
+    input_file_dir = r'C:\Users\asus\Desktop\2022 aws\v12-training_job_moiGZao9TCeOeT1cArD0fw_logs\addab6f8-608d-472e-94e7-259aac85970c\sim-trace\training\training-simtrace'
     output_file_name = r'\all-iterations.csv'
 
     skip_header = False

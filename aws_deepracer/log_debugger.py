@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 # from johnny4001 import *
-from simple_reward_v3 import *
+from v7 import *
 
 
 def read_csv_file(file_name, episode_num=-1):
@@ -131,11 +131,13 @@ if __name__ == '__main__':
     log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-final-clone-training_job_6aekpJ1gTMO2SLjDsHvSgA_logs\0075f857-2f73-456c-8ba3-3c4bc5730e7c\sim-trace\training\training-simtrace\all-iterations.csv'
     log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-final-v3-training_job_YHuE0dYIT1qQfkW35rMQEg_logs\c2bac156-961f-4c2d-bcd4-507e675c007e\sim-trace\training\training-simtrace\all-iterations.csv'
     log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-final-v3-clone-training_job_EEgwPwzWTM-YyXYDegM5Hw_logs\51abc572-30e7-40e0-85db-d15ad31ccef6\sim-trace\training\training-simtrace\all-iterations.csv'
+    log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-v10-training_job_b3JGFL48Q-qUcDq3n1oXtA_logs\e48e476a-0ec0-44e5-894a-67c761dfd006\sim-trace\training\training-simtrace\all-iterations.csv'
+    log_file = r'C:\Users\asus\Desktop\2022 aws\v12-training_job_moiGZao9TCeOeT1cArD0fw_logs\addab6f8-608d-472e-94e7-259aac85970c\sim-trace\training\training-simtrace\all-iterations.csv'
 
     waypoints, waypoints_inn, waypoints_out = get_waypoints(track_file)
     track_width = distance_of_2points(waypoints_inn[0], waypoints_out[0])
 
-    log_parmas = read_csv_file(log_file, episode_num=150)
+    log_parmas = read_csv_file(log_file, episode_num=-1)
 
     params = {}
     car_width_total = 0
@@ -164,9 +166,9 @@ if __name__ == '__main__':
         if log_parmas['episode_status'][i] == 'off_track':
             params['is_offtrack'] = True
 
-        if params['steps'] == 50:
+        if params['steps']:
             reward = reward_function(params)
-            if abs(reward - params['reward']) > 0.5 and params['steps'] != 1:
+            if abs(reward - params['reward']) <= 0.5 and params['steps'] != 1:
                 print('{}th episode {}th step -> new reward is {} and old reward is {}'.format(params['episode'], params['steps'], reward, params['reward']))
 
         if params['is_offtrack']:

@@ -36,6 +36,8 @@ def distance_of_2points(p1, p2):
 
 if __name__ == '__main__':
     log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-final-v3-clone-training_job_EEgwPwzWTM-YyXYDegM5Hw_logs\51abc572-30e7-40e0-85db-d15ad31ccef6\sim-trace\training\training-simtrace\all-iterations.csv'
+    log_file = r'C:\Users\asus\Desktop\2022 aws\autobus-v10-training_job_b3JGFL48Q-qUcDq3n1oXtA_logs\e48e476a-0ec0-44e5-894a-67c761dfd006\sim-trace\training\training-simtrace\all-iterations.csv'
+    log_file = r'C:\Users\asus\Desktop\2022 aws\v12-training_job_moiGZao9TCeOeT1cArD0fw_logs\addab6f8-608d-472e-94e7-259aac85970c\sim-trace\training\training-simtrace\all-iterations.csv'
     df = read_log(log_file)
 
     episodes = []
@@ -94,5 +96,5 @@ if __name__ == '__main__':
     episodes_speed_avg.append(distance / (last_step_timestaap - first_step_timestamp))
 
     for i in range(len(episodes)):
-        if episodes_distance[i] > 16:
-            print('{}the episode: Total rewards={}, distance={}, time={} and average speed={}'.format(episodes[i], rewards[i], episodes_distance[i], episodes_time[i], episodes_speed_avg[i]))
+        # if episodes_distance[i] > 16:
+        print('{}the episode: Total rewards={}, distance={}, time={} and average speed={}'.format(episodes[i], rewards[i], episodes_distance[i], episodes_time[i], episodes_speed_avg[i]))
