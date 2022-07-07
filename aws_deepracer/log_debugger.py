@@ -16,7 +16,19 @@ def read_csv_file(file_name, episode_num=-1):
                     'all_wheels_on_track': bool, 'progress': float, 'closest_waypoint': int, 'track_len': float,
                     'tstamp': float, 'episode_status': str, 'pause_duration': float}
 
-    df = pd.read_csv(file_name, skiprows=1, names=column_names, dtype=column_dtype)
+    try:
+        df = pd.read_csv(log_file, engine='python', skiprows=1, names=column_names, dtype=column_dtype)
+    except ValueError:
+        column_names = ['episode', 'steps', 'X', 'Y', 'yaw', 'steer', 'throttle', 'action', 'reward', 'done',
+                        'all_wheels_on_track', 'progress', 'closest_waypoint', 'track_len', 'tstamp', 'episode_status',
+                        'pause_duration']
+
+        column_dtype = {'episode': int, 'steps': int, 'X': float, 'Y': float, 'yaw': float, 'steer': float,
+                        'throttle': float, 'action': float, 'reward': float, 'done': bool,
+                        'all_wheels_on_track': bool, 'progress': float, 'closest_waypoint': int, 'track_len': float,
+                        'tstamp': float, 'episode_status': str, 'pause_duration': float}
+
+        df = pd.read_csv(log_file, engine='python', skiprows=1, names=column_names, dtype=column_dtype)
 
     if episode_num >= 0:
         df = df[df.episode == episode_num]
@@ -26,7 +38,7 @@ def read_csv_file(file_name, episode_num=-1):
         'steps': df['steps'].tolist(),
         'x': df['X'].tolist(),
         'y': df['Y'].tolist(),
-        'yam': df['yam'].tolist(),
+        'yaw': df['yaw'].tolist(),
         'steer': df['steer'].tolist(),
         'throttle': df['throttle'].tolist(),
         # 'action': df['action1'] + ',' + df['action2'],
@@ -136,7 +148,7 @@ if __name__ == '__main__':
         params['x'] = log_parmas['x'][i]
         params['y'] = log_parmas['y'][i]
         params['steps'] = log_parmas['steps'][i]
-        params['heading'] = log_parmas['yam'][i]
+        params['heading'] = log_parmas['yaw'][i]
         params['steering_angle'] = log_parmas['steer'][i]
         params['speed'] = log_parmas['throttle'][i]
         params['track_width'] = track_width

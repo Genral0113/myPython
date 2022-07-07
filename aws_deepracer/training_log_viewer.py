@@ -50,7 +50,19 @@ def read_log(log_file, episode_num=-1, steps=-1):
                     'all_wheels_on_track': bool, 'progress': float, 'closest_waypoint': int, 'track_len': float,
                     'tstamp': float, 'episode_status': str, 'pause_duration': float}
 
-    df = pd.read_csv(log_file, engine='python', skiprows=1, names=column_names, dtype=column_dtype)
+    try:
+        df = pd.read_csv(log_file, engine='python', skiprows=1, names=column_names, dtype=column_dtype)
+    except ValueError:
+        column_names = ['episode', 'steps', 'X', 'Y', 'yaw', 'steer', 'throttle', 'action', 'reward', 'done',
+                        'all_wheels_on_track', 'progress', 'closest_waypoint', 'track_len', 'tstamp', 'episode_status',
+                        'pause_duration']
+
+        column_dtype = {'episode': int, 'steps': int, 'X': float, 'Y': float, 'yaw': float, 'steer': float,
+                        'throttle': float, 'action': float, 'reward': float, 'done': bool,
+                        'all_wheels_on_track': bool, 'progress': float, 'closest_waypoint': int, 'track_len': float,
+                        'tstamp': float, 'episode_status': str, 'pause_duration': float}
+
+        df = pd.read_csv(log_file, engine='python', skiprows=1, names=column_names, dtype=column_dtype)
 
     if episode_num >= 0:
         df = df[df.episode == episode_num]
@@ -241,7 +253,7 @@ if __name__ == '__main__':
         plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out)
     #
     training_log = input_file_dir + output_file_name
-    df = read_log(training_log, episode_num=-1, steps=0)
+    df = read_log(training_log, episode_num=3, steps=0)
 
     #增加选择条件参看特定的点
     # df = df[df.throttle >= 1.5]
