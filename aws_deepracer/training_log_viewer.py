@@ -241,7 +241,7 @@ if __name__ == '__main__':
         plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out)
     #
     training_log = input_file_dir + output_file_name
-    df = read_log(training_log, episode_num=2, steps=0)
+    df = read_log(training_log, episode_num=-1, steps=0)
 
     #增加选择条件参看特定的点
     # df = df[df.throttle >= 1.5]

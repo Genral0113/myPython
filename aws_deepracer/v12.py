@@ -19,6 +19,8 @@ def reward_function(params):
 
     directions_diff_of_waypoints = 6
 
+    rewards_levels = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 2014]
+
     #
     # waypoints for re:Invent 2018
     waypoints_all = np.array([[3.05973351, 0.68265541, 3.05937004, 1.06365502, 3.06009698, 0.3016558],
@@ -178,22 +180,29 @@ def reward_function(params):
 
             break
 
-    #
-    # initialize reward with 0.001
-    #
-    reward = 1e-3
+    if heading < 0:
+        heading += 360
+    if target_waypoint_directions_inn < 0:
+        target_waypoint_directions_inn += 360
+    if target_waypoint_directions_mid < 0:
+        target_waypoint_directions_mid += 360
 
     if closest_waypoints[0] in cut_waypoints_out:
         if is_left_of_center:
-            return reward
+            return 1e-3
         if distance_from_center < track_width * 0.5:
-            return reward
+            return 1e-3
 
     if closest_waypoints[0] in corner_waypoints and distance_from_center < track_width * 0.25:
-        return reward
+        return 1e-3
 
     if distance_from_center > track_width * 0.5:
-        return reward
+        return 1e-3
+
+    #
+    # initialize reward with 0.001
+    #
+    reward = 0.0
 
     #
     # check car location
@@ -205,14 +214,8 @@ def reward_function(params):
     #
     # check heading
     #
-    if heading < 0:
-        heading += 360
-    if target_waypoint_directions_inn < 0:
-        target_waypoint_directions_inn += 360
-    if target_waypoint_directions_mid < 0:
-        target_waypoint_directions_mid += 360
     if target_waypoint_directions_mid <= heading <= target_waypoint_directions_inn:
-        reward += 3.0
+        reward += 2.0
     elif heading < target_waypoint_directions_mid and steering > 0 \
             or heading > target_waypoint_directions_inn and steering < 0:
         reward += 2.0
@@ -223,21 +226,25 @@ def reward_function(params):
     if car_action == 'speed_up':
         if closest_waypoints[0] not in corner_waypoints:
             if throttle > speed_up_incentive_limit_l1:
-                reward += 5.0
+                reward += 16.0
             elif speed_up_incentive_limit_l2 < throttle <= speed_up_incentive_limit_l1:
-                reward += 3.0
+                reward += 4.0
         else:   # speed up at corner with 1 to 1.5 m/s
             if slow_down_incentive_limit < throttle < speed_up_incentive_limit_l2:
-                reward += 3.0
+                reward += 8.0
     else:       # car slow down
         if slow_down_incentive_limit < throttle < speed_up_incentive_limit_l2:
-            reward += 3.0
+            reward += 8.0
 
     #
     # check progress
     #
     if progress > 25:
-        reward += 1.0
+        reward += 32.0
+
+    for i in range(len(rewards_levels)):
+        if rewards_levels[i] <= reward < (2 * rewards_levels[i] - 1):
+            reward = rewards_levels[i]
 
     return max(reward, 1e-3)
 
