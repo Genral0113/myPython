@@ -137,7 +137,7 @@ if __name__ == '__main__':
     waypoints, waypoints_inn, waypoints_out = get_waypoints(track_file)
     track_width = distance_of_2points(waypoints_inn[0], waypoints_out[0])
 
-    log_parmas = read_csv_file(log_file, episode_num=-1)
+    log_parmas = read_csv_file(log_file, episode_num=7)
 
     params = {}
     car_width_total = 0
@@ -166,7 +166,7 @@ if __name__ == '__main__':
         if log_parmas['episode_status'][i] == 'off_track':
             params['is_offtrack'] = True
 
-        if params['steps']:
+        if params['steps'] >= 16:
             reward = reward_function(params)
             # if abs(reward - params['reward']) > 0.5 and params['steps'] != 1:
             if reward == 1:

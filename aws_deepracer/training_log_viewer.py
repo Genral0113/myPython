@@ -1,3 +1,5 @@
+import gc
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
@@ -203,6 +205,18 @@ def plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out):
         i += 1
 
 
+def plot_racing_line(start_waypoints, ax, waypoints_mid, waypoints_inn, waypoints_out):
+    racing_points_x = []
+    racing_points_y = []
+    for i in range(len(start_waypoints) - 1):
+        end_waypoint = start_waypoints[i + 1] - 1
+        racing_points_x.append((waypoints_inn[end_waypoint][0] + waypoints_mid[end_waypoint][0]) * 0.5)
+        racing_points_y.append((waypoints_inn[end_waypoint][1] + waypoints_mid[end_waypoint][1]) * 0.5)
+    racing_points_x.append(racing_points_x[0])
+    racing_points_y.append(racing_points_y[0])
+    ax.plot(racing_points_x, racing_points_y, c='r', linestyle='-.', linewidth=1)
+
+
 def closest_2_racing_points_index(racing_coords, car_coords):
     distances = []
     for i in range(len(racing_coords)):
@@ -239,32 +253,45 @@ def next_prev_racing_point(waypoints, closest_waypoints, car_coords, heading):
     return [prev_point, next_point]
 
 
-if __name__ == '__main__':
-    waypoints_npy_file = r'../npy/reinvent_base.npy'
+def plot_episode(df, track_file, start_points=[], image_file=''):
     #
     fig = plt.figure(figsize=display_setup['figure_size'], dpi=display_setup['dpi'])
     mng = plt.get_current_fig_manager()
     ax = fig.add_subplot()
     #
-    waypoints_mid, waypoints_inn, waypoints_out = get_waypoints(waypoints_npy_file)
+    waypoints_mid, waypoints_inn, waypoints_out = get_waypoints(track_file)
     if display_setup['display_waypoints_mid'] or \
             display_setup['display_waypoints_inn'] or \
             display_setup['display_waypoints_out']:
         plot_waypoints(ax, waypoints_mid, waypoints_inn, waypoints_out)
-    #
-    training_log = input_file_dir + output_file_name
-    df = read_log(training_log, episode_num=3, steps=0)
 
-    #增加选择条件参看特定的点
-    # df = df[df.throttle >= 1.5]
-    # df = df[df.episode == 173]
-    # df = df[df.reward == 1.5]
-    # df = df[df.episode_status == 'off_track']
-    #
+    if len(start_points) > 0:
+        plot_racing_line(start_waypoints, ax, waypoints_mid, waypoints_inn, waypoints_out)
+
     plot_dataframe_new(df, ax, waypoints_mid, waypoints_inn, waypoints_out)
     #
     plt.grid(True)
-    mng.window.state("zoomed")
-    plt.show()
-    plt.clf()
-    plt.close()
+    if image_file == '':
+        mng.window.state("zoomed")
+        plt.show()
+    else:
+        plt.savefig(image_file)
+
+    fig.clf()
+    plt.close('all')
+
+    gc.collect()
+
+
+if __name__ == '__main__':
+    waypoints_npy_file = r'../npy/reinvent_base.npy'
+
+    start_waypoints = [1, 24, 33, 41, 71, 81, 90, 106, 111, 119]
+
+    training_log = input_file_dir + output_file_name
+    df = read_log(training_log, episode_num=-1, steps=0)
+
+    for episode_ in df['episode'].unique():
+        episode_df = df[df.episode == episode_]
+        image_file_name = input_file_dir + '\\image\\episode_' + str(episode_) + '.jpg'
+        plot_episode(episode_df, waypoints_npy_file, start_waypoints, image_file_name)

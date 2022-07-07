@@ -245,6 +245,7 @@ def reward_function(params):
     for i in range(len(rewards_levels)):
         if rewards_levels[i] <= reward < (2 * rewards_levels[i] - 1):
             reward = rewards_levels[i]
+            break
 
     return max(reward, 1e-3)
 
