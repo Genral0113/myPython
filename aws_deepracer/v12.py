@@ -3,12 +3,12 @@ import numpy as np
 
 
 def reward_function(params):
-    start_waypoints = [1, 24, 33, 41, 71, 81, 90, 106, 111, 119]
+    start_waypoints = [1, 24, 33, 41, 73, 81, 90, 106, 111, 119]
     car_actions = ['speed_up', 'slow_down', 'speed_up', 'speed_up', 'speed_up', 'slow_down', 'speed_up', 'slow_down',
                    'speed_up']
     right_of_center_waypoints = [45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63]
     corner_waypoints =[24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 81, 82, 83, 84, 85, 86, 87, 88, 106, 107, 108, 109, 110]
-    cut_waypoints_out = [50, 51, 52, 53, 54, 55, 56, 57, 58]
+    cut_waypoints_out = [49, 50, 51, 52, 53, 54, 55, 56, 57, 58]
 
     # speed limits
     speed_up_incentive_limit_l1 = 2.5
@@ -162,13 +162,20 @@ def reward_function(params):
     steps = params['steps']
     waypoints = params['waypoints']
 
+    waypoints_length = len(waypoints)
+    if waypoints[0][0] == waypoints[-1][0] and waypoints[0][1] == waypoints[-1][1]:
+        waypoints_length -= 1
+    next_waypoint = closest_waypoints[0] + 1
+    if next_waypoint > waypoints_length:
+        next_waypoint -= waypoints_length
+
     car_action = ''
     target_waypoint_directions_inn = 0
     target_waypoint_directions_mid = 0
 
     for i in range(len(start_waypoints) - 1):
 
-        if start_waypoints[i] <= closest_waypoints[0] < start_waypoints[i + 1]:
+        if start_waypoints[i] <= next_waypoint < start_waypoints[i + 1]:
 
             car_action = car_actions[i]
 
@@ -180,23 +187,34 @@ def reward_function(params):
 
             break
 
-    if heading < 0:
-        heading += 360
-    if target_waypoint_directions_inn < 0:
-        target_waypoint_directions_inn += 360
-    if target_waypoint_directions_mid < 0:
-        target_waypoint_directions_mid += 360
+    target_diff = abs(target_waypoint_directions_inn - target_waypoint_directions_mid)
+    if target_diff > 180:
+        target_diff = 360 - target_diff
 
-    if closest_waypoints[0] in cut_waypoints_out:
+    heading_diff = abs(target_waypoint_directions_inn - heading)
+    if heading_diff > 180:
+        heading_diff = 360 - heading
+
+    # if heading < 0:
+    #     heading += 360
+    # if target_waypoint_directions_inn < 0:
+    #     target_waypoint_directions_inn += 360
+    # if target_waypoint_directions_mid < 0:
+    #     target_waypoint_directions_mid += 360
+
+    if next_waypoint in cut_waypoints_out:
         if is_left_of_center:
             return 1e-3
         if distance_from_center < track_width * 0.5:
             return 1e-3
 
-    if closest_waypoints[0] in corner_waypoints and distance_from_center < track_width * 0.25:
+    if next_waypoint in corner_waypoints and distance_from_center < track_width * 0.25:
         return 1e-3
 
-    if distance_from_center > track_width * 0.5:
+    if next_waypoint not in cut_waypoints_out and distance_from_center > track_width * 0.5:
+        return 1e-3
+
+    if is_offtrack:
         return 1e-3
 
     #
@@ -207,34 +225,37 @@ def reward_function(params):
     #
     # check car location
     #
-    if is_left_of_center and closest_waypoints[0] not in right_of_center_waypoints \
-            or not is_left_of_center and closest_waypoints[0] in right_of_center_waypoints:
+    if is_left_of_center and next_waypoint not in right_of_center_waypoints \
+            or not is_left_of_center and next_waypoint in right_of_center_waypoints:
         reward += 1.0
 
     #
     # check heading
     #
-    if target_waypoint_directions_mid <= heading <= target_waypoint_directions_inn:
-        reward += 2.0
-    elif heading < target_waypoint_directions_mid and steering > 0 \
-            or heading > target_waypoint_directions_inn and steering < 0:
+    # if target_waypoint_directions_mid <= heading <= target_waypoint_directions_inn:
+    #     reward += 2.0
+    # elif heading < target_waypoint_directions_mid and steering > 0 \
+    #         or heading > target_waypoint_directions_inn and steering < 0:
+    #     reward += 2.0
+
+    if heading_diff <= target_diff:
         reward += 2.0
 
-    #
-    # check speed up
-    #
-    if car_action == 'speed_up':
-        if closest_waypoints[0] not in corner_waypoints:
-            if throttle > speed_up_incentive_limit_l1:
-                reward += 16.0
-            elif speed_up_incentive_limit_l2 < throttle <= speed_up_incentive_limit_l1:
-                reward += 4.0
-        else:   # speed up at corner with 1 to 1.5 m/s
+        #
+        # check speed up
+        #
+        if car_action == 'speed_up':
+            if next_waypoint not in corner_waypoints:
+                if throttle > speed_up_incentive_limit_l1:
+                    reward += 16.0
+                elif speed_up_incentive_limit_l2 < throttle <= speed_up_incentive_limit_l1:
+                    reward += 4.0
+            else:   # speed up at corner with 1 to 1.5 m/s
+                if slow_down_incentive_limit < throttle < speed_up_incentive_limit_l2:
+                    reward += 8.0
+        else:       # car slow down
             if slow_down_incentive_limit < throttle < speed_up_incentive_limit_l2:
                 reward += 8.0
-    else:       # car slow down
-        if slow_down_incentive_limit < throttle < speed_up_incentive_limit_l2:
-            reward += 8.0
 
     #
     # check progress

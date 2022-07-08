@@ -1,6 +1,8 @@
 import gc
 
 import pandas as pd
+import matplotlib
+# matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 from aws_deepracer.functions_2d import *
@@ -277,7 +279,7 @@ def plot_episode(df, track_file, start_points=[], image_file=''):
     else:
         plt.savefig(image_file)
 
-    fig.clf()
+    plt.clf()
     plt.close('all')
 
     gc.collect()
@@ -291,7 +293,10 @@ if __name__ == '__main__':
     training_log = input_file_dir + output_file_name
     df = read_log(training_log, episode_num=-1, steps=0)
 
-    for episode_ in df['episode'].unique():
-        episode_df = df[df.episode == episode_]
-        image_file_name = input_file_dir + '\\image\\episode_' + str(episode_) + '.jpg'
-        plot_episode(episode_df, waypoints_npy_file, start_waypoints, image_file_name)
+    df = df[df.episode == 0]
+    plot_episode(df, waypoints_npy_file, start_waypoints)
+
+    # for episode_ in df['episode'].unique():
+    #     episode_df = df[df.episode == episode_]
+    #     image_file_name = input_file_dir + '\\image\\episode_' + str(episode_) + '.jpg'
+    #     plot_episode(episode_df, waypoints_npy_file, start_waypoints, image_file_name)
