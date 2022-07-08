@@ -4,8 +4,7 @@ import numpy as np
 
 def reward_function(params):
     start_waypoints = [1, 24, 33, 41, 73, 81, 90, 106, 111, 119]
-    car_actions = ['speed_up', 'slow_down', 'speed_up', 'speed_up', 'speed_up', 'slow_down', 'speed_up', 'slow_down',
-                   'speed_up']
+    car_actions = ['speed_up', 'slow_down', 'speed_up', 'speed_up', 'speed_up', 'slow_down', 'speed_up', 'slow_down', 'speed_up']
     right_of_center_waypoints = [45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63]
     corner_waypoints =[24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 81, 82, 83, 84, 85, 86, 87, 88, 106, 107, 108, 109, 110]
     cut_waypoints_out = [49, 50, 51, 52, 53, 54, 55, 56, 57, 58]
@@ -14,8 +13,6 @@ def reward_function(params):
     speed_up_incentive_limit_l1 = 2.5
     speed_up_incentive_limit_l2 = 1.5
     slow_down_incentive_limit = 1
-    heading_diff_l1 = 5
-    heading_diff_l2 = 15
 
     directions_diff_of_waypoints = 6
 
