@@ -195,13 +195,6 @@ def reward_function(params):
     if heading_diff > 180:
         heading_diff = 360 - heading
 
-    # if heading < 0:
-    #     heading += 360
-    # if target_waypoint_directions_inn < 0:
-    #     target_waypoint_directions_inn += 360
-    # if target_waypoint_directions_mid < 0:
-    #     target_waypoint_directions_mid += 360
-
     if next_waypoint in cut_waypoints_out:
         if is_left_of_center:
             return 1e-3
@@ -228,15 +221,6 @@ def reward_function(params):
     if is_left_of_center and next_waypoint not in right_of_center_waypoints \
             or not is_left_of_center and next_waypoint in right_of_center_waypoints:
         reward += 1.0
-
-    #
-    # check heading
-    #
-    # if target_waypoint_directions_mid <= heading <= target_waypoint_directions_inn:
-    #     reward += 2.0
-    # elif heading < target_waypoint_directions_mid and steering > 0 \
-    #         or heading > target_waypoint_directions_inn and steering < 0:
-    #     reward += 2.0
 
     if heading_diff <= target_diff:
         reward += 2.0
