@@ -241,7 +241,7 @@ def reward_function(params):
     #
     # check progress
     #
-    if progress > 25:
+    if reward >= 4.0 and progress > 85:
         reward += 32.0
 
     for i in range(len(rewards_levels)):
