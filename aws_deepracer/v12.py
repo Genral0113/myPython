@@ -210,7 +210,7 @@ def reward_function(params):
     #
     # initialize reward with 0.001
     #
-    reward = 0.0
+    reward = 1e-3
 
     #
     # check car location
@@ -219,24 +219,24 @@ def reward_function(params):
             or not is_left_of_center and next_waypoint in right_of_center_waypoints:
         reward += 1.0
 
-    if heading_diff <= target_diff:
-        reward += 2.0
+        if heading_diff <= target_diff:
+            reward += 2.0
 
-        #
-        # check speed up
-        #
-        if car_action == 'speed_up':
-            if next_waypoint not in corner_waypoints:
-                if throttle > speed_up_incentive_limit_l1:
-                    reward += 16.0
-                elif speed_up_incentive_limit_l2 < throttle <= speed_up_incentive_limit_l1:
-                    reward += 4.0
-            else:   # speed up at corner with 1 to 1.5 m/s
+            #
+            # check speed up
+            #
+            if car_action == 'speed_up':
+                if next_waypoint not in corner_waypoints:
+                    if throttle > speed_up_incentive_limit_l1:
+                        reward += 16.0
+                    elif speed_up_incentive_limit_l2 < throttle <= speed_up_incentive_limit_l1:
+                        reward += 4.0
+                else:   # speed up at corner with 1 to 1.5 m/s
+                    if slow_down_incentive_limit < throttle < speed_up_incentive_limit_l2:
+                        reward += 8.0
+            else:       # car slow down
                 if slow_down_incentive_limit < throttle < speed_up_incentive_limit_l2:
                     reward += 8.0
-        else:       # car slow down
-            if slow_down_incentive_limit < throttle < speed_up_incentive_limit_l2:
-                reward += 8.0
 
     #
     # check progress

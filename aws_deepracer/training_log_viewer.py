@@ -293,8 +293,8 @@ if __name__ == '__main__':
     training_log = input_file_dir + output_file_name
     df = read_log(training_log, episode_num=-1, steps=0)
 
-    # df = df[df.episode == 539]
-    df = df[df.reward > 1.0]
+    # df = df[df.episode == 998]
+    df = df[df.reward == 1]
     plot_episode(df, waypoints_npy_file, start_waypoints)
 
     # for episode_ in df['episode'].unique():
