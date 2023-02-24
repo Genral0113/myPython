@@ -98,7 +98,7 @@ def plot_track(track_file):
         track_length += distance_of_2points(p1, p2)
     legends.append('track length : {:.3f}'.format(track_length))
 
-    ax.plot(racing_track[:, 0:2][:, 0:1], racing_track[:, 0:2][:, 1:2], c='r', linestyle='-.', linewidth=1)
+    ax.plot(racing_track[:, 0:2][:, 0:1], racing_track[:, 0:2][:, 1:2], c='r', marker='x', linestyle='-.', linewidth=1)
 
     mng.window.state("zoomed")
     plt.title(os.path.basename(track_file).split('.')[0])
@@ -110,4 +110,3 @@ def plot_track(track_file):
 if __name__ == '__main__':
     track_file = r'../npy/reinvent_base.npy'
     plot_track(track_file)
-    # print(racing_track[:, 0:2][:, 1:2])
